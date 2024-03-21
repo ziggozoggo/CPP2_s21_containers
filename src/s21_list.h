@@ -10,10 +10,10 @@ class list {
     class iterator;
 
     list();
-    //list(T& value);
+    list(size_type count);
     ~list();
 
-    void push_back (T value);
+    void push_back (const T& value);
     T& get_head();
     T& get_tail();
     T& get_shift();
@@ -28,9 +28,9 @@ class list {
     };
 
     struct Node : BaseNode {
-      //Node();
-      Node(T& value);
-      ~Node();
+      Node();
+      Node(const T& value);
+      //~Node();
       T value_;
     };
     

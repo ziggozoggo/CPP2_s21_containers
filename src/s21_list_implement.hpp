@@ -3,44 +3,54 @@
 
 // Class implementation
 /* NODES */
-// template<typename T>
-// list<T>::Node::Node() {
-
-//   T* obj = reinterpret_cast<T*>(new uint8_t[sizeof(T)]);
-//   is_fake_ = true;
-//   std::cout << "Make fake node!" << std::endl;
-// }
 
 template<typename T>
-list<T>::Node::Node(T& value) {
-  //TODO logic
+list<T>::Node::Node() {
+  value_ = new T();
+}
+
+template<typename T>
+list<T>::Node::Node(const T& value) {
   value_ = value;
-  std::cout << "Node with value: " << value << std::endl;
+  //std::cout << "Node with value: " << value << std::endl;
 }
 
 // template<typename T>
-// list<T>::iterator::iterator() {
-//   std::cout << "PREVED!!!" << std::endl;
+// list<T>::Node::~Node() {
+//   //~T();
+//   std::cout << "Node destructor" << std::endl;
 // }
 
 template<typename T>
 list<T>::list() : size_(0), head_(nullptr), tail_(nullptr) {
   base_node_ = new BaseNode();
-  //TODO Создание fake_node
+}
+
+template<typename T>
+list<T>::list(size_type count) : list() {
+  T *value = new T();
+  for (size_type i = 0; i < count; ++i) {
+    this->push_back(*value);
+  }
+  delete value;
 }
 
 template<typename T>
 list<T>::~list() {
   if (size_ != 0) {
+    delete base_node_;
+    delete head_;
+    //head_->~Node();
+    size_ = 0;
     // 1. Delete nodes && Free memory
     // 2. Set ptrs to null, size_ = 0
   }
 }
 
 template<typename T>
-void list<T>::push_back(T value) {
+void list<T>::push_back(const T& value) {
   Node * new_node = new Node(value);
-  // Если это первая нода в списке
+
   if (head_ == nullptr) {
     head_ = new_node;
     tail_ = new_node;
@@ -107,3 +117,4 @@ typename list<T>::iterator list<T>::end() {
 // list<T>::iterator::iterator() {
 //   std::cout << "PREVED!!!" << std::endl;
 // }
+
