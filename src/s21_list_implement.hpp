@@ -53,3 +53,33 @@ T& list<T>::get_shift() {
   Node *node = head_->next;
   return node->value;
 }
+
+/* ITERATORS */
+
+template<typename T>
+T& list<T>::iterator::operator*() {
+  // TODO throw exception
+  return ptr_->value;
+}
+
+template<typename T>
+typename list<T>::iterator list<T>::begin() {
+  //TODO Throw exception
+  iterator res(head_);
+  return res;
+}
+
+template<typename T>
+typename list<T>::iterator list<T>::end() {
+  // List реализован в виде кольца, поэтому
+  // указатель на элемент после последнего - head
+  //TODO Throw exception && Переделать, т.к.:
+  // iter = list.begin(); iter != list.end(); ++iter
+  iterator res(head_);
+  return res;
+}
+
+// template<typename T>
+// list<T>::iterator::iterator() {
+//   std::cout << "PREVED!!!" << std::endl;
+// }
