@@ -5,32 +5,59 @@
 template<typename T>
 class list {
   public:
-    list() {
-      fake_node_.next_ = &fake_node_;
-      fake_node_.prev_ = &fake_node_;
-      std::cout << "Empty constructor" << std::endl;
+    using size_type = std::size_t;
+    list();
+    void push_back (T value);
+    
+    T& get_tail() {
+      return tail_->value;
     }
-    list(T value) : list() {
-      Node new_node;
-      new_node.value_ = value;
-      new_node.next_ = &fake_node_;
-      new_node.prev_ = &fake_node_;
-      fake_node_.next_ = &new_node;
-      fake_node_.prev_ = &new_node;
-      std::cout << "With Param" << std::endl;
+    T& get_head() {
+      return head_->value;
+    }
+    T& get_shift() {
+      Node *node = head_->next;
+      return node->value;
     }
 
   private:
-    // Фейковая нода, создаваемая по умолчанию в пустом списке
-    struct BaseNode {
-      BaseNode *next_ = nullptr;
-      BaseNode *prev_ = nullptr;
+    struct Node {
+      T value;
+      Node *next;
+      Node *prev;
     };
-
-    // Нода с данными
-    struct Node : BaseNode {
-      T value_;
-    };
-
-    BaseNode fake_node_;
+    
+    size_type size_;
+    Node *head_;
+    Node *tail_;
 };
+
+// Class implementation
+template<typename T>
+list<T>::list() : size_(0), head_(nullptr), tail_(nullptr) {}
+
+template<typename T>
+void list<T>::push_back(T value) {
+  Node *new_node = new Node();
+  new_node->value = value;
+  if (size_ == 0) {
+    head_ = new_node;
+    tail_ = new_node;
+    
+    head_->next = tail_;
+    head_->prev = tail_;
+
+    tail_->prev = head_;
+    tail_->next = head_;
+
+  } else {
+    new_node->prev = tail_;
+    tail_->next = new_node;
+    tail_ = new_node;
+
+    head_->prev = tail_;
+    tail_->next = head_;
+  }
+  ++size_;
+}
+
