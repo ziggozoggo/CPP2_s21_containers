@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <cstddef>
 
 template<typename T>
 class list {
@@ -9,6 +10,7 @@ class list {
     class iterator;
 
     list();
+    //list(T& value);
     ~list();
 
     void push_back (T value);
@@ -19,14 +21,21 @@ class list {
     iterator begin(); 
     iterator end();
 
-  private:
-    struct Node {
-      T value;
-      Node *next;
-      Node *prev;
+  private:    
+    struct BaseNode {
+      BaseNode *next_ = nullptr;
+      BaseNode *prev_ = nullptr;
+    };
+
+    struct Node : BaseNode {
+      //Node();
+      Node(T& value);
+      ~Node();
+      T value_;
     };
     
     size_type size_;
+    BaseNode *base_node_;
     Node *head_;
     Node *tail_;
 
