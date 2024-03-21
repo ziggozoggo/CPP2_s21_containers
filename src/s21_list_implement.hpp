@@ -12,7 +12,6 @@ list<T>::Node::Node() {
 template<typename T>
 list<T>::Node::Node(const T& value) {
   value_ = value;
-  //std::cout << "Node with value: " << value << std::endl;
 }
 
 // template<typename T>
@@ -24,6 +23,7 @@ list<T>::Node::Node(const T& value) {
 template<typename T>
 list<T>::list() : size_(0), head_(nullptr), tail_(nullptr) {
   base_node_ = new BaseNode();
+  std::cout << "Base node address: " << &base_node_ << std::endl;
 }
 
 template<typename T>
@@ -32,6 +32,7 @@ list<T>::list(size_type count) : list() {
   for (size_type i = 0; i < count; ++i) {
     this->push_back(*value);
   }
+  
   delete value;
 }
 
@@ -40,10 +41,7 @@ list<T>::~list() {
   if (size_ != 0) {
     delete base_node_;
     delete head_;
-    //head_->~Node();
     size_ = 0;
-    // 1. Delete nodes && Free memory
-    // 2. Set ptrs to null, size_ = 0
   }
 }
 
@@ -91,30 +89,27 @@ T& list<T>::get_shift() {
 /* ITERATORS */
 
 template<typename T>
+list<T>::iterator::iterator() : ptr_(nullptr) {};
+
+template<typename T>
+list<T>::iterator::iterator(BaseNode *ptr) : ptr_(ptr) {};
+
+template<typename T>
 T& list<T>::iterator::operator*() {
   // TODO throw exception
-  return ptr_->value;
+  return static_cast<Node*>(ptr_)->value_;
 }
 
 template<typename T>
 typename list<T>::iterator list<T>::begin() {
   //TODO Throw exception
-  iterator res(head_);
-  return res;
+  return iterator(base_node_->next_);
 }
 
 template<typename T>
 typename list<T>::iterator list<T>::end() {
-  // List реализован в виде кольца, поэтому
-  // указатель на элемент после последнего - head
-  //TODO Throw exception && Переделать, т.к.:
-  // iter = list.begin(); iter != list.end(); ++iter
-  iterator res(head_);
-  return res;
+  //TODO Throw exception
+  return iterator(base_node_);
 }
 
-// template<typename T>
-// list<T>::iterator::iterator() {
-//   std::cout << "PREVED!!!" << std::endl;
-// }
 

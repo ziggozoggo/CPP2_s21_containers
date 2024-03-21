@@ -47,13 +47,15 @@ class list {
       // --iter; iter--
       // *iter
       public:
-        iterator() : ptr_(nullptr) {};
-        iterator(Node *ptr) : ptr_(ptr) {};
+        iterator();
+        iterator(BaseNode *ptr);
+        // iterator() : ptr_(nullptr) {};
+        // iterator(Node *ptr) : ptr_(ptr) {};
 
         T& operator*();
       
       private:
-        Node *ptr_ = nullptr;
+        BaseNode *ptr_ = nullptr;
     };
 };
 
