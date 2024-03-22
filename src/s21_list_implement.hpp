@@ -4,31 +4,24 @@
 // Class implementation
 /* NODES */
 
-template<typename T>
-list<T>::Node::Node() {
-  value_ = new T();
+template<typename value_type>
+list<value_type>::Node::Node() {
+  value_ = new value_type();
 }
 
-template<typename T>
-list<T>::Node::Node(const T& value) {
+template<typename value_type>
+list<value_type>::Node::Node(const_reference value) {
   value_ = value;
 }
 
-// template<typename T>
-// list<T>::Node::~Node() {
-//   //~T();
-//   std::cout << "Node destructor" << std::endl;
-// }
-
-template<typename T>
-list<T>::list() : size_(0), head_(nullptr), tail_(nullptr) {
+template<typename value_type>
+list<value_type>::list() : size_(0), head_(nullptr), tail_(nullptr) {
   base_node_ = new BaseNode();
-  std::cout << "Base node address: " << &base_node_ << std::endl;
 }
 
-template<typename T>
-list<T>::list(size_type count) : list() {
-  T *value = new T();
+template<typename value_type>
+list<value_type>::list(size_type count) : list() {
+  value_type *value = new value_type();
   for (size_type i = 0; i < count; ++i) {
     this->push_back(*value);
   }
@@ -36,8 +29,8 @@ list<T>::list(size_type count) : list() {
   delete value;
 }
 
-template<typename T>
-list<T>::~list() {
+template<typename value_type>
+list<value_type>::~list() {
   if (size_ != 0) {
     delete base_node_;
     delete head_;
@@ -45,8 +38,8 @@ list<T>::~list() {
   }
 }
 
-template<typename T>
-void list<T>::push_back(const T& value) {
+template<typename value_type>
+void list<value_type>::push_back(const_reference value) {
   Node * new_node = new Node(value);
 
   if (head_ == nullptr) {
@@ -70,44 +63,44 @@ void list<T>::push_back(const T& value) {
   ++size_;
 }
 
-template<typename T>
-T& list<T>::get_head() {
+template<typename value_type>
+typename list<value_type>::const_reference list<value_type>::get_head() {
   return head_->value_;
 }
 
-template<typename T>
-T& list<T>::get_tail() {
+template<typename value_type>
+typename list<value_type>::const_reference list<value_type>::get_tail() {
   return tail_->value_;
 }
 
-template<typename T>
-T& list<T>::get_shift() {
+template<typename value_type>
+typename list<value_type>::const_reference list<value_type>::get_shift() {
   Node *node = static_cast<Node*>(head_->next_);
   return node->value_;
 }
 
 /* ITERATORS */
 
-template<typename T>
-list<T>::iterator::iterator() : ptr_(nullptr) {};
+template<typename value_type>
+list<value_type>::iterator::iterator() : ptr_(nullptr) {};
 
-template<typename T>
-list<T>::iterator::iterator(BaseNode *ptr) : ptr_(ptr) {};
+template<typename value_type>
+list<value_type>::iterator::iterator(BaseNode *ptr) : ptr_(ptr) {};
 
-template<typename T>
-T& list<T>::iterator::operator*() {
+template<typename value_type>
+typename list<value_type>::const_reference list<value_type>::iterator::operator*() {
   // TODO throw exception
   return static_cast<Node*>(ptr_)->value_;
 }
 
-template<typename T>
-typename list<T>::iterator list<T>::begin() {
+template<typename value_type>
+typename list<value_type>::iterator list<value_type>::begin() {
   //TODO Throw exception
   return iterator(base_node_->next_);
 }
 
-template<typename T>
-typename list<T>::iterator list<T>::end() {
+template<typename value_type>
+typename list<value_type>::iterator list<value_type>::end() {
   //TODO Throw exception
   return iterator(base_node_);
 }

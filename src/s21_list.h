@@ -7,16 +7,20 @@ template<typename T>
 class list {
   public:
     using size_type = std::size_t;
+    using value_type = T;
+    using reference = T&;
+    using const_reference = const T&;
+
     class iterator;
 
     list();
     list(size_type count);
     ~list();
 
-    void push_back (const T& value);
-    T& get_head();
-    T& get_tail();
-    T& get_shift();
+    void push_back (const_reference value);
+    const_reference get_head();
+    const_reference get_tail();
+    const_reference get_shift();
 
     iterator begin(); 
     iterator end();
@@ -29,9 +33,8 @@ class list {
 
     struct Node : BaseNode {
       Node();
-      Node(const T& value);
-      //~Node();
-      T value_;
+      Node(const_reference value);
+      value_type value_;
     };
     
     size_type size_;
@@ -49,10 +52,8 @@ class list {
       public:
         iterator();
         iterator(BaseNode *ptr);
-        // iterator() : ptr_(nullptr) {};
-        // iterator(Node *ptr) : ptr_(ptr) {};
 
-        T& operator*();
+        const_reference operator*();
       
       private:
         BaseNode *ptr_ = nullptr;
