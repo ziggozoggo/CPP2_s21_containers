@@ -82,26 +82,23 @@ typename list<value_type>::const_reference list<value_type>::get_shift() {
 /* ITERATORS */
 
 template<typename value_type>
-list<value_type>::iterator::iterator() : ptr_(nullptr) {};
+list<value_type>::iterator::ListIterator() : ptr_(nullptr) {};
 
 template<typename value_type>
-list<value_type>::iterator::iterator(BaseNode *ptr) : ptr_(ptr) {};
+list<value_type>::iterator::ListIterator(BaseNode *ptr) : ptr_(ptr) {};
 
 template<typename value_type>
 typename list<value_type>::const_reference list<value_type>::iterator::operator*() {
-  // TODO throw exception
   return static_cast<Node*>(ptr_)->value_;
 }
 
 template<typename value_type>
 typename list<value_type>::iterator list<value_type>::begin() {
-  //TODO Throw exception
   return iterator(base_node_->next_);
 }
 
 template<typename value_type>
 typename list<value_type>::iterator list<value_type>::end() {
-  //TODO Throw exception
   return iterator(base_node_);
 }
 

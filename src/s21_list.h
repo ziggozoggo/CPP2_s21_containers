@@ -6,12 +6,13 @@
 template<typename T>
 class list {
   public:
+    class ListIterator;
+    
     using size_type = std::size_t;
     using value_type = T;
     using reference = T&;
     using const_reference = const T&;
-
-    class iterator;
+    using iterator = ListIterator;
 
     list();
     list(size_type count);
@@ -44,14 +45,14 @@ class list {
 
   // Iterators stuff
   public:
-    class iterator {
+    class ListIterator {
       // BidirectionalIterator
       // ++iter; iter++
       // --iter; iter--
       // *iter
       public:
-        iterator();
-        iterator(BaseNode *ptr);
+        ListIterator();
+        ListIterator(BaseNode *ptr);
 
         const_reference operator*();
       
