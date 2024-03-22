@@ -2,6 +2,7 @@
 #include "s21_list.h"
 
 // Class implementation
+
 /* NODES */
 
 template<typename value_type>
@@ -13,6 +14,8 @@ template<typename value_type>
 list<value_type>::Node::Node(const_reference value) {
   value_ = value;
 }
+
+/* LIST*/
 
 template<typename value_type>
 list<value_type>::list() : size_(0), head_(nullptr), tail_(nullptr) {
@@ -64,14 +67,25 @@ void list<value_type>::push_back(const_reference value) {
 }
 
 template<typename value_type>
-typename list<value_type>::const_reference list<value_type>::get_head() {
+typename list<value_type>::const_reference list<value_type>::front() const {
   return head_->value_;
 }
 
 template<typename value_type>
-typename list<value_type>::const_reference list<value_type>::get_tail() {
+typename list<value_type>::reference list<value_type>::front() {
+  return head_->value_;
+}
+
+template<typename value_type>
+typename list<value_type>::const_reference list<value_type>::back() const {
   return tail_->value_;
 }
+
+template<typename value_type>
+typename list<value_type>::reference list<value_type>::back() {
+  return tail_->value_;
+}
+
 
 template<typename value_type>
 typename list<value_type>::const_reference list<value_type>::get_shift() {

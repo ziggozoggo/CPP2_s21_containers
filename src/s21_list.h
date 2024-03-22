@@ -19,8 +19,13 @@ class list {
     ~list();
 
     void push_back (const_reference value);
-    const_reference get_head();
-    const_reference get_tail();
+    
+    const_reference front() const;
+    const_reference back() const;
+    reference front();
+    reference back();
+
+
     const_reference get_shift();
 
     iterator begin(); 
