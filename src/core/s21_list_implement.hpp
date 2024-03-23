@@ -108,6 +108,12 @@ typename list<value_type>::size_type list<value_type>::size() const noexcept {
 }
 
 template<typename value_type>
+typename list<value_type>::size_type list<value_type>::max_size() const noexcept {
+  size_type size = (std::numeric_limits<size_type>::max() / sizeof(list<value_type>::Node)) / 2;
+  return size;
+}
+
+template<typename value_type>
 typename list<value_type>::const_reference list<value_type>::front() const {
   return head_->value_;
 }

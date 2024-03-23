@@ -26,6 +26,7 @@ namespace s21 {
       void pop_back ();
       bool empty() const noexcept;
       size_type size() const noexcept;
+      size_type max_size() const noexcept;
 
       const_reference front() const;
       const_reference back() const;

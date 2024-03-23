@@ -13,6 +13,14 @@ TEST(s21_list_suite, init_empty_list) {
   ASSERT_EQ(std_list.empty(), s21_list.empty());
 }
 
+TEST(s21_list_suite, init_empty_n_list) {
+  std::list<int> std_list(5);
+  s21::list<int> s21_list(5);
+  ASSERT_EQ(std_list.size(), s21_list.size());
+  ASSERT_EQ(std_list.front(), s21_list.front());
+  ASSERT_EQ(std_list.empty(), s21_list.empty());
+}
+
 TEST(s21_list_suite, basic_operations) {
   s21::list<int> s21_list = {21, 42, 84};
   std::list<int> std_list = {21, 42, 84};
@@ -130,6 +138,11 @@ TEST(s21_list_suite, iterator_compare) {
   ASSERT_TRUE(s21_iter_begin == s21_iter_end);
 }
 
+TEST(s21_list_suite, max_size) {
+  s21::list<int> s21_list;
+  std::list<int> std_list;
+  ASSERT_EQ(std_list.max_size(), s21_list.max_size());
+}
 
 
 
