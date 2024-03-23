@@ -10,7 +10,102 @@ TEST(s21_list_suite, init_empty_list) {
   std::list<NoConstructClass> std_list;
   s21::list<NoConstructClass> s21_list;
   ASSERT_EQ(std_list.size(), s21_list.size());
+  ASSERT_EQ(std_list.empty(), s21_list.empty());
 }
+
+TEST(s21_list_suite, basic_operations) {
+  s21::list<int> s21_list = {21, 42, 84};
+  std::list<int> std_list = {21, 42, 84};
+  ASSERT_EQ(std_list.front(), s21_list.front());
+  ASSERT_EQ(std_list.back(), s21_list.back());
+}
+
+TEST(s21_list_suite, push_back_01) {
+  s21::list<int> s21_list;
+  std::list<int> std_list;
+
+  s21_list.push_back(21);
+  std_list.push_back(21);
+  
+  ASSERT_EQ(std_list.front(), s21_list.front());
+  ASSERT_EQ(std_list.back(), s21_list.back());
+}
+
+TEST(s21_list_suite, push_back_02) {
+  s21::list<int> s21_list = {21, 42, 84};
+  std::list<int> std_list = {21, 42, 84};
+
+  s21_list.push_back(168);
+  std_list.push_back(168);
+  
+  ASSERT_EQ(std_list.back(), s21_list.back());
+  ASSERT_EQ(std_list.front(), s21_list.front());
+}
+
+TEST(s21_list_suite, iterator_clockwise01) {
+  s21::list<int> s21_list = {21, 42, 84};
+  std::list<int> std_list = {21, 42, 84};
+
+  auto s21_iter = s21_list.begin();
+  auto std_iter = std_list.begin();
+
+  for (int i = 0; i < 3; ++i) {
+    ASSERT_EQ(*std_iter, *s21_iter);
+    ++s21_iter;
+    ++std_iter;  
+  }
+}
+
+TEST(s21_list_suite, iterator_clockwise02) {
+  s21::list<int> s21_list = {21, 42, 84};
+  std::list<int> std_list = {21, 42, 84};
+
+  auto s21_iter = s21_list.begin();
+  auto std_iter = std_list.begin();
+
+  for (int i = 0; i < 3; ++i) {
+    ASSERT_EQ(*std_iter, *s21_iter);
+    s21_iter++;
+    std_iter++;  
+  }
+}
+
+TEST(s21_list_suite, iterator_counterclockwise01) {
+  s21::list<int> s21_list = {21, 42, 84};
+  std::list<int> std_list = {21, 42, 84};
+
+  auto s21_iter = s21_list.end();
+  auto std_iter = std_list.end();
+  s21_iter--;
+  std_iter--;
+  ASSERT_EQ(*std_iter, *s21_iter);
+
+  for (int i = 0; i < 3; ++i) {
+    ASSERT_EQ(*std_iter, *s21_iter);
+    s21_iter--;
+    std_iter--;  
+  }
+}
+
+TEST(s21_list_suite, iterator_counterclockwise02) {
+  s21::list<int> s21_list = {21, 42, 84};
+  std::list<int> std_list = {21, 42, 84};
+
+  auto s21_iter = s21_list.end();
+  auto std_iter = std_list.end();
+  --s21_iter;
+  --std_iter;
+  ASSERT_EQ(*std_iter, *s21_iter);
+
+  for (int i = 0; i < 3; ++i) {
+    ASSERT_EQ(*std_iter, *s21_iter);
+    --s21_iter;
+    --std_iter;  
+  }
+}
+
+
+
 
 
 
