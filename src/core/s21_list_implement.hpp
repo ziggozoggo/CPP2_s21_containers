@@ -5,6 +5,8 @@
 
 /* NODES */
 
+using namespace s21;
+
 template<typename value_type>
 list<value_type>::Node::Node() {
   value_ = new value_type();
