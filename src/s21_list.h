@@ -61,7 +61,15 @@ class list {
         ListIterator();
         ListIterator(BaseNode *ptr);
 
-        const_reference operator*();
+
+        ListIterator& operator ++();
+        ListIterator& operator --();
+        reference operator*();
+
+        // ListIterator& operator ++() {
+        //   this->ptr_ = ptr_->next_;
+        //   return *this;
+        // }
       
       private:
         BaseNode *ptr_ = nullptr;

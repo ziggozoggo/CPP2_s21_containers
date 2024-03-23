@@ -18,6 +18,7 @@ list<value_type>::Node::Node(const_reference value) {
 
 /* LIST*/
 
+// Constructors & Destructor
 template<typename value_type>
 list<value_type>::list() : size_(0), head_(nullptr), tail_(nullptr) {
   base_node_ = new BaseNode();
@@ -49,6 +50,7 @@ list<value_type>::~list() {
   }
 }
 
+// Methods
 template<typename value_type>
 void list<value_type>::push_back(const_reference value) {
   Node * new_node = new Node(value);
@@ -94,6 +96,15 @@ typename list<value_type>::reference list<value_type>::back() {
   return tail_->value_;
 }
 
+template<typename value_type>
+typename list<value_type>::iterator list<value_type>::begin() {
+  return iterator(base_node_->next_);
+}
+
+template<typename value_type>
+typename list<value_type>::iterator list<value_type>::end() {
+  return iterator(base_node_);
+}
 
 template<typename value_type>
 typename list<value_type>::const_reference list<value_type>::get_shift() {
@@ -103,25 +114,30 @@ typename list<value_type>::const_reference list<value_type>::get_shift() {
 
 /* ITERATORS */
 
+
+// Constructors
 template<typename value_type>
 list<value_type>::iterator::ListIterator() : ptr_(nullptr) {};
 
 template<typename value_type>
 list<value_type>::iterator::ListIterator(BaseNode *ptr) : ptr_(ptr) {};
 
+// Operators
 template<typename value_type>
-typename list<value_type>::const_reference list<value_type>::iterator::operator*() {
+typename list<value_type>::ListIterator& list<value_type>::ListIterator::operator++() {
+  this->ptr_ = ptr_->next_;
+  return *this;
+}
+
+template<typename value_type>
+typename list<value_type>::ListIterator& list<value_type>::ListIterator::operator--() {
+  this->ptr_ = ptr_->prev_;
+  return *this;
+}
+
+template<typename value_type>
+typename list<value_type>::reference list<value_type>::iterator::operator*() {
   return static_cast<Node*>(ptr_)->value_;
-}
-
-template<typename value_type>
-typename list<value_type>::iterator list<value_type>::begin() {
-  return iterator(base_node_->next_);
-}
-
-template<typename value_type>
-typename list<value_type>::iterator list<value_type>::end() {
-  return iterator(base_node_);
 }
 
 
