@@ -75,6 +75,7 @@ void list<value_type>::push_back(const_reference value) {
     
     tail_->next_ = new_node;
     tail_ = new_node;
+    base_node_->prev_ = tail_;
   }
   
   ++size_;
@@ -143,7 +144,6 @@ typename list<value_type>::const_reference list<value_type>::get_shift() {
 }
 
 /* ITERATORS */
-
 
 // Constructors
 template<typename value_type>
