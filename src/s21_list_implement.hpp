@@ -44,11 +44,13 @@ list<value_type>::list(const std::initializer_list<value_type>& values) : list()
 template<typename value_type>
 list<value_type>::~list() {
   if (size_ != 0) {
-    // TODO: add pop    
-    // delete base_node_;
-    // delete head_;
+    for (int i = 0; i < size_; ++i) {
+      std::cout << "Tail value: " << tail_->value_ << std::endl;
+      this->pop_back();
+    }
     size_ = 0;
   }
+  delete base_node_;
 }
 
 // Methods
@@ -75,6 +77,20 @@ void list<value_type>::push_back(const_reference value) {
   }
   
   ++size_;
+}
+
+template<typename value_type>
+void list<value_type>::pop_back() {
+  // TODO empty list exception
+  if (tail_ == head_) {
+    std::cout << "tail == head" << std::endl;
+    delete tail_;
+  } else {
+    Node *current_tail = tail_;
+    tail_ = static_cast<Node*>(current_tail->prev_);
+    base_node_->prev_ = tail_;
+    delete current_tail; 
+  }
 }
 
 template<typename value_type>

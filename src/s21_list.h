@@ -21,6 +21,7 @@ class list {
     ~list();
 
     void push_back (const_reference value);
+    void pop_back ();
     
     const_reference front() const;
     const_reference back() const;
