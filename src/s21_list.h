@@ -63,8 +63,13 @@ class list {
 
 
         ListIterator& operator ++();
+        ListIterator& operator ++(int);
         ListIterator& operator --();
+        ListIterator& operator --(int);
+
         reference operator*();
+        bool operator ==(const ListIterator& other);
+        bool operator !=(const ListIterator& other);
 
         // ListIterator& operator ++() {
         //   this->ptr_ = ptr_->next_;

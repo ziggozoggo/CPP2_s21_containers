@@ -44,8 +44,9 @@ list<value_type>::list(const std::initializer_list<value_type>& values) : list()
 template<typename value_type>
 list<value_type>::~list() {
   if (size_ != 0) {
-    delete base_node_;
-    delete head_;
+    // TODO: add pop    
+    // delete base_node_;
+    // delete head_;
     size_ = 0;
   }
 }
@@ -130,7 +131,19 @@ typename list<value_type>::ListIterator& list<value_type>::ListIterator::operato
 }
 
 template<typename value_type>
+typename list<value_type>::ListIterator& list<value_type>::ListIterator::operator++(int) {
+  this->ptr_ = ptr_->next_;
+  return *this;
+}
+
+template<typename value_type>
 typename list<value_type>::ListIterator& list<value_type>::ListIterator::operator--() {
+  this->ptr_ = ptr_->prev_;
+  return *this;
+}
+
+template<typename value_type>
+typename list<value_type>::ListIterator& list<value_type>::ListIterator::operator--(int) {
   this->ptr_ = ptr_->prev_;
   return *this;
 }
@@ -138,6 +151,16 @@ typename list<value_type>::ListIterator& list<value_type>::ListIterator::operato
 template<typename value_type>
 typename list<value_type>::reference list<value_type>::iterator::operator*() {
   return static_cast<Node*>(ptr_)->value_;
+}
+
+template<typename value_type>
+bool list<value_type>::ListIterator::operator==(const list<value_type>::ListIterator& other) {
+  return this->ptr_ == other.ptr_;
+}
+
+template<typename value_type>
+bool list<value_type>::ListIterator::operator!=(const list<value_type>::ListIterator& other) {
+  return !(*this == other);
 }
 
 
