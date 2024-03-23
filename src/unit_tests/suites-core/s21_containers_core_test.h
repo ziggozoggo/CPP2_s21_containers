@@ -3,7 +3,7 @@
 
 #include <gtest/gtest.h>
 
-#include "s21_containers.h"
+#include "../core/s21_container.h"
 
 #define LOOP_TESTS_QUANTITY 50
 

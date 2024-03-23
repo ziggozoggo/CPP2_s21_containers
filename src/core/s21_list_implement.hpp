@@ -44,7 +44,7 @@ list<value_type>::list(const std::initializer_list<value_type>& values) : list()
 template<typename value_type>
 list<value_type>::~list() {
   if (size_ != 0) {
-    for (int i = 0; i < size_; ++i) {
+    for (list<value_type>::size_type i = 0; i < size_; ++i) {
       this->pop_back();
     }
     size_ = 0;
