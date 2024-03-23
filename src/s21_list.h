@@ -1,6 +1,7 @@
 #pragma once
 
 #include <initializer_list>
+#include <stdexcept>
 #include <iostream>
 #include <cstddef>
 
@@ -22,7 +23,9 @@ class list {
 
     void push_back (const_reference value);
     void pop_back ();
-    
+    bool empty() const noexcept;
+    size_type size() const noexcept;
+
     const_reference front() const;
     const_reference back() const;
     reference front();

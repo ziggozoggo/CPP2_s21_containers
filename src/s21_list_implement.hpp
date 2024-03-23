@@ -45,7 +45,6 @@ template<typename value_type>
 list<value_type>::~list() {
   if (size_ != 0) {
     for (int i = 0; i < size_; ++i) {
-      std::cout << "Tail value: " << tail_->value_ << std::endl;
       this->pop_back();
     }
     size_ = 0;
@@ -81,9 +80,11 @@ void list<value_type>::push_back(const_reference value) {
 
 template<typename value_type>
 void list<value_type>::pop_back() {
-  // TODO empty list exception
+  if (this->empty()) {
+    throw std::domain_error("ERR: operation not defined for empty list!");
+  }
+
   if (tail_ == head_) {
-    std::cout << "tail == head" << std::endl;
     delete tail_;
   } else {
     Node *current_tail = tail_;
@@ -91,6 +92,16 @@ void list<value_type>::pop_back() {
     base_node_->prev_ = tail_;
     delete current_tail; 
   }
+}
+
+template<typename value_type>
+bool list<value_type>::empty() const noexcept {
+  return (size_) ? false : true;
+}
+
+template<typename value_type>
+typename list<value_type>::size_type list<value_type>::size() const noexcept {
+  return size_;
 }
 
 template<typename value_type>
