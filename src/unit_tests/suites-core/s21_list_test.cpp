@@ -1,5 +1,5 @@
 #include "s21_containers_core_test.h"
-#include "../core/s21_list.h"
+#include "../../core/s21_list.h"
 
 TEST(s21_list_suite, empty_pop_back_exception) {
   s21::list<int> empty_list;
@@ -102,6 +102,32 @@ TEST(s21_list_suite, iterator_counterclockwise02) {
     --s21_iter;
     --std_iter;  
   }
+}
+
+TEST(s21_list_suite, iterator_circular_behavior) {
+  s21::list<int> s21_list = {21, 42, 84};
+  std::list<int> std_list = {21, 42, 84};
+
+  auto s21_iter = s21_list.end();
+  auto std_iter = std_list.end();
+  s21_iter++;
+  std_iter++;
+  ASSERT_EQ(*std_iter, *s21_iter);
+}
+
+TEST(s21_list_suite, iterator_compare) {
+  s21::list<int> s21_list = {21, 42, 84};
+
+  auto s21_iter_begin = s21_list.begin(); 
+  auto s21_iter_end = s21_list.end();
+
+  ASSERT_TRUE(s21_iter_begin != s21_iter_end);
+  
+  for (std::size_t i = 0; i < s21_list.size(); ++i) {
+    --s21_iter_end;
+  }
+  
+  ASSERT_TRUE(s21_iter_begin == s21_iter_end);
 }
 
 
