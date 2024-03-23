@@ -15,6 +15,7 @@ list<value_type>::Node::Node(const_reference value) {
   value_ = value;
 }
 
+
 /* LIST*/
 
 template<typename value_type>
@@ -30,6 +31,13 @@ list<value_type>::list(size_type count) : list() {
   }
   
   delete value;
+}
+
+template<typename value_type>
+list<value_type>::list(const std::initializer_list<value_type>& values) : list() {
+  for (const_reference e : values) {
+    this->push_back(e);
+  }
 }
 
 template<typename value_type>

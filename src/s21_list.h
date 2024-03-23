@@ -1,5 +1,6 @@
 #pragma once
 
+#include <initializer_list>
 #include <iostream>
 #include <cstddef>
 
@@ -16,6 +17,7 @@ class list {
 
     list();
     list(size_type count);
+    list(const std::initializer_list<value_type>& values);
     ~list();
 
     void push_back (const_reference value);
