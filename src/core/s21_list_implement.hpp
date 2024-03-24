@@ -113,6 +113,7 @@ void list<value_type>::pop_back() {
     base_node_->prev_ = tail_;
     delete current_tail; 
   }
+  --size_;
 }
 
 template<typename value_type>

@@ -1,10 +1,6 @@
 #include "s21_containers_core_test.h"
 #include "../../core/s21_list.h"
 
-TEST(s21_list_suite, empty_pop_back_exception) {
-  s21::list<int> empty_list;
-  EXPECT_THROW(empty_list.pop_back(), std::domain_error);
-}
 
 TEST(s21_list_suite, init_empty_list) {
   std::list<NoConstructClass> std_list;
@@ -76,6 +72,23 @@ TEST(s21_list_suite, push_back_02) {
   s21_list.push_back(168);
   std_list.push_back(168);
   
+  ASSERT_EQ(std_list.back(), s21_list.back());
+  ASSERT_EQ(std_list.front(), s21_list.front());
+}
+
+TEST(s21_list_suite, empty_pop_back_exception) {
+  s21::list<int> empty_list;
+  EXPECT_THROW(empty_list.pop_back(), std::domain_error);
+}
+
+TEST(s21_list_suite,pop_back) {
+  s21::list<int> s21_list = {21, 42, 84, 77};
+  std::list<int> std_list = {21, 42, 84, 77};
+  
+  std_list.pop_back();
+  s21_list.pop_back();
+
+  ASSERT_EQ(std_list.size(), s21_list.size());
   ASSERT_EQ(std_list.back(), s21_list.back());
   ASSERT_EQ(std_list.front(), s21_list.front());
 }
