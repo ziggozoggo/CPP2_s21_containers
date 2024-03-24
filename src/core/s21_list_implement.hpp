@@ -24,6 +24,7 @@ list<value_type>::Node::Node(const_reference value) {
 template<typename value_type>
 list<value_type>::list() : size_(0), head_(nullptr), tail_(nullptr) {
   base_node_ = new BaseNode();
+  // std::cout << "CREATE CONSTRUCTOR!" << std::endl;
 }
 
 template<typename value_type>
@@ -44,6 +45,22 @@ list<value_type>::list(const std::initializer_list<value_type>& values) : list()
 }
 
 template<typename value_type>
+list<value_type>::list(const list& other) {
+  size_ = 0;
+  base_node_ = new BaseNode();
+  head_ = nullptr;
+  tail_ = nullptr;
+
+  if (!other.empty()) {
+    for (const_iterator iter = other.begin(); iter != other.end(); ++iter) {
+      value_type value = *iter;
+      this->push_back(value);
+    }
+  }
+  // std::cout << "Copy constructor!!!!" << std::endl;
+}
+
+template<typename value_type>
 list<value_type>::~list() {
   if (size_ != 0) {
     for (list<value_type>::size_type i = 0; i < size_; ++i) {
@@ -51,6 +68,7 @@ list<value_type>::~list() {
     }
     size_ = 0;
   }
+  // std::cout << "DESTRUCTOR!!!!" << std::endl;
   delete base_node_;
 }
 
@@ -139,7 +157,17 @@ typename list<value_type>::iterator list<value_type>::begin() {
 }
 
 template<typename value_type>
+typename list<value_type>::const_iterator list<value_type>::begin() const {
+  return iterator(base_node_->next_);
+}
+
+template<typename value_type>
 typename list<value_type>::iterator list<value_type>::end() {
+  return iterator(base_node_);
+}
+
+template<typename value_type>
+typename list<value_type>::const_iterator list<value_type>::end() const {
   return iterator(base_node_);
 }
 

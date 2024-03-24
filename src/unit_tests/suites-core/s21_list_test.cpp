@@ -21,6 +21,36 @@ TEST(s21_list_suite, init_empty_n_list) {
   ASSERT_EQ(std_list.empty(), s21_list.empty());
 }
 
+TEST(s21_list_suite, copy_empty_list) {
+  s21::list<int> s21_list_this;
+  s21::list<int> s21_list_other(s21_list_this);
+  s21::list<int> s21_list_another = s21_list_this;
+  
+  ASSERT_EQ(s21_list_this.size(), s21_list_other.size());
+  ASSERT_EQ(s21_list_this.size(), s21_list_another.size());
+}
+
+TEST(s21_list_suite, copy_list) {
+  s21::list<int> s21_list_this = {21, 42, 84, 77};
+  s21::list<int> s21_list_other(s21_list_this);
+  s21::list<int> s21_list_another = s21_list_this;
+  
+  ASSERT_EQ(s21_list_this.size(), s21_list_other.size());
+  ASSERT_EQ(s21_list_this.size(), s21_list_another.size());
+
+  s21::list<int>::const_iterator iter_this = s21_list_this.begin();
+  s21::list<int>::const_iterator iter_other = s21_list_other.begin();
+  s21::list<int>::const_iterator iter_another = s21_list_another.begin();
+
+  for (std::size_t i = 0; i < s21_list_this.size(); ++i) {
+    ASSERT_EQ(*iter_this, *iter_other);
+    ASSERT_EQ(*iter_this, *iter_another);
+    ++iter_this;
+    ++iter_other;
+    ++iter_another;
+  }
+}
+
 TEST(s21_list_suite, basic_operations) {
   s21::list<int> s21_list = {21, 42, 84};
   std::list<int> std_list = {21, 42, 84};
