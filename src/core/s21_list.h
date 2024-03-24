@@ -25,6 +25,7 @@ namespace s21 {
       list(const std::initializer_list<value_type>& values);
 
       list(const list& other);
+      list(list&& other);
 
       ~list();
 

@@ -47,6 +47,25 @@ TEST(s21_list_suite, copy_list) {
   }
 }
 
+TEST(s21_list_suite, move_list) {
+  s21::list<std::string> s21_src_list = {"Hello", "World"};
+  std::list<std::string> std_src_list = {"Hello", "World"};
+  s21::list<std::string> s21_dst_list = std::move(s21_src_list);
+  std::list<std::string> std_dst_list = std::move(std_src_list);
+  
+  ASSERT_EQ(std_src_list.size(), s21_src_list.size());
+  ASSERT_EQ(std_dst_list.size(), s21_dst_list.size());
+
+  s21::list<std::string>::iterator s21_iter = s21_dst_list.begin();
+  auto std_iter = std_dst_list.begin();
+
+  for (std::size_t i = 0; i < s21_dst_list.size(); ++i) {
+    ASSERT_EQ(*std_iter, *s21_iter);
+    ++s21_iter;
+    ++std_iter;
+  }
+}
+
 TEST(s21_list_suite, basic_operations) {
   s21::list<int> s21_list = {21, 42, 84};
   std::list<int> std_list = {21, 42, 84};
@@ -76,9 +95,11 @@ TEST(s21_list_suite, push_back_02) {
   ASSERT_EQ(std_list.front(), s21_list.front());
 }
 
-TEST(s21_list_suite, empty_pop_back_exception) {
+TEST(s21_list_suite, empty_list_exceptions) {
   s21::list<int> empty_list;
-  EXPECT_THROW(empty_list.pop_back(), std::domain_error);
+  EXPECT_THROW(empty_list.pop_back(), std::out_of_range);
+  EXPECT_THROW(empty_list.front(), std::out_of_range);
+  EXPECT_THROW(empty_list.back(), std::out_of_range);
 }
 
 TEST(s21_list_suite,pop_back) {

@@ -61,14 +61,31 @@ list<value_type>::list(const list& other) {
 }
 
 template<typename value_type>
+list<value_type>::list(list&& other) {
+  // list&& other <- rvalue reference 
+  size_ = other.size_;
+  base_node_ = other.base_node_;
+  head_ = other.head_;
+  tail_ = other.tail_;
+
+  other.size_ = 0;
+  other.head_ = nullptr;
+  other.tail_ = nullptr;
+  other.base_node_ = new BaseNode();
+
+  std::cout << "Move constructor!!!!" << std::endl;
+}
+
+template<typename value_type>
 list<value_type>::~list() {
   if (size_ != 0) {
-    for (list<value_type>::size_type i = 0; i < size_; ++i) {
+    std::size_t init_size = size_;
+    for (list<value_type>::size_type i = 0; i < init_size; ++i) {
       this->pop_back();
     }
     size_ = 0;
   }
-  // std::cout << "DESTRUCTOR!!!!" << std::endl;
+  std::cout << "DESTRUCTOR!!!!" << std::endl;
   delete base_node_;
 }
 
@@ -102,7 +119,7 @@ void list<value_type>::push_back(const_reference value) {
 template<typename value_type>
 void list<value_type>::pop_back() {
   if (this->empty()) {
-    throw std::domain_error("ERR: operation not defined for empty list!");
+    throw std::out_of_range("ERR: operation not defined for empty list!");
   }
 
   if (tail_ == head_) {
@@ -134,21 +151,33 @@ typename list<value_type>::size_type list<value_type>::max_size() const noexcept
 
 template<typename value_type>
 typename list<value_type>::const_reference list<value_type>::front() const {
+  if (this->empty()) {
+    throw std::out_of_range("ERR: operation not defined for empty list!");
+  }
   return head_->value_;
 }
 
 template<typename value_type>
 typename list<value_type>::reference list<value_type>::front() {
+  if (this->empty()) {
+    throw std::out_of_range("ERR: operation not defined for empty list!");
+  }
   return head_->value_;
 }
 
 template<typename value_type>
 typename list<value_type>::const_reference list<value_type>::back() const {
+  if (this->empty()) {
+    throw std::out_of_range("ERR: operation not defined for empty list!");
+  }
   return tail_->value_;
 }
 
 template<typename value_type>
 typename list<value_type>::reference list<value_type>::back() {
+  if (this->empty()) {
+    throw std::out_of_range("ERR: operation not defined for empty list!");
+  }
   return tail_->value_;
 }
 
