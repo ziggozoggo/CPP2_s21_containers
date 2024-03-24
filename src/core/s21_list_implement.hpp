@@ -73,19 +73,13 @@ list<value_type>::list(list&& other) {
   other.tail_ = nullptr;
   other.base_node_ = new BaseNode();
 
-  std::cout << "Move constructor!!!!" << std::endl;
+  // std::cout << "Move constructor!!!!" << std::endl;
 }
 
 template<typename value_type>
 list<value_type>::~list() {
-  if (size_ != 0) {
-    std::size_t init_size = size_;
-    for (list<value_type>::size_type i = 0; i < init_size; ++i) {
-      this->pop_back();
-    }
-    size_ = 0;
-  }
-  std::cout << "DESTRUCTOR!!!!" << std::endl;
+  this->clear();
+  // std::cout << "DESTRUCTOR!!!!" << std::endl;
   delete base_node_;
 }
 
@@ -131,6 +125,16 @@ void list<value_type>::pop_back() {
     delete current_tail; 
   }
   --size_;
+}
+
+template<typename value_type>
+void list<value_type>::clear() noexcept {
+  if (!this->empty()) {
+    std::size_t list_size = size_;
+    for (list<value_type>::size_type i = 0; i < list_size; ++i) {
+      this->pop_back();
+    }
+  }
 }
 
 template<typename value_type>

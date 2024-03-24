@@ -29,8 +29,13 @@ namespace s21 {
 
       ~list();
 
+
+
       void push_back (const_reference value);
       void pop_back ();
+
+      void clear() noexcept;
+
       bool empty() const noexcept;
       size_type size() const noexcept;
       size_type max_size() const noexcept;
