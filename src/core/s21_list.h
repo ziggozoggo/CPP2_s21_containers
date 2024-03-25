@@ -34,6 +34,7 @@ namespace s21 {
       void push_back (const_reference value);
       void pop_back ();
       void push_front(const_reference value);
+      void pop_front();
 
 
       void clear() noexcept;

@@ -126,6 +126,10 @@ void list<value_type>::pop_back() {
 
   if (tail_ == head_) {
     delete tail_;
+    base_node_->next_ = base_node_;
+    base_node_->prev_ = base_node_;
+    tail_ = nullptr;
+    head_ = nullptr;
   } else {
     Node *current_tail = tail_;
     tail_ = static_cast<Node*>(current_tail->prev_);
@@ -157,6 +161,26 @@ void list<value_type>::push_front(const_reference value) {
     base_node_->next_ = head_;
   }
   ++size_;
+}
+
+template<typename value_type>
+void list<value_type>::pop_front() {
+  if (this->empty()) {
+    throw std::out_of_range("ERR: operation not defined for empty list!");
+  }
+  if (head_ == tail_) {
+    delete head_;
+    base_node_->next_ = base_node_;
+    base_node_->prev_ = base_node_;
+    tail_ = nullptr;
+    head_ = nullptr;
+  } else {
+    Node *current_head = head_;
+    head_ = static_cast<Node*>(current_head->next_);
+    base_node_->next_ = head_;
+    delete current_head;
+  }
+  --size_;
 }
 
 template<typename value_type>

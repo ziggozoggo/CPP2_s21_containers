@@ -140,16 +140,63 @@ TEST(s21_list_suite, push_front_02) {
 TEST(s21_list_suite, empty_list_exceptions) {
   s21::list<int> empty_list;
   EXPECT_THROW(empty_list.pop_back(), std::out_of_range);
+  EXPECT_THROW(empty_list.pop_front(), std::out_of_range);
   EXPECT_THROW(empty_list.front(), std::out_of_range);
   EXPECT_THROW(empty_list.back(), std::out_of_range);
 }
 
-TEST(s21_list_suite,pop_back) {
+TEST(s21_list_suite,pop_back00) {
   s21::list<int> s21_list = {21, 42, 84, 77};
   std::list<int> std_list = {21, 42, 84, 77};
   
   std_list.pop_back();
   s21_list.pop_back();
+
+  ASSERT_EQ(std_list.size(), s21_list.size());
+  ASSERT_EQ(std_list.back(), s21_list.back());
+  ASSERT_EQ(std_list.front(), s21_list.front());
+}
+
+TEST(s21_list_suite,pop_back01) {
+  s21::list<int> s21_list = {21};
+  std::list<int> std_list = {21};
+  
+  std_list.pop_back();
+  s21_list.pop_back();
+
+  ASSERT_EQ(std_list.size(), s21_list.size());
+
+  s21_list.push_back(42);
+  std_list.push_back(42);
+
+  ASSERT_EQ(std_list.size(), s21_list.size());
+  ASSERT_EQ(std_list.back(), s21_list.back());
+  ASSERT_EQ(std_list.front(), s21_list.front());
+}
+
+TEST(s21_list_suite,pop_front00) {
+  s21::list<int> s21_list = {21, 42, 84, 77};
+  std::list<int> std_list = {21, 42, 84, 77};
+  
+  std_list.pop_front();
+  s21_list.pop_front();
+
+  ASSERT_EQ(std_list.size(), s21_list.size());
+  ASSERT_EQ(std_list.back(), s21_list.back());
+  ASSERT_EQ(std_list.front(), s21_list.front());
+}
+
+TEST(s21_list_suite,pop_front01) {
+  s21::list<int> s21_list = {21};
+  std::list<int> std_list = {21};
+  
+  std_list.pop_front();
+  s21_list.pop_front();
+
+  ASSERT_EQ(std_list.size(), s21_list.size());
+
+  s21_list.push_front(42);
+  std_list.push_front(42);
 
   ASSERT_EQ(std_list.size(), s21_list.size());
   ASSERT_EQ(std_list.back(), s21_list.back());
