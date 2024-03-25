@@ -65,10 +65,7 @@ list<value_type>::list(const list& other) {
 template<typename value_type>
 list<value_type>::list(list&& other) {
   // list&& other <- rvalue reference 
-  size_ = other.size_;
-  base_node_ = other.base_node_;
-  head_ = other.head_;
-  tail_ = other.tail_;
+  this->swap(other);
 
   other.size_ = 0;
   other.head_ = nullptr;
