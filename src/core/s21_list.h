@@ -29,10 +29,11 @@ namespace s21 {
 
       ~list();
 
-
+      void swap(list& other);
 
       void push_back (const_reference value);
       void pop_back ();
+
 
       void clear() noexcept;
 

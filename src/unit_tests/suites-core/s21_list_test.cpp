@@ -208,6 +208,30 @@ TEST(s21_list_suite, max_size) {
   ASSERT_EQ(std_list.max_size(), s21_list.max_size());
 }
 
+TEST(s21_list_suite, swap_empty) {
+  s21::list<int> s21_list;
+  s21::list<int> s21_list_other = {15, 25, 35};
+  
+  std::list<int> std_list;
+  std::list<int> std_list_other = {15, 25, 35};
+
+  s21_list.swap(s21_list_other);
+  std_list.swap(std_list_other);
+
+  ASSERT_EQ(std_list.size(), s21_list.size());
+  ASSERT_EQ(std_list_other.size(), s21_list_other.size());
+
+  auto s21_iter = s21_list.begin();
+  auto std_iter = std_list.begin();
+
+  for (int i = 0; i < 3; ++i) {
+    ASSERT_EQ(*std_iter, *s21_iter);
+    s21_iter++;
+    std_iter++;  
+  }
+}
+
+
 
 
 

@@ -24,6 +24,8 @@ list<value_type>::Node::Node(const_reference value) {
 template<typename value_type>
 list<value_type>::list() : size_(0), head_(nullptr), tail_(nullptr) {
   base_node_ = new BaseNode();
+  base_node_->next_ = base_node_;
+  base_node_->prev_ = base_node_;
   // std::cout << "CREATE CONSTRUCTOR!" << std::endl;
 }
 
@@ -84,6 +86,15 @@ list<value_type>::~list() {
 }
 
 // Methods
+template<typename value_type>
+void list<value_type>::swap(list& other) {
+  std::swap(this->size_, other.size_);
+  std::swap(this->base_node_, other.base_node_);
+  std::swap(this->head_, other.head_);
+  std::swap(this->tail_, other.tail_);
+}
+
+
 template<typename value_type>
 void list<value_type>::push_back(const_reference value) {
   Node * new_node = new Node(value);
