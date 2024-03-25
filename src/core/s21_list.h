@@ -36,7 +36,7 @@ namespace s21 {
       void push_front(const_reference value);
       void pop_front();
 
-
+      iterator erase(iterator pos);
       void clear() noexcept;
 
       bool empty() const noexcept;
@@ -94,10 +94,7 @@ namespace s21 {
           bool operator ==(const ListIterator& other);
           bool operator !=(const ListIterator& other);
 
-          // ListIterator& operator ++() {
-          //   this->ptr_ = ptr_->next_;
-          //   return *this;
-          // }
+          BaseNode* get_ptr() { return ptr_;}
         
         private:
           BaseNode *ptr_ = nullptr;

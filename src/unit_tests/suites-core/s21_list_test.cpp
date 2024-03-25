@@ -203,6 +203,51 @@ TEST(s21_list_suite,pop_front01) {
   ASSERT_EQ(std_list.front(), s21_list.front());
 }
 
+TEST(s21_list_suite,erase01) {
+  s21::list<int> s21_list = {21};
+  std::list<int> std_list = {21};
+  
+  auto s21_iter = s21_list.erase(s21_list.begin());
+  auto std_iter = std_list.erase(std_list.begin());
+
+  ASSERT_EQ((std_iter == std_list.end()), (s21_iter == s21_list.end()));
+  ASSERT_EQ(std_list.size(), s21_list.size());
+}
+
+TEST(s21_list_suite,erase02) {
+  s21::list<int> s21_list = {21, 42};
+  std::list<int> std_list = {21, 42};
+
+  auto s21_iter = s21_list.begin();
+  auto std_iter = std_list.begin();
+  ++s21_iter;
+  ++std_iter;
+
+  auto s21_res_iter = s21_list.erase(s21_iter);
+  auto std_res_iter = std_list.erase(std_iter);
+
+  ASSERT_EQ((std_res_iter == std_list.end()), (s21_res_iter == s21_list.end()));
+  ASSERT_EQ(std_list.size(), s21_list.size());
+  ASSERT_EQ(*(std_list.begin()), *(s21_list.begin()));
+}
+
+TEST(s21_list_suite,erase03) {
+  s21::list<int> s21_list = {21, 42, 84};
+  std::list<int> std_list = {21, 42, 84};
+
+  auto s21_iter = s21_list.begin();
+  auto std_iter = std_list.begin();
+  ++s21_iter;
+  ++std_iter;
+
+  auto s21_res_iter = s21_list.erase(s21_iter);
+  auto std_res_iter = std_list.erase(std_iter);
+
+  ASSERT_EQ((std_res_iter == std_list.end()), (s21_res_iter == s21_list.end()));
+  ASSERT_EQ(std_list.size(), s21_list.size());
+  ASSERT_EQ(*(std_list.begin()), *(s21_list.begin()));
+}
+
 TEST(s21_list_suite, iterator_clockwise01) {
   s21::list<int> s21_list = {21, 42, 84};
   std::list<int> std_list = {21, 42, 84};

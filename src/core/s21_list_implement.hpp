@@ -134,6 +134,9 @@ void list<value_type>::pop_back() {
     Node *current_tail = tail_;
     tail_ = static_cast<Node*>(current_tail->prev_);
     base_node_->prev_ = tail_;
+    if (tail_ == head_) {
+      head_->next_ = base_node_;
+    }
     delete current_tail; 
   }
   --size_;
@@ -178,9 +181,54 @@ void list<value_type>::pop_front() {
     Node *current_head = head_;
     head_ = static_cast<Node*>(current_head->next_);
     base_node_->next_ = head_;
+    if (head_ == tail_) {
+      head_->prev_ = base_node_;
+    }
     delete current_head;
   }
   --size_;
+}
+
+template<typename value_type>
+typename list<value_type>::iterator list<value_type>::erase(iterator pos) {
+  // Return:
+  // - Iterator following the last removed element. 
+  // - If pos refers to the last element, then the end() iterator is returned.
+  // - If last == end() prior to removal, then the updated end() iterator is returned.
+  
+  if (this->empty()) {
+    throw std::out_of_range("ERR: operation not defined for empty list!");
+  }
+
+  if (size_ == 1) {
+    this->pop_back();
+    return this->end();
+  }
+
+  if (pos == this->begin()) {
+    this->pop_front();
+    ++pos;
+    return pos;
+  }
+
+  if (pos == --this->end()) {
+    this->pop_back();
+    return this->end();
+  }
+  
+  Node *current_node = static_cast<Node*>(pos.get_ptr());
+  ++pos;
+
+  BaseNode *prev_node = current_node->prev_;
+  BaseNode *next_node = current_node->next_;
+
+  prev_node->next_ = next_node;
+  next_node->prev_ = prev_node;
+
+  --size_;
+  delete current_node;
+
+  return pos;
 }
 
 template<typename value_type>
