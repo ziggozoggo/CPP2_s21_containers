@@ -136,6 +136,30 @@ void list<value_type>::pop_back() {
 }
 
 template<typename value_type>
+void list<value_type>::push_front(const_reference value) {
+  Node *new_node = new Node(value);
+  if (head_ == nullptr) {
+    head_ = new_node;
+    tail_ = new_node;
+
+    head_->next_ = base_node_;
+    head_->prev_ = base_node_;   
+    
+    base_node_->next_ = new_node;
+    base_node_->prev_ = new_node;
+
+  } else {
+    new_node->prev_ = base_node_;
+    new_node->next_ = head_;
+
+    head_->prev_ = new_node;
+    head_ = new_node;
+    base_node_->next_ = head_;
+  }
+  ++size_;
+}
+
+template<typename value_type>
 void list<value_type>::clear() noexcept {
   if (!this->empty()) {
     std::size_t list_size = size_;
