@@ -450,6 +450,89 @@ TEST(s21_list_suite, reverse_02) {
   }
 }
 
+TEST(s21_list_suite, insert_empty) {
+  s21::list<int> s21_list;
+  std::list<int> std_list;
+
+  auto s21_iter = s21_list.insert(s21_list.begin(), 42);
+  auto std_iter = std_list.insert(std_list.begin(), 42);
+
+  ASSERT_EQ(std_list.size(), s21_list.size());
+  ASSERT_EQ(std_list.front(), s21_list.front());
+  ASSERT_EQ(std_list.back(), s21_list.back());
+  ASSERT_EQ(*std_iter, *s21_iter);
+}
+
+TEST(s21_list_suite, insert_only_one) {
+  s21::list<int> s21_list = {42};
+  std::list<int> std_list = {42};
+
+  auto s21_iter = s21_list.insert(s21_list.begin(), 21);
+  auto std_iter = std_list.insert(std_list.begin(), 21);
+
+  ASSERT_EQ(std_list.size(), s21_list.size());
+  ASSERT_EQ(std_list.front(), s21_list.front());
+  ASSERT_EQ(std_list.back(), s21_list.back());
+  ASSERT_EQ(*std_iter, *s21_iter);
+}
+
+TEST(s21_list_suite, insert_to_end) {
+  s21::list<int> s21_list = {42, 21};
+  std::list<int> std_list = {42, 21};
+
+  auto s21_iter = s21_list.insert(s21_list.end(), 123);
+  auto std_iter = std_list.insert(std_list.end(), 123);
+
+  ASSERT_EQ(std_list.size(), s21_list.size());
+  ASSERT_EQ(std_list.front(), s21_list.front());
+  ASSERT_EQ(std_list.back(), s21_list.back());
+  ASSERT_EQ(*std_iter, *s21_iter);
+
+  std_iter = std_list.begin();
+  for (auto iter = s21_list.begin(); iter != s21_list.end(); ++iter) {
+    ASSERT_EQ(*std_iter, *iter);
+    ++std_iter;
+  }
+
+  std_iter = --std_list.end();
+  for (auto iter = --s21_list.end(); iter != s21_list.end(); --iter) {
+    ASSERT_EQ(*std_iter, *iter);
+    --std_iter;
+  }
+}
+
+TEST(s21_list_suite, insert_to_middle) {
+  s21::list<int> s21_list = {21, 42, 84, 65, 45, 33, 44};
+  std::list<int> std_list = {21, 42, 84, 65, 45, 33, 44};
+
+  auto s21_pos = s21_list.begin();
+  auto std_pos = std_list.begin();
+
+  for (std::size_t i = 0; i < s21_list.size() / 2; ++i) {
+    ++s21_pos;
+    ++std_pos;
+  }
+
+  auto s21_iter = s21_list.insert(s21_pos, 123);
+  auto std_iter = std_list.insert(std_pos, 123);
+
+  ASSERT_EQ(std_list.size(), s21_list.size());
+  ASSERT_EQ(std_list.front(), s21_list.front());
+  ASSERT_EQ(std_list.back(), s21_list.back());
+  ASSERT_EQ(*std_iter, *s21_iter);
+
+  std_iter = std_list.begin();
+  for (auto iter = s21_list.begin(); iter != s21_list.end(); ++iter) {
+    ASSERT_EQ(*std_iter, *iter);
+    ++std_iter;
+  }
+  
+  std_iter = --std_list.end();
+  for (auto iter = --s21_list.end(); iter != s21_list.end(); --iter) {
+    ASSERT_EQ(*std_iter, *iter);
+    --std_iter;
+  }
+}
 
 
 

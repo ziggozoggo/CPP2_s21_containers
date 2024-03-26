@@ -36,6 +36,7 @@ namespace s21 {
       void pop_back ();
       void push_front(const_reference value);
       void pop_front();
+      iterator insert(iterator pos, const_reference value);
 
       iterator erase(iterator pos);
       void clear() noexcept;
@@ -50,6 +51,7 @@ namespace s21 {
       reference back();
 
       void print_list();
+      void print_reverse_list();
 
       iterator begin();
       const_iterator begin() const; 

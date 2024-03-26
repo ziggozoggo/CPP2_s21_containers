@@ -216,6 +216,37 @@ void list<value_type>::pop_front() {
 }
 
 template<typename value_type>
+typename list<value_type>::iterator list<value_type>::insert(iterator pos, const_reference value) {
+  if (this->empty()) {
+    this->push_back(value);
+    return this->begin();
+  }
+
+  if (pos == this->end()) {
+    this->push_back(value);
+    return --this->end();
+  }
+  
+  if (pos == this->begin()) {
+    this->push_front(value);
+    return this->begin();
+  }
+
+  Node *current_node = static_cast<Node*>(pos.get_ptr());
+  Node *new_node = new Node(value);
+
+  new_node->next_ = current_node;
+  new_node->prev_ = current_node->prev_;
+
+  current_node->prev_->next_ = new_node;
+  current_node->prev_ = new_node;
+  
+  ++size_;
+
+  return iterator(new_node);
+}
+
+template<typename value_type>
 typename list<value_type>::iterator list<value_type>::erase(iterator pos) {
   // Return:
   // - Iterator following the last removed element. 
@@ -338,6 +369,14 @@ typename list<value_type>::const_iterator list<value_type>::end() const {
 template<typename value_type>
 void list<value_type>::print_list() {
   for (const_iterator iter = this->begin(); iter != this->end(); ++iter) {
+    std::cout << *iter << " "; 
+  }
+  std::cout << std::endl;
+}
+
+template<typename value_type>
+void list<value_type>::print_reverse_list() {
+  for (const_iterator iter = --this->end(); iter != this->end(); --iter) {
     std::cout << *iter << " "; 
   }
   std::cout << std::endl;
