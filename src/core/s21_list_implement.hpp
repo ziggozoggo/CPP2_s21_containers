@@ -92,6 +92,30 @@ void list<value_type>::swap(list& other) {
 }
 
 template<typename value_type>
+void list<value_type>::merge_insert(const list& other) {
+  size_type smallest_size = (this->size() <= other.size()) ? this->size() : other.size();
+  
+  const_iterator this_iterator = this->begin();
+  const_iterator other_iterator = other.begin();
+
+  while (this_iterator != this->end() && other_iterator != other.end()) {
+    if (*this_iterator <= *other_iterator) {
+      ++this_iterator;
+    } else {
+      this_iterator = this->insert(this_iterator, *other_iterator);
+      ++other_iterator;
+      ++this_iterator;
+    }
+  }
+
+  if (other_iterator != other.end()) {
+    for (; other_iterator != other.end(); ++other_iterator) {
+      this->push_back(*other_iterator);
+    }
+  }
+}
+
+template<typename value_type>
 void list<value_type>::reverse() noexcept {
   if (this->empty()) return;
   

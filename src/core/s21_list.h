@@ -30,6 +30,7 @@ namespace s21 {
       ~list();
 
       void swap(list& other);
+      void merge_insert(const list& other);
       void reverse() noexcept;
 
       void push_back (const_reference value);
@@ -37,6 +38,7 @@ namespace s21 {
       void push_front(const_reference value);
       void pop_front();
       iterator insert(iterator pos, const_reference value);
+
 
       iterator erase(iterator pos);
       void clear() noexcept;
