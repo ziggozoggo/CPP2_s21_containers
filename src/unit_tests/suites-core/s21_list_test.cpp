@@ -243,7 +243,7 @@ TEST(s21_list_suite,erase03) {
   auto s21_res_iter = s21_list.erase(s21_iter);
   auto std_res_iter = std_list.erase(std_iter);
 
-  ASSERT_EQ((std_res_iter == std_list.end()), (s21_res_iter == s21_list.end()));
+  ASSERT_EQ(*std_res_iter, *s21_res_iter);
   ASSERT_EQ(std_list.size(), s21_list.size());
   ASSERT_EQ(*(std_list.begin()), *(s21_list.begin()));
 }
@@ -388,6 +388,67 @@ TEST(s21_list_suite, swap_non_empty) {
   }
 }
 
+TEST(s21_list_suite, reverse_empty) {
+  s21::list<int> s21_list;
+  std::list<int> std_list;
+
+  s21_list.reverse();
+  std_list.reverse();
+
+  ASSERT_EQ(std_list.size(), s21_list.size());
+
+}
+
+TEST(s21_list_suite, reverse_00) {
+  s21::list<int> s21_list = {21};
+  std::list<int> std_list = {21};
+
+  s21_list.reverse();
+  std_list.reverse();
+
+  ASSERT_EQ(std_list.size(), s21_list.size());
+  ASSERT_EQ(std_list.front(), s21_list.front());
+  ASSERT_EQ(std_list.back(), s21_list.back());
+}
+
+TEST(s21_list_suite, reverse_01) {
+  s21::list<int> s21_list = {21, 42};
+  std::list<int> std_list = {21, 42};
+
+  s21_list.reverse();
+  std_list.reverse();
+
+  ASSERT_EQ(std_list.size(), s21_list.size());
+  ASSERT_EQ(std_list.front(), s21_list.front());
+  ASSERT_EQ(std_list.back(), s21_list.back());
+}
+
+TEST(s21_list_suite, reverse_02) {
+  s21::list<int> s21_list = {21, 42, 84, 65, 45, 33, 44};
+  std::list<int> std_list = {21, 42, 84, 65, 45, 33, 44};
+
+  s21_list.reverse();
+  std_list.reverse();
+
+  ASSERT_EQ(std_list.size(), s21_list.size());
+  ASSERT_EQ(std_list.front(), s21_list.front());
+  ASSERT_EQ(std_list.back(), s21_list.back());
+
+  auto s21_iter = s21_list.begin();
+  auto std_iter = std_list.begin();
+
+  for (std::size_t i = 0; i < s21_list.size(); ++i) {
+    ASSERT_EQ(*std_iter, *s21_iter);
+    ++s21_iter;
+    ++std_iter;
+  }
+
+  std_iter = --std_list.end();
+  for (auto iter = --s21_list.end(); iter != s21_list.end(); --iter) {
+    ASSERT_EQ(*std_iter, *iter);
+    --std_iter;
+  }
+}
 
 
 

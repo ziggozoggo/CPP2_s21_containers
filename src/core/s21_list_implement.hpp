@@ -91,6 +91,32 @@ void list<value_type>::swap(list& other) {
   std::swap(this->tail_, other.tail_);
 }
 
+template<typename value_type>
+void list<value_type>::reverse() noexcept {
+  if (this->empty()) return;
+  
+  head_->prev_ = nullptr;
+  tail_->next_ = nullptr;
+
+  Node *curr = head_;
+
+  while (curr != nullptr) {
+    Node *temp = static_cast<Node*>(curr->next_);
+    curr->next_ = curr->prev_;
+    if (temp != nullptr) {
+      curr->prev_ = temp;
+      curr = temp;
+    } else {
+      curr->prev_ = nullptr;
+      curr = nullptr;
+    }
+  }
+
+  std::swap(head_, tail_);
+  std::swap(base_node_->next_, base_node_->prev_);  
+  head_->prev_ = base_node_;
+  tail_->next_ = base_node_;
+}
 
 template<typename value_type>
 void list<value_type>::push_back(const_reference value) {
@@ -310,9 +336,11 @@ typename list<value_type>::const_iterator list<value_type>::end() const {
 }
 
 template<typename value_type>
-typename list<value_type>::const_reference list<value_type>::get_shift() {
-  Node *node = static_cast<Node*>(head_->next_);
-  return node->value_;
+void list<value_type>::print_list() {
+  for (const_iterator iter = this->begin(); iter != this->end(); ++iter) {
+    std::cout << *iter << " "; 
+  }
+  std::cout << std::endl;
 }
 
 /* ITERATORS */
