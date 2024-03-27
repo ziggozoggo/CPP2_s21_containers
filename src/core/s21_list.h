@@ -34,6 +34,7 @@ namespace s21 {
       void merge(list& other);
       void reverse() noexcept;
       void unique();
+      void splice(const_iterator pos, list& other);
 
       void push_back (const_reference value);
       void pop_back ();

@@ -621,8 +621,8 @@ TEST(s21_list_suite, unique_one) {
 }
 
 TEST(s21_list_suite, unique_normal) {
-  s21::list<int> s21_list = {1, 2, 2, 2, 2, 3, 3, 2, 1, 1, 1, 8, 8, 8};;
-  std::list<int> std_list = {1, 2, 2, 2, 2, 3, 3, 2, 1, 1, 1, 8, 8, 8};;
+  s21::list<int> s21_list = {1, 2, 2, 2, 2, 3, 3, 2, 1, 1, 1, 8, 8, 8};
+  std::list<int> std_list = {1, 2, 2, 2, 2, 3, 3, 2, 1, 1, 1, 8, 8, 8};
 
   s21_list.unique();
   std_list.unique();
@@ -635,6 +635,73 @@ TEST(s21_list_suite, unique_normal) {
 
 }
 
+TEST(s21_list_suite, splice_empty) {
+  s21::list<int> s21_list_src = {7, 7, 7};
+  std::list<int> std_list_src = {7, 7, 7};
+
+  s21::list<int> s21_list_dst;
+  std::list<int> std_list_dst;
+
+  s21_list_dst.splice(s21_list_dst.begin(), s21_list_src);
+  std_list_dst.splice(std_list_dst.begin(), std_list_src);
+
+  ASSERT_EQ(std_list_src.size(), s21_list_src.size());
+  ASSERT_EQ(std_list_src.empty(), s21_list_src.empty());
+
+  ASSERT_EQ(std_list_dst.size(), s21_list_dst.size());
+  ASSERT_EQ(std_list_dst.empty(), s21_list_dst.empty());
+
+  list_check_data(s21_list_dst, std_list_dst);
+
+}
+
+TEST(s21_list_suite, splice_median) {
+  s21::list<int> s21_list_src = {7, 7, 7};
+  std::list<int> std_list_src = {7, 7, 7};
+
+  s21::list<int> s21_list_dst = {1, 2, 3, 6, 8, 9};
+  std::list<int> std_list_dst = {1, 2, 3, 6, 8, 9};
+
+  auto s21_iter = s21_list_dst.begin();
+  auto std_iter = std_list_dst.begin();
+
+  for (int i = 0; i < 3; ++i) {
+    ++s21_iter;
+    ++std_iter;
+  }
+
+  s21_list_dst.splice(s21_iter, s21_list_src);
+  std_list_dst.splice(std_iter, std_list_src);
+
+  ASSERT_EQ(std_list_src.size(), s21_list_src.size());
+  ASSERT_EQ(std_list_src.empty(), s21_list_src.empty());
+
+  ASSERT_EQ(std_list_dst.size(), s21_list_dst.size());
+  ASSERT_EQ(std_list_dst.empty(), s21_list_dst.empty());
+
+  list_check_data(s21_list_dst, std_list_dst);
+
+}
+
+TEST(s21_list_suite, splice_end) {
+  s21::list<int> s21_list_src = {7, 7, 7};
+  std::list<int> std_list_src = {7, 7, 7};
+
+  s21::list<int> s21_list_dst = {1, 2, 3, 6, 8, 9};
+  std::list<int> std_list_dst = {1, 2, 3, 6, 8, 9};
+
+  s21_list_dst.splice(s21_list_dst.end(), s21_list_src);
+  std_list_dst.splice(std_list_dst.end(), std_list_src);
+
+  ASSERT_EQ(std_list_src.size(), s21_list_src.size());
+  ASSERT_EQ(std_list_src.empty(), s21_list_src.empty());
+
+  ASSERT_EQ(std_list_dst.size(), s21_list_dst.size());
+  ASSERT_EQ(std_list_dst.empty(), s21_list_dst.empty());
+
+  list_check_data(s21_list_dst, std_list_dst);
+
+}
 
 
 

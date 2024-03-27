@@ -220,6 +220,34 @@ void list<value_type>::unique() {
 }
 
 template<typename value_type>
+void list<value_type>::splice(const_iterator pos, list& other) {
+  if (other.empty()) return;
+  
+  BaseNode *current_node = pos.get_ptr();
+  
+  other.head_->prev_ = current_node->prev_;
+  other.tail_->next_ = current_node;
+  current_node->prev_->next_ = other.head_;
+  current_node->prev_ = other.tail_;
+
+  if (this->head_ == static_cast<Node*>(current_node)) {
+    this->head_ = other.head_;
+  }
+
+  if (pos == this->end()) {
+    this->tail_ = other.tail_; 
+  }
+  
+  this->size_ += other.size_;
+
+  other.base_node_->next_ = other.base_node_;
+  other.base_node_->prev_ = other.base_node_;
+  other.head_ = nullptr;
+  other.tail_ = nullptr;
+  other.size_ = 0;
+}
+
+template<typename value_type>
 void list<value_type>::push_back(const_reference value) {
   Node * new_node = new Node(value);
 
