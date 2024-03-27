@@ -65,6 +65,10 @@ namespace s21 {
       iterator end();
       const_iterator end() const;
 
+      template<class... Args>
+      void insert_many_back(Args&&... args);
+
+
     private:    
       struct BaseNode {
         BaseNode *next_ = nullptr;
