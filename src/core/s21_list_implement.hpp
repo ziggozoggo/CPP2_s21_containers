@@ -230,7 +230,8 @@ void list<value_type>::splice(const_iterator pos, list& other) {
   current_node->prev_->next_ = other.head_;
   current_node->prev_ = other.tail_;
 
-  if (this->head_ == static_cast<Node*>(current_node)) {
+  if (this->head_ == static_cast<Node*>(current_node) || 
+      this->head_ == nullptr) {
     this->head_ = other.head_;
   }
 
@@ -245,6 +246,38 @@ void list<value_type>::splice(const_iterator pos, list& other) {
   other.head_ = nullptr;
   other.tail_ = nullptr;
   other.size_ = 0;
+}
+
+template<typename value_type>
+void list<value_type>::sort() {
+  if (size_ <= 1) return;
+  size_type medium = size_ / 2;
+  size_type init_size = size_;
+  size_type counter = 0;
+
+  list<value_type> tmp_left;
+  list<value_type> tmp_right;
+  const_iterator iter_this = this->begin();
+  const_iterator iter_left = tmp_left.begin();
+  const_iterator iter_right = tmp_right.begin();
+
+  for (; counter < medium; ++counter) {
+    tmp_left.insert(iter_left, *iter_this);
+    iter_this = this->erase(iter_this);
+    ++iter_left;
+  }
+
+  for (; counter < init_size; ++counter) {
+    tmp_right.insert(iter_right, *iter_this);
+    iter_this = this->erase(iter_this);
+    ++iter_right;
+  }
+
+  tmp_left.sort();
+  tmp_right.sort();
+  
+  tmp_left.merge(tmp_right);
+  this->merge(tmp_left);
 }
 
 template<typename value_type>
@@ -391,8 +424,7 @@ typename list<value_type>::iterator list<value_type>::erase(iterator pos) {
 
   if (pos == this->begin()) {
     this->pop_front();
-    ++pos;
-    return pos;
+    return this->begin();
   }
 
   if (pos == --this->end()) {

@@ -703,6 +703,75 @@ TEST(s21_list_suite, splice_end) {
 
 }
 
+TEST(s21_list_suite, sort_empty) {
+  s21::list<int> s21_list;
+  std::list<int> std_list;
+
+  s21_list.sort();
+  std_list.sort();
+
+  ASSERT_EQ(std_list.size(), s21_list.size());
+  ASSERT_EQ(std_list.empty(), s21_list.empty());
+}
+
+TEST(s21_list_suite, sort_one) {
+  s21::list<int> s21_list = {42};
+  std::list<int> std_list = {42};
+
+  s21_list.sort();
+  std_list.sort();
+
+  ASSERT_EQ(std_list.size(), s21_list.size());
+  ASSERT_EQ(std_list.empty(), s21_list.empty());
+  ASSERT_EQ(std_list.front(), s21_list.front());
+  ASSERT_EQ(std_list.back(), s21_list.back());
+}
+
+TEST(s21_list_suite, sort_normal) {
+  s21::list<int> s21_list = {8, 7, 5, 9, 0, 1, 3, 2, 6, 4};
+  std::list<int> std_list = {8, 7, 5, 9, 0, 1, 3, 2, 6, 4};
+
+  s21_list.sort();
+  std_list.sort();
+
+  ASSERT_EQ(std_list.size(), s21_list.size());
+  ASSERT_EQ(std_list.empty(), s21_list.empty());
+  ASSERT_EQ(std_list.front(), s21_list.front());
+  ASSERT_EQ(std_list.back(), s21_list.back());
+
+  list_check_data(s21_list, std_list);
+}
+
+TEST(s21_list_suite, sort_sorted00) {
+  s21::list<int> s21_list = {8, 8, 8, 8, 8, 8, 8, 8, 8, 8};
+  std::list<int> std_list = {8, 8, 8, 8, 8, 8, 8, 8, 8, 8};
+
+  s21_list.sort();
+  std_list.sort();
+
+  ASSERT_EQ(std_list.size(), s21_list.size());
+  ASSERT_EQ(std_list.empty(), s21_list.empty());
+  ASSERT_EQ(std_list.front(), s21_list.front());
+  ASSERT_EQ(std_list.back(), s21_list.back());
+
+  list_check_data(s21_list, std_list);
+}
+
+TEST(s21_list_suite, sort_sorted01) {
+  s21::list<int> s21_list = {0, 1, 1, 2, 3, 4, 4, 4, 5, 6};
+  std::list<int> std_list = {0, 1, 1, 2, 3, 4, 4, 4, 5, 6};
+
+  s21_list.sort();
+  std_list.sort();
+
+  ASSERT_EQ(std_list.size(), s21_list.size());
+  ASSERT_EQ(std_list.empty(), s21_list.empty());
+  ASSERT_EQ(std_list.front(), s21_list.front());
+  ASSERT_EQ(std_list.back(), s21_list.back());
+
+  list_check_data(s21_list, std_list);
+}
+
 
 
 

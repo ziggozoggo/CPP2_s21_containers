@@ -35,6 +35,7 @@ namespace s21 {
       void reverse() noexcept;
       void unique();
       void splice(const_iterator pos, list& other);
+      void sort();
 
       void push_back (const_reference value);
       void pop_back ();
