@@ -202,6 +202,24 @@ void list<value_type>::reverse() noexcept {
 }
 
 template<typename value_type>
+void list<value_type>::unique() {
+  if (this->empty() || this->size_ == 1) return;
+  
+  iterator iter = this->begin();
+  value_type current_value = *iter;
+  ++iter;
+
+  while (iter != this->end()) {
+    if (current_value == *iter) {
+      iter = this->erase(iter);
+    } else {
+      current_value = *iter;
+      ++iter;
+    }
+  }
+}
+
+template<typename value_type>
 void list<value_type>::push_back(const_reference value) {
   Node * new_node = new Node(value);
 
@@ -242,10 +260,8 @@ void list<value_type>::pop_back() {
   } else {
     Node *current_tail = tail_;
     tail_ = static_cast<Node*>(current_tail->prev_);
+    tail_->next_ = base_node_;
     base_node_->prev_ = tail_;
-    if (tail_ == head_) {
-      head_->next_ = base_node_;
-    }
     delete current_tail; 
   }
   --size_;

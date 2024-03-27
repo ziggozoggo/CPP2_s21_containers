@@ -597,6 +597,44 @@ TEST(s21_list_suite, merge_normal01) {
 
 }
 
+TEST(s21_list_suite, unique_empty) {
+  s21::list<int> s21_list;
+  std::list<int> std_list;
+
+  s21_list.unique();
+  std_list.unique();
+
+  ASSERT_EQ(std_list.size(), s21_list.size());
+
+}
+
+TEST(s21_list_suite, unique_one) {
+  s21::list<int> s21_list = {42};
+  std::list<int> std_list = {42};
+
+  s21_list.unique();
+  std_list.unique();
+
+  ASSERT_EQ(std_list.size(), s21_list.size());
+  ASSERT_EQ(std_list.front(), s21_list.front());
+
+}
+
+TEST(s21_list_suite, unique_normal) {
+  s21::list<int> s21_list = {1, 2, 2, 2, 2, 3, 3, 2, 1, 1, 1, 8, 8, 8};;
+  std::list<int> std_list = {1, 2, 2, 2, 2, 3, 3, 2, 1, 1, 1, 8, 8, 8};;
+
+  s21_list.unique();
+  std_list.unique();
+
+  ASSERT_EQ(std_list.size(), s21_list.size());
+  ASSERT_EQ(std_list.front(), s21_list.front());
+  ASSERT_EQ(std_list.back(), s21_list.back());
+
+  list_check_data(s21_list, std_list);
+
+}
+
 
 
 
