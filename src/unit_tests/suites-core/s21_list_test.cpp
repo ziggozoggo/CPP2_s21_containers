@@ -1,6 +1,21 @@
 #include "s21_containers_core_test.h"
 #include "../../core/s21_list.h"
 
+static void list_check_data (const s21::list<int>& s21_list, const std::list<int> &std_list ) {
+
+  auto std_iter = std_list.begin();
+  for (auto iter = s21_list.begin(); iter != s21_list.end(); ++iter) {
+    ASSERT_EQ(*std_iter, *iter);
+    ++std_iter;
+  }
+
+  std_iter = --std_list.end();
+  for (auto iter = --s21_list.end(); iter != s21_list.end(); --iter) {
+    ASSERT_EQ(*std_iter, *iter);
+    --std_iter;
+  }                           
+
+}
 
 TEST(s21_list_suite, init_empty_list) {
   std::list<NoConstructClass> std_list;
@@ -488,17 +503,7 @@ TEST(s21_list_suite, insert_to_end) {
   ASSERT_EQ(std_list.back(), s21_list.back());
   ASSERT_EQ(*std_iter, *s21_iter);
 
-  std_iter = std_list.begin();
-  for (auto iter = s21_list.begin(); iter != s21_list.end(); ++iter) {
-    ASSERT_EQ(*std_iter, *iter);
-    ++std_iter;
-  }
-
-  std_iter = --std_list.end();
-  for (auto iter = --s21_list.end(); iter != s21_list.end(); --iter) {
-    ASSERT_EQ(*std_iter, *iter);
-    --std_iter;
-  }
+  list_check_data(s21_list, std_list);
 }
 
 TEST(s21_list_suite, insert_to_middle) {
@@ -521,20 +526,76 @@ TEST(s21_list_suite, insert_to_middle) {
   ASSERT_EQ(std_list.back(), s21_list.back());
   ASSERT_EQ(*std_iter, *s21_iter);
 
-  std_iter = std_list.begin();
-  for (auto iter = s21_list.begin(); iter != s21_list.end(); ++iter) {
-    ASSERT_EQ(*std_iter, *iter);
-    ++std_iter;
-  }
-  
-  std_iter = --std_list.end();
-  for (auto iter = --s21_list.end(); iter != s21_list.end(); --iter) {
-    ASSERT_EQ(*std_iter, *iter);
-    --std_iter;
-  }
+  list_check_data(s21_list, std_list);
 }
 
+TEST(s21_list_suite, merge_first_empty) {
+  s21::list<int> s21_list_dst;
+  std::list<int> std_list_dst;
 
+  s21::list<int> s21_list_src = {1, 4, 6, 8, 12};
+  std::list<int> std_list_src = {1, 4, 6, 8, 12};
+  
+  s21_list_dst.merge(s21_list_src);
+  std_list_dst.merge(std_list_src);
+
+  ASSERT_EQ(std_list_src.size(), s21_list_src.size());
+  ASSERT_EQ(std_list_dst.size(), s21_list_dst.size());
+
+  list_check_data(s21_list_dst, std_list_dst);
+
+}
+
+TEST(s21_list_suite, merge_second_empty) {
+  s21::list<int> s21_list_src;
+  std::list<int> std_list_src;
+
+  s21::list<int> s21_list_dst = {1, 4, 6, 8, 12};
+  std::list<int> std_list_dst = {1, 4, 6, 8, 12};
+  
+  s21_list_dst.merge(s21_list_src);
+  std_list_dst.merge(std_list_src);
+
+  ASSERT_EQ(std_list_src.size(), s21_list_src.size());
+  ASSERT_EQ(std_list_dst.size(), s21_list_dst.size());
+
+  list_check_data(s21_list_dst, std_list_dst);
+
+}
+
+TEST(s21_list_suite, merge_normal00) {
+  s21::list<int> s21_list_src = { 1, 4, 6, 8, 12};
+  std::list<int> std_list_src = { 1, 4, 6, 8, 12};
+
+  s21::list<int> s21_list_dst = {-1, 2, 5, 7, 10};
+  std::list<int> std_list_dst = {-1, 2, 5, 7, 10};
+  
+  s21_list_dst.merge(s21_list_src);
+  std_list_dst.merge(std_list_src);
+
+  ASSERT_EQ(std_list_src.size(), s21_list_src.size());
+  ASSERT_EQ(std_list_dst.size(), s21_list_dst.size());
+
+  list_check_data(s21_list_dst, std_list_dst);
+
+}
+
+TEST(s21_list_suite, merge_normal01) {
+  s21::list<int> s21_list_src = { 1, 4, 6, 8, 12};
+  std::list<int> std_list_src = { 1, 4, 6, 8, 12};
+
+  s21::list<int> s21_list_dst = { 2, 2, 5, 7, 10};
+  std::list<int> std_list_dst = { 2, 2, 5, 7, 10};
+  
+  s21_list_dst.merge(s21_list_src);
+  std_list_dst.merge(std_list_src);
+
+  ASSERT_EQ(std_list_src.size(), s21_list_src.size());
+  ASSERT_EQ(std_list_dst.size(), s21_list_dst.size());
+
+  list_check_data(s21_list_dst, std_list_dst);
+
+}
 
 
 

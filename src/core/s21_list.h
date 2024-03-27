@@ -31,6 +31,7 @@ namespace s21 {
 
       void swap(list& other);
       void merge_insert(const list& other);
+      void merge(list& other);
       void reverse() noexcept;
 
       void push_back (const_reference value);

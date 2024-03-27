@@ -93,8 +93,7 @@ void list<value_type>::swap(list& other) {
 
 template<typename value_type>
 void list<value_type>::merge_insert(const list& other) {
-  size_type smallest_size = (this->size() <= other.size()) ? this->size() : other.size();
-  
+  if (other.empty()) return;
   const_iterator this_iterator = this->begin();
   const_iterator other_iterator = other.begin();
 
@@ -113,6 +112,66 @@ void list<value_type>::merge_insert(const list& other) {
       this->push_back(*other_iterator);
     }
   }
+}
+
+template<typename value_type>
+void list<value_type>::merge(list& other) {
+  if (other.empty()) return;
+  
+  const_iterator other_iterator = other.begin();
+  const_iterator this_iterator = this->begin();
+
+  while (this_iterator != this->end() && other_iterator != other.end()) {
+    if (*this_iterator <= *other_iterator) {
+      ++this_iterator;
+    } else {
+      Node *other_node = static_cast<Node*>(other_iterator.get_ptr());
+      Node *current_node = static_cast<Node*>(this_iterator.get_ptr());
+      ++other_iterator;
+
+      other_node->prev_ = current_node->prev_;
+      other_node->next_ = current_node;
+      current_node->prev_->next_ = other_node;
+      current_node->prev_ = other_node;
+
+      if (this->head_ == current_node) {
+        this->head_ = other_node;
+      }
+      
+      ++size_;
+    }
+  }
+  
+  if (other_iterator != other.end()) {
+    BaseNode *other_node = other_iterator.get_ptr();
+
+    if (this->head_ == nullptr) {
+      this->base_node_->next_ = other_node;
+      this->head_ = static_cast<Node*>(other_node);
+      other_node->prev_ = base_node_;
+    } else {
+      this->tail_->next_ = other_node;
+      other_node->prev_ = this->tail_;
+    }
+
+    size_type counter = 0;
+    for (; other_iterator != other.end(); ++other_iterator) {
+      ++counter;
+    }
+    size_ += counter;
+
+    this->tail_ = other.tail_;
+    this->tail_->next_ = this->base_node_;
+    this->base_node_->prev_ = this->tail_;
+    
+  }
+
+  other.base_node_->next_ = other.base_node_;
+  other.base_node_->prev_ = other.base_node_;
+  other.head_ = nullptr;
+  other.tail_ = nullptr;
+  other.size_ = 0;
+
 }
 
 template<typename value_type>
