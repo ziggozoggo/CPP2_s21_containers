@@ -31,6 +31,9 @@ list<value_type>::list() : size_(0), head_(nullptr), tail_(nullptr) {
 
 template<typename value_type>
 list<value_type>::list(size_type count) : list() {
+  if (count > this->max_size()) {
+    throw std::domain_error("ERR: size more than max_size for that list!");
+  }
   value_type *value = new value_type();
   for (size_type i = 0; i < count; ++i) {
     this->push_back(*value);
@@ -278,6 +281,13 @@ void list<value_type>::sort() {
   
   tmp_left.merge(tmp_right);
   this->merge(tmp_left);
+}
+
+template<typename value_type>
+list<value_type>& list<value_type>::operator=(list&& other) {
+  this->clear();
+  this->splice(this->begin(), other);
+  return *this;
 }
 
 template<typename value_type>

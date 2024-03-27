@@ -160,6 +160,12 @@ TEST(s21_list_suite, empty_list_exceptions) {
   EXPECT_THROW(empty_list.back(), std::out_of_range);
 }
 
+TEST(s21_list_suite, oversize_list_exceptions) {
+  s21::list<int> max_size_counter;
+  std::size_t size_cap = max_size_counter.max_size() + 1;
+  EXPECT_THROW(s21::list<int> s21_list(size_cap), std::domain_error);
+}
+
 TEST(s21_list_suite,pop_back00) {
   s21::list<int> s21_list = {21, 42, 84, 77};
   std::list<int> std_list = {21, 42, 84, 77};
@@ -770,6 +776,39 @@ TEST(s21_list_suite, sort_sorted01) {
   ASSERT_EQ(std_list.back(), s21_list.back());
 
   list_check_data(s21_list, std_list);
+}
+
+TEST(s21_list_suite, move_assigment00) {
+  s21::list<int> s21_list_src = {1, 2, 3, 6, 8, 9};
+  std::list<int> std_list_src = {1, 2, 3, 6, 8, 9};
+
+  s21::list<int> s21_list_dst = std::move(s21_list_src);
+  std::list<int> std_list_dst = std::move(std_list_src);
+
+  ASSERT_EQ(std_list_src.size(), s21_list_src.size());
+  ASSERT_EQ(std_list_src.empty(), s21_list_src.empty());
+  ASSERT_EQ(std_list_dst.size(), s21_list_dst.size());
+  ASSERT_EQ(std_list_dst.empty(), s21_list_dst.empty());
+
+  list_check_data(s21_list_dst, std_list_dst);
+}
+
+TEST(s21_list_suite, move_assigment01) {
+  s21::list<int> s21_list_src = {1, 2, 3, 6, 8, 9};
+  std::list<int> std_list_src = {1, 2, 3, 6, 8, 9};
+
+  s21::list<int> s21_list_dst = {1, 3, 4};
+  std::list<int> std_list_dst = {1, 3, 4};
+
+  s21_list_dst = std::move(s21_list_src);
+  std_list_dst = std::move(std_list_src);
+
+  ASSERT_EQ(std_list_src.size(), s21_list_src.size());
+  ASSERT_EQ(std_list_src.empty(), s21_list_src.empty());
+  ASSERT_EQ(std_list_dst.size(), s21_list_dst.size());
+  ASSERT_EQ(std_list_dst.empty(), s21_list_dst.empty());
+
+  list_check_data(s21_list_dst, std_list_dst);
 }
 
 

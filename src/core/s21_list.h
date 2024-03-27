@@ -36,6 +36,7 @@ namespace s21 {
       void unique();
       void splice(const_iterator pos, list& other);
       void sort();
+      list& operator=(list&& other);
 
       void push_back (const_reference value);
       void pop_back ();
