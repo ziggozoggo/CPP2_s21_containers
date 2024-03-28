@@ -9,10 +9,7 @@
 
 namespace s21 {
   struct BaseNode {
-    BaseNode() {
-      next_ = this;
-      prev_ = this;
-    }
+    BaseNode() : next_(this), prev_(this) {}
     BaseNode *next_;
     BaseNode *prev_;
   };
