@@ -533,6 +533,14 @@ void list<value_type>::insert_many_back(Args&&... args) {
 }
 
 template<typename value_type>
+template<class... Args>
+void list<value_type>::insert_many_front(Args&&... args) {
+  for (auto arg : {args...}) {
+    this->push_front(arg);
+  }
+}
+
+template<typename value_type>
 void list<value_type>::print_list() {
   for (const_iterator iter = this->begin(); iter != this->end(); ++iter) {
     std::cout << *iter << " "; 

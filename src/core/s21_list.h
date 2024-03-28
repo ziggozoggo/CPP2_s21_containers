@@ -74,6 +74,8 @@ namespace s21 {
 
       template<class... Args>
       void insert_many_back(Args&&... args);
+      template<class... Args>
+      void insert_many_front(Args&&... args);
 
 
     private:    

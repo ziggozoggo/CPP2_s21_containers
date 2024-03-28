@@ -833,6 +833,28 @@ TEST(s21_list_suite, insert_many_back01) {
   list_check_data(s21_list, std_target);
 }
 
+TEST(s21_list_suite, insert_many_front00) {
+  s21::list<int> s21_list;
+  std::list<int> std_target = {0, 9, 8, 7, 6, 5, 4, 3, 2, 1};
+  s21_list.insert_many_front(1, 2, 3, 4, 5, 6, 7, 8, 9, 0);
+
+  ASSERT_EQ(s21_list.size(), std_target.size());
+  ASSERT_EQ(s21_list.empty(), std_target.empty());
+
+  list_check_data(s21_list, std_target);
+}
+
+TEST(s21_list_suite, insert_many_front01) {
+  s21::list<int> s21_list = {-3, -8, 77};
+  std::list<int> std_target = {0, 9, 8, 7, 6, 5, 4, 3, 2, 1, -3, -8, 77};
+                            // 0  9  8  7  6  5  4  3  2  1  -3  -8  77
+  s21_list.insert_many_front(1, 2, 3, 4, 5, 6, 7, 8, 9, 0);
+
+  ASSERT_EQ(s21_list.size(), std_target.size());
+  ASSERT_EQ(s21_list.empty(), std_target.empty());
+
+  list_check_data(s21_list, std_target);
+}
 
 
 
