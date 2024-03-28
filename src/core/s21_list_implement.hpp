@@ -22,10 +22,7 @@ list<value_type>::Node::Node(const_reference value) {
 
 // Constructors & Destructor
 template<typename value_type>
-list<value_type>::list() : size_(0), head_(nullptr), tail_(nullptr) {
-  base_node_ = new BaseNode();
-  base_node_->next_ = base_node_;
-  base_node_->prev_ = base_node_;
+list<value_type>::list() : size_(0), base_node_(new BaseNode()), head_(nullptr), tail_(nullptr) {
   // std::cout << "CREATE CONSTRUCTOR!" << std::endl;
 }
 
@@ -50,12 +47,7 @@ list<value_type>::list(const std::initializer_list<value_type>& values) : list()
 }
 
 template<typename value_type>
-list<value_type>::list(const list& other) {
-  size_ = 0;
-  base_node_ = new BaseNode();
-  head_ = nullptr;
-  tail_ = nullptr;
-
+list<value_type>::list(const list& other) : list() {
   if (!other.empty()) {
     for (const_iterator iter = other.begin(); iter != other.end(); ++iter) {
       value_type value = *iter;

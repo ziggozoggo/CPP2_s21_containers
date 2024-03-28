@@ -8,8 +8,12 @@
 
 namespace s21 {
   struct BaseNode {
-    BaseNode *next_ = nullptr;
-    BaseNode *prev_ = nullptr;
+    BaseNode() {
+      next_ = this;
+      prev_ = this;
+    }
+    BaseNode *next_;
+    BaseNode *prev_;
   };
 
   template<typename T>
