@@ -1,4 +1,5 @@
-#pragma once
+#ifndef SRC_CORE_S21_LIST_H_
+#define SRC_CORE_S21_LIST_H_
 
 #include <initializer_list>
 #include <stdexcept>
@@ -139,4 +140,4 @@ namespace s21 {
 
 #include "s21_list_implement.hpp"
 
-
+#endif //!SRC_CORE_S21_LIST_H_

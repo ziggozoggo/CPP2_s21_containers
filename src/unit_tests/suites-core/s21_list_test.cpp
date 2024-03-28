@@ -163,7 +163,7 @@ TEST(s21_list_suite, empty_list_exceptions) {
 TEST(s21_list_suite, oversize_list_exceptions) {
   s21::list<int> max_size_counter;
   std::size_t size_cap = max_size_counter.max_size() + 1;
-  EXPECT_THROW(s21::list<int> s21_list(size_cap), std::domain_error);
+  EXPECT_THROW(s21::list<int> s21_list(size_cap), std::length_error);
 }
 
 TEST(s21_list_suite,pop_back00) {

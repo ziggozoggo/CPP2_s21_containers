@@ -1,4 +1,6 @@
-#pragma once
+#ifndef SRC_CORE_S21_LIST_IMPLEMENT_H_
+#define SRC_CORE_S21_LIST_IMPLEMENT_H_
+
 #include "s21_list.h"
 
 // Class implementation
@@ -8,15 +10,10 @@
 using namespace s21;
 
 template<typename value_type>
-list<value_type>::Node::Node() {
-  value_ = new value_type();
-}
+list<value_type>::Node::Node() : value_(new value_type()) {}
 
 template<typename value_type>
-list<value_type>::Node::Node(const_reference value) {
-  value_ = value;
-}
-
+list<value_type>::Node::Node(const_reference value) : value_(value) {}
 
 /* LIST*/
 
@@ -29,7 +26,7 @@ list<value_type>::list() : size_(0), base_node_(new BaseNode()), head_(nullptr),
 template<typename value_type>
 list<value_type>::list(size_type count) : list() {
   if (count > this->max_size()) {
-    throw std::domain_error("ERR: size more than max_size for that list!");
+    throw std::length_error("ERR: size more than max_size for that list!");
   }
   value_type *value = new value_type();
   for (size_type i = 0; i < count; ++i) {
@@ -600,4 +597,4 @@ bool list<value_type>::ListIterator::operator!=(const list<value_type>::ListIter
   return !(*this == other);
 }
 
-
+#endif //!SRC_CORE_S21_LIST_IMPLEMENT_H_
