@@ -7,6 +7,11 @@
 #include <cstddef>
 
 namespace s21 {
+  struct BaseNode {
+    BaseNode *next_ = nullptr;
+    BaseNode *prev_ = nullptr;
+  };
+
   template<typename T>
   class list {
     public:
@@ -39,7 +44,7 @@ namespace s21 {
       list& operator=(list&& other);
 
       void push_back (const_reference value);
-      void pop_back ();
+      void pop_back();
       void push_front(const_reference value);
       void pop_front();
       iterator insert(iterator pos, const_reference value);
@@ -70,11 +75,6 @@ namespace s21 {
 
 
     private:    
-      struct BaseNode {
-        BaseNode *next_ = nullptr;
-        BaseNode *prev_ = nullptr;
-      };
-
       struct Node : BaseNode {
         Node();
         Node(const_reference value);
