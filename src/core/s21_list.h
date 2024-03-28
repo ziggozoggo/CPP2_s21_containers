@@ -76,7 +76,8 @@ namespace s21 {
       void insert_many_back(Args&&... args);
       template<class... Args>
       void insert_many_front(Args&&... args);
-
+      template<class... Args>
+      iterator insert_many(const_iterator pos, Args&&... args);
 
     private:    
       struct Node : BaseNode {

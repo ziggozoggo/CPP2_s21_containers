@@ -541,6 +541,17 @@ void list<value_type>::insert_many_front(Args&&... args) {
 }
 
 template<typename value_type>
+template<class... Args>
+typename list<value_type>::iterator list<value_type>::insert_many(const_iterator pos, Args&&... args) {
+  // Inserts value before pos.
+  // return: Iterator pointing to the inserted value.
+  for (auto arg : {args...}) {
+    pos = this->insert(pos, arg);
+  }
+  return pos;
+}
+
+template<typename value_type>
 void list<value_type>::print_list() {
   for (const_iterator iter = this->begin(); iter != this->end(); ++iter) {
     std::cout << *iter << " "; 
