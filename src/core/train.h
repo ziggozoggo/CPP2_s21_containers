@@ -7,43 +7,51 @@ struct Node {
 
     Node(int _value): value(_value), left(nullptr), right(nullptr) {}
 
-    void insert(Node& node, int _value) {
-        if (_value < node.value) {
-            if (node.left == nullptr) node.left = new Node(_value);
-            else insert(*node.left, _value);
-        } else if (_value > node.value) {
-            if (node.right == nullptr) node.right = new Node(_value);
-            else insert(*node.right, _value);
+    void insert(int _value) {
+        if (_value < value) {
+            if (left == nullptr) left = new Node(_value);
+            else this->left->insert(_value);
+        } else if (_value > value) {
+            if (right == nullptr) right = new Node(_value);
+            else this->right->insert(_value);
         } else return;
     }
 
-    Node* search(Node* node, int _value) {
-        if (node == nullptr) return nullptr;
-        if (node->value == _value) return node;
-        return (_value < node->value) ? search(node->left, _value) : search(node->right, _value);
+    Node* search(int _value) {
+        //if (this == nullptr) return nullptr;
+        
+        if (value == _value) return this;
+        return (_value < value) ? this->left->search(_value) : this->right->search(_value);
     }
 
-    Node* deleteNode(Node* node, int _value) {
-        if (node == nullptr) return nullptr;
+    Node* deleteNode(int _value) {
+        //if (this == nullptr) return;
 
-        if (_value < node->value) node->left = deleteNode(node->left, _value);
-        else if (_value > node->value) node->right = deleteNode(node->right, _value);
+        if (_value < value) this->left = this->left->deleteNode(_value);
+        else if (_value > value) this->right = this->right->deleteNode(_value);
         else {
-            if (node->left == nullptr || node->right == nullptr) {
-                node = (node->left == nullptr) ? node->right : node->left;
+            if (this->left == nullptr || this->right == nullptr) {
+                Node* temp = (this->left == nullptr) ? this->right : this->left;
+                delete this;
+                return temp;
             }
         }
-        return node;
+        return this;
     }
 
-    void printTree(Node* node) {
+    void printTree() {
+        //if (this == nullptr) return;
+        this->left->printTree();
+        std::cout << value << ' ';
+        this->right->printTree();
+    }
+
+    void deleteTree(Node* node) {
         if (node == nullptr) return;
-        printTree(node->left);
-        std::cout << node->value << ' ';
-        printTree(node->right);
+        deleteTree(node->left);
+        deleteTree(node->right);
+        delete node;
     }
-
-    
 };
 
 struct BST {
@@ -53,10 +61,5 @@ struct BST {
 
     bool isEmpty() { return root == nullptr; }
     
-    void deleteTree(Node* node) {
-        if (node == nullptr) return;
-        deleteTree(node->left);
-        deleteTree(node->right);
-        delete node;
-    }
 };
+

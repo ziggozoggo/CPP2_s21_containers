@@ -1,20 +1,20 @@
 #include "train.h"
 
 int main() {
-    Node bst(5);
+    Node* bst = new Node(5);
     BST btree;
 
-    bst.insert(bst, 10);
-    bst.insert(bst, 15);
-    bst.insert(bst, 3);
-    bst.insert(bst, 8);
+    bst->insert(10);
+    bst->insert(15);
+    bst->insert(3);
+    bst->insert(8);
 
-    // bst.deleteNode(&bst, 8);
+    bst->deleteNode(8);
 
-    bst.printTree(&bst);
+    bst->printTree();
     std::cout << std::endl;
 
-    btree.deleteTree(&bst);
+    bst->deleteTree(bst);
 
     return 0;
 }
