@@ -9,12 +9,12 @@ int main() {
     bst->insert(3);
     bst->insert(8);
 
-    bst->deleteNode(8);
+    // bst->deleteNode(8);
 
     bst->printTree();
     std::cout << std::endl;
 
-    bst->deleteTree(bst);
+    bst->deleteTree();
 
     return 0;
 }

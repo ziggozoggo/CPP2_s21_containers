@@ -18,14 +18,16 @@ struct Node {
     }
 
     Node* search(int _value) {
-        //if (this == nullptr) return nullptr;
-        
+        Node* temp = this;
+        if (temp == nullptr) return nullptr;
+
         if (value == _value) return this;
         return (_value < value) ? this->left->search(_value) : this->right->search(_value);
     }
 
     Node* deleteNode(int _value) {
-        //if (this == nullptr) return;
+        Node* temp = this;
+        if (temp == nullptr) return nullptr;
 
         if (_value < value) this->left = this->left->deleteNode(_value);
         else if (_value > value) this->right = this->right->deleteNode(_value);
@@ -40,17 +42,21 @@ struct Node {
     }
 
     void printTree() {
-        //if (this == nullptr) return;
+        Node* temp = this;
+        if (temp == nullptr) return;
+
         this->left->printTree();
         std::cout << value << ' ';
         this->right->printTree();
     }
 
-    void deleteTree(Node* node) {
-        if (node == nullptr) return;
-        deleteTree(node->left);
-        deleteTree(node->right);
-        delete node;
+    void deleteTree() {
+        Node* temp = this;
+        if (temp == nullptr) return;
+
+        this->left->deleteTree();
+        this->right->deleteTree();
+        delete this;
     }
 };
 
