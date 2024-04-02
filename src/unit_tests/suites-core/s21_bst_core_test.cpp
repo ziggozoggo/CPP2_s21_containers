@@ -6,7 +6,7 @@
 
 // #TODO: random generation values
 
-TEST(intBST, integral) {
+TEST(BST, intIntegral) {
   s21::BST<int> bst;
 
   bst.insert(5);
@@ -33,11 +33,11 @@ TEST(intBST, integral) {
   // bst.printTree();
   // std::cout << std::endl;
 
-  EXPECT_TRUE(!bst.search(3).has_value());
-  EXPECT_TRUE(!bst.search(8).has_value());
+  EXPECT_FALSE(bst.search(3).has_value());
+  EXPECT_FALSE(bst.search(8).has_value());
 }
 
-TEST(doubleBST, integral) {
+TEST(BST, doubleIntegral) {
   s21::BST<double> bst;
 
   bst.insert(5.54);
@@ -49,7 +49,7 @@ TEST(doubleBST, integral) {
   bst.insert(455.45);
   bst.insert(6.34);
 
-  // std::cout << "BST DOUBLE INSERT: ";
+  // std::cout << "BST DOUBLE insert(): ";
   // bst.printTree();
   // std::cout << std::endl;
 
@@ -60,12 +60,12 @@ TEST(doubleBST, integral) {
   bst.remove(3.03);
   bst.remove(00000.12);
 
-  EXPECT_TRUE(!bst.search(3.03).has_value());
-  EXPECT_TRUE(!bst.search(00000.12).has_value());
-
-  // std::cout << "BST DOUBLE: ";
+  // std::cout << "BST DOUBLE remove(): ";
   // bst.printTree();
   // std::cout << std::endl;
+
+  EXPECT_FALSE(bst.search(3.03).has_value());
+  EXPECT_FALSE(bst.search(00000.12).has_value());
 }
 
 /* EDGE */
