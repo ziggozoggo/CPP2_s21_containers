@@ -439,10 +439,8 @@ typename s21::list<value_type>::iterator s21::list<value_type>::erase(iterator p
 
 template<typename value_type>
 void s21::list<value_type>::clear() noexcept {
-  if (!this->empty()) {
-    while(!this->empty()) {
-      this->pop_back();
-    }
+  while(!this->empty()) {
+    this->pop_back();
   }
 }
 
