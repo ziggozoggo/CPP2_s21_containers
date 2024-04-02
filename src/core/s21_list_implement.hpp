@@ -74,8 +74,8 @@ void s21::list<value_type>::swap(list& other) {
 template<typename value_type>
 void s21::list<value_type>::merge_insert(const list& other) {
   if (other.empty()) return;
-  const_iterator this_iterator = this->begin();
-  const_iterator other_iterator = other.begin();
+  const_iterator& this_iterator = this->begin();
+  const_iterator& other_iterator = other.begin();
 
   while (this_iterator != this->end() && other_iterator != other.end()) {
     if (*this_iterator <= *other_iterator) {
