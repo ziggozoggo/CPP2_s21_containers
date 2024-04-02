@@ -5,57 +5,45 @@
 
 // Class implementation
 
-/* NODES */
-
-using namespace s21;
-
-template<typename value_type>
-list<value_type>::Node::Node() : value_(new value_type()) {}
-
-template<typename value_type>
-list<value_type>::Node::Node(const_reference value) : value_(value) {}
-
 /* LIST*/
 
 // Constructors & Destructor
 template<typename value_type>
-list<value_type>::list() : size_(0), base_node_(new BaseNode()), head_(nullptr), tail_(nullptr) {
+s21::list<value_type>::list() : size_(0), base_node_(new BaseNode()), head_(nullptr), tail_(nullptr) {
   // std::cout << "CREATE CONSTRUCTOR!" << std::endl;
 }
 
 template<typename value_type>
-list<value_type>::list(size_type count) : list() {
+s21::list<value_type>::list(size_type count) : list() {
   if (count > this->max_size()) {
-    throw std::length_error("ERR: size more than max_size for that list!");
+    throw std::length_error("size more than max_size for that list!");
   }
-  value_type *value = new value_type();
+
   for (size_type i = 0; i < count; ++i) {
-    this->push_back(*value);
+    this->push_back(value_type());
   }
   
-  delete value;
 }
 
 template<typename value_type>
-list<value_type>::list(const std::initializer_list<value_type>& values) : list() {
+s21::list<value_type>::list(const std::initializer_list<value_type>& values) : list() {
   for (const_reference e : values) {
     this->push_back(e);
   }
 }
 
 template<typename value_type>
-list<value_type>::list(const list& other) : list() {
+s21::list<value_type>::list(const list& other) : list() {
   if (!other.empty()) {
     for (const_iterator iter = other.begin(); iter != other.end(); ++iter) {
-      value_type value = *iter;
-      this->push_back(value);
+      this->push_back(*iter);
     }
   }
   // std::cout << "Copy constructor!!!!" << std::endl;
 }
 
 template<typename value_type>
-list<value_type>::list(list&& other) {
+s21::list<value_type>::list(list&& other) {
   // list&& other <- rvalue reference 
   this->swap(other);
 
@@ -68,7 +56,7 @@ list<value_type>::list(list&& other) {
 }
 
 template<typename value_type>
-list<value_type>::~list() {
+s21::list<value_type>::~list() {
   this->clear();
   // std::cout << "DESTRUCTOR!!!!" << std::endl;
   delete base_node_;
@@ -76,7 +64,7 @@ list<value_type>::~list() {
 
 // Methods
 template<typename value_type>
-void list<value_type>::swap(list& other) {
+void s21::list<value_type>::swap(list& other) {
   std::swap(this->size_, other.size_);
   std::swap(this->base_node_, other.base_node_);
   std::swap(this->head_, other.head_);
@@ -84,7 +72,7 @@ void list<value_type>::swap(list& other) {
 }
 
 template<typename value_type>
-void list<value_type>::merge_insert(const list& other) {
+void s21::list<value_type>::merge_insert(const list& other) {
   if (other.empty()) return;
   const_iterator this_iterator = this->begin();
   const_iterator other_iterator = other.begin();
@@ -107,7 +95,7 @@ void list<value_type>::merge_insert(const list& other) {
 }
 
 template<typename value_type>
-void list<value_type>::merge(list& other) {
+void s21::list<value_type>::merge(list& other) {
   if (other.empty()) return;
   
   const_iterator other_iterator = other.begin();
@@ -167,7 +155,7 @@ void list<value_type>::merge(list& other) {
 }
 
 template<typename value_type>
-void list<value_type>::reverse() noexcept {
+void s21::list<value_type>::reverse() noexcept {
   if (this->empty()) return;
   
   head_->prev_ = nullptr;
@@ -194,7 +182,7 @@ void list<value_type>::reverse() noexcept {
 }
 
 template<typename value_type>
-void list<value_type>::unique() {
+void s21::list<value_type>::unique() {
   if (this->empty() || this->size_ == 1) return;
   
   iterator iter = this->begin();
@@ -212,7 +200,7 @@ void list<value_type>::unique() {
 }
 
 template<typename value_type>
-void list<value_type>::splice(const_iterator pos, list& other) {
+void s21::list<value_type>::splice(const_iterator pos, list& other) {
   if (other.empty()) return;
   
   BaseNode *current_node = pos.get_ptr();
@@ -241,7 +229,7 @@ void list<value_type>::splice(const_iterator pos, list& other) {
 }
 
 template<typename value_type>
-void list<value_type>::sort() {
+void s21::list<value_type>::sort() {
   if (size_ <= 1) return;
   size_type medium = size_ / 2;
   size_type init_size = size_;
@@ -273,14 +261,14 @@ void list<value_type>::sort() {
 }
 
 template<typename value_type>
-list<value_type>& list<value_type>::operator=(list&& other) {
+s21::list<value_type>& s21::list<value_type>::operator=(list&& other) {
   this->clear();
   this->splice(this->begin(), other);
   return *this;
 }
 
 template<typename value_type>
-void list<value_type>::push_back(const_reference value) {
+void s21::list<value_type>::push_back(const_reference value) {
   Node * new_node = new Node(value);
 
   if (head_ == nullptr) {
@@ -306,9 +294,9 @@ void list<value_type>::push_back(const_reference value) {
 }
 
 template<typename value_type>
-void list<value_type>::pop_back() {
+void s21::list<value_type>::pop_back() {
   if (this->empty()) {
-    throw std::out_of_range("ERR: operation not defined for empty list!");
+    throw std::out_of_range("operation not defined for empty list!");
   }
 
   if (tail_ == head_) {
@@ -328,7 +316,7 @@ void list<value_type>::pop_back() {
 }
 
 template<typename value_type>
-void list<value_type>::push_front(const_reference value) {
+void s21::list<value_type>::push_front(const_reference value) {
   Node *new_node = new Node(value);
   if (head_ == nullptr) {
     head_ = new_node;
@@ -352,9 +340,9 @@ void list<value_type>::push_front(const_reference value) {
 }
 
 template<typename value_type>
-void list<value_type>::pop_front() {
+void s21::list<value_type>::pop_front() {
   if (this->empty()) {
-    throw std::out_of_range("ERR: operation not defined for empty list!");
+    throw std::out_of_range("operation not defined for empty list!");
   }
   if (head_ == tail_) {
     delete head_;
@@ -375,7 +363,7 @@ void list<value_type>::pop_front() {
 }
 
 template<typename value_type>
-typename list<value_type>::iterator list<value_type>::insert(iterator pos, const_reference value) {
+typename s21::list<value_type>::iterator s21::list<value_type>::insert(iterator pos, const_reference value) {
   if (this->empty()) {
     this->push_back(value);
     return this->begin();
@@ -406,14 +394,14 @@ typename list<value_type>::iterator list<value_type>::insert(iterator pos, const
 }
 
 template<typename value_type>
-typename list<value_type>::iterator list<value_type>::erase(iterator pos) {
+typename s21::list<value_type>::iterator s21::list<value_type>::erase(iterator pos) {
   // Return:
   // - Iterator following the last removed element. 
   // - If pos refers to the last element, then the end() iterator is returned.
   // - If last == end() prior to removal, then the updated end() iterator is returned.
   
   if (this->empty()) {
-    throw std::out_of_range("ERR: operation not defined for empty list!");
+    throw std::out_of_range("operation not defined for empty list!");
   }
 
   if (size_ == 1) {
@@ -447,86 +435,85 @@ typename list<value_type>::iterator list<value_type>::erase(iterator pos) {
 }
 
 template<typename value_type>
-void list<value_type>::clear() noexcept {
+void s21::list<value_type>::clear() noexcept {
   if (!this->empty()) {
-    std::size_t list_size = size_;
-    for (list<value_type>::size_type i = 0; i < list_size; ++i) {
+    while(!this->empty()) {
       this->pop_back();
     }
   }
 }
 
 template<typename value_type>
-bool list<value_type>::empty() const noexcept {
+bool s21::list<value_type>::empty() const noexcept {
   return (size_) ? false : true;
 }
 
 template<typename value_type>
-typename list<value_type>::size_type list<value_type>::size() const noexcept {
+typename s21::list<value_type>::size_type s21::list<value_type>::size() const noexcept {
   return size_;
 }
 
 template<typename value_type>
-typename list<value_type>::size_type list<value_type>::max_size() const noexcept {
+typename s21::list<value_type>::size_type s21::list<value_type>::max_size() const noexcept {
   size_type size = (std::numeric_limits<size_type>::max() / sizeof(list<value_type>::Node)) / 2;
   return size;
 }
 
 template<typename value_type>
-typename list<value_type>::const_reference list<value_type>::front() const {
+typename s21::list<value_type>::const_reference s21::list<value_type>::front() const {
   if (this->empty()) {
-    throw std::out_of_range("ERR: operation not defined for empty list!");
+    throw std::out_of_range("operation not defined for empty list!");
   }
   return head_->value_;
 }
 
 template<typename value_type>
-typename list<value_type>::reference list<value_type>::front() {
+typename s21::list<value_type>::reference s21::list<value_type>::front() {
   if (this->empty()) {
-    throw std::out_of_range("ERR: operation not defined for empty list!");
+    throw std::out_of_range("operation not defined for empty list!");
   }
   return head_->value_;
 }
 
 template<typename value_type>
-typename list<value_type>::const_reference list<value_type>::back() const {
+typename s21::list<value_type>::const_reference s21::list<value_type>::back() const {
   if (this->empty()) {
-    throw std::out_of_range("ERR: operation not defined for empty list!");
+    throw std::out_of_range("operation not defined for empty list!");
   }
   return tail_->value_;
 }
 
 template<typename value_type>
-typename list<value_type>::reference list<value_type>::back() {
+typename s21::list<value_type>::reference s21::list<value_type>::back() {
   if (this->empty()) {
-    throw std::out_of_range("ERR: operation not defined for empty list!");
+    throw std::out_of_range("operation not defined for empty list!");
   }
   return tail_->value_;
 }
 
 template<typename value_type>
-typename list<value_type>::iterator list<value_type>::begin() {
+typename s21::list<value_type>::iterator s21::list<value_type>::begin() {
   return iterator(base_node_->next_);
 }
 
 template<typename value_type>
-typename list<value_type>::const_iterator list<value_type>::begin() const {
+typename s21::list<value_type>::const_iterator s21::list<value_type>::begin() const {
   return iterator(base_node_->next_);
 }
 
 template<typename value_type>
-typename list<value_type>::iterator list<value_type>::end() {
+typename s21::list<value_type>::iterator s21::list<value_type>::end() {
   return iterator(base_node_);
 }
 
 template<typename value_type>
-typename list<value_type>::const_iterator list<value_type>::end() const {
+typename s21::list<value_type>::const_iterator s21::list<value_type>::end() const {
   return iterator(base_node_);
 }
 
 template<typename value_type>
 template<class... Args>
-void list<value_type>::insert_many_back(Args&&... args) {
+void s21::list<value_type>::insert_many_back(Args&&... args) {
   for (auto arg : {args...}) {
     this->push_back(arg);
   }
@@ -534,7 +521,7 @@ void list<value_type>::insert_many_back(Args&&... args) {
 
 template<typename value_type>
 template<class... Args>
-void list<value_type>::insert_many_front(Args&&... args) {
+void s21::list<value_type>::insert_many_front(Args&&... args) {
   for (auto arg : {args...}) {
     this->push_front(arg);
   }
@@ -542,7 +529,7 @@ void list<value_type>::insert_many_front(Args&&... args) {
 
 template<typename value_type>
 template<class... Args>
-typename list<value_type>::iterator list<value_type>::insert_many(const_iterator pos, Args&&... args) {
+typename s21::list<value_type>::iterator s21::list<value_type>::insert_many(const_iterator pos, Args&&... args) {
   // Inserts value before pos.
   // return: Iterator pointing to the inserted value.
   for (auto arg : {args...}) {
@@ -552,7 +539,7 @@ typename list<value_type>::iterator list<value_type>::insert_many(const_iterator
 }
 
 template<typename value_type>
-void list<value_type>::print_list() {
+void s21::list<value_type>::print_list() {
   for (const_iterator iter = this->begin(); iter != this->end(); ++iter) {
     std::cout << *iter << " "; 
   }
@@ -560,7 +547,7 @@ void list<value_type>::print_list() {
 }
 
 template<typename value_type>
-void list<value_type>::print_reverse_list() {
+void s21::list<value_type>::print_reverse_list() {
   for (const_iterator iter = --this->end(); iter != this->end(); --iter) {
     std::cout << *iter << " "; 
   }
@@ -571,48 +558,48 @@ void list<value_type>::print_reverse_list() {
 
 // Constructors
 template<typename value_type>
-list<value_type>::iterator::ListIterator() : ptr_(nullptr) {};
+s21::list<value_type>::iterator::ListIterator() : ptr_(nullptr) {};
 
 template<typename value_type>
-list<value_type>::iterator::ListIterator(BaseNode *ptr) : ptr_(ptr) {};
+s21::list<value_type>::iterator::ListIterator(BaseNode *ptr) : ptr_(ptr) {};
 
 // Operators
 template<typename value_type>
-typename list<value_type>::ListIterator& list<value_type>::ListIterator::operator++() {
+typename s21::list<value_type>::ListIterator& s21::list<value_type>::ListIterator::operator++() {
   this->ptr_ = ptr_->next_;
   return *this;
 }
 
 template<typename value_type>
-typename list<value_type>::ListIterator& list<value_type>::ListIterator::operator++(int) {
+typename s21::list<value_type>::ListIterator& s21::list<value_type>::ListIterator::operator++(int) {
   this->ptr_ = ptr_->next_;
   return *this;
 }
 
 template<typename value_type>
-typename list<value_type>::ListIterator& list<value_type>::ListIterator::operator--() {
+typename s21::list<value_type>::ListIterator& s21::list<value_type>::ListIterator::operator--() {
   this->ptr_ = ptr_->prev_;
   return *this;
 }
 
 template<typename value_type>
-typename list<value_type>::ListIterator& list<value_type>::ListIterator::operator--(int) {
+typename s21::list<value_type>::ListIterator& s21::list<value_type>::ListIterator::operator--(int) {
   this->ptr_ = ptr_->prev_;
   return *this;
 }
 
 template<typename value_type>
-typename list<value_type>::reference list<value_type>::iterator::operator*() {
+typename s21::list<value_type>::reference s21::list<value_type>::iterator::operator*() {
   return static_cast<Node*>(ptr_)->value_;
 }
 
 template<typename value_type>
-bool list<value_type>::ListIterator::operator==(const list<value_type>::ListIterator& other) {
+bool s21::list<value_type>::ListIterator::operator==(const list<value_type>::ListIterator& other) {
   return this->ptr_ == other.ptr_;
 }
 
 template<typename value_type>
-bool list<value_type>::ListIterator::operator!=(const list<value_type>::ListIterator& other) {
+bool s21::list<value_type>::ListIterator::operator!=(const list<value_type>::ListIterator& other) {
   return !(*this == other);
 }
 

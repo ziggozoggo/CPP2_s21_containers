@@ -81,8 +81,8 @@ namespace s21 {
 
     private:    
       struct Node : BaseNode {
-        Node();
-        Node(const_reference value);
+        Node() : value_(value_type()) {}
+        Node(const_reference value) : value_(value) {}
         value_type value_;
       };
       
