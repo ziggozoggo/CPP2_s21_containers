@@ -393,12 +393,15 @@ typename s21::list<value_type>::iterator s21::list<value_type>::insert(iterator 
   return iterator(new_node);
 }
 
+
+/**
+ * @brief Удаления значения, на которое указывает итератора
+ * @param pos Итератор
+ * @return Итератор следующего элемента; если очищается последний - итератор на end(); 
+ */
+
 template<typename value_type>
 typename s21::list<value_type>::iterator s21::list<value_type>::erase(iterator pos) {
-  // Return:
-  // - Iterator following the last removed element. 
-  // - If pos refers to the last element, then the end() iterator is returned.
-  // - If last == end() prior to removal, then the updated end() iterator is returned.
   
   if (this->empty()) {
     throw std::out_of_range("operation not defined for empty list!");
@@ -445,7 +448,7 @@ void s21::list<value_type>::clear() noexcept {
 
 template<typename value_type>
 bool s21::list<value_type>::empty() const noexcept {
-  return (size_) ? false : true;
+  return (size_ == 0) ? true : false;
 }
 
 template<typename value_type>
