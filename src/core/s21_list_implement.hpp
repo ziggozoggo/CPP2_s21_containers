@@ -122,8 +122,8 @@ void s21::list<value_type>::merge_data(const_iterator& this_iterator, const_iter
   if (*this_iterator <= *other_iterator) {
     ++this_iterator;
   } else {
-    Node *other_node = static_cast<Node*>(other_iterator.get_ptr());
-    Node *current_node = static_cast<Node*>(this_iterator.get_ptr());
+    Node<value_type> *other_node = static_cast<Node<value_type>*>(other_iterator.get_ptr());
+    Node<value_type> *current_node = static_cast<Node<value_type>*>(this_iterator.get_ptr());
     ++other_iterator;
 
     other_node->prev_ = current_node->prev_;
@@ -145,7 +145,7 @@ void s21::list<value_type>::merge_tail(list& other, const_iterator& other_iterat
 
   if (this->head_ == nullptr) {
     this->base_node_->next_ = other_node;
-    this->head_ = static_cast<Node*>(other_node);
+    this->head_ = static_cast<Node<value_type>*>(other_node);
     other_node->prev_ = base_node_;
   } else {
     this->tail_->next_ = other_node;
@@ -170,10 +170,10 @@ void s21::list<value_type>::reverse() noexcept {
   head_->prev_ = nullptr;
   tail_->next_ = nullptr;
 
-  Node *curr = head_;
+  Node<value_type> *curr = head_;
 
   while (curr != nullptr) {
-    Node *temp = static_cast<Node*>(curr->next_);
+    Node<value_type> *temp = static_cast<Node<value_type>*>(curr->next_);
     curr->next_ = curr->prev_;
     if (temp != nullptr) {
       curr->prev_ = temp;
@@ -219,7 +219,7 @@ void s21::list<value_type>::splice(const_iterator pos, list& other) {
   current_node->prev_->next_ = other.head_;
   current_node->prev_ = other.tail_;
 
-  if (this->head_ == static_cast<Node*>(current_node) || 
+  if (this->head_ == static_cast<Node<value_type>*>(current_node) || 
       this->head_ == nullptr) {
     this->head_ = other.head_;
   }
@@ -278,7 +278,7 @@ s21::list<value_type>& s21::list<value_type>::operator=(list&& other) {
 
 template<typename value_type>
 void s21::list<value_type>::push_back(const_reference value) {
-  Node * new_node = new Node(value);
+  Node<value_type> * new_node = new Node<value_type>(value);
 
   if (head_ == nullptr) {
     head_ = new_node;
@@ -315,8 +315,8 @@ void s21::list<value_type>::pop_back() {
     tail_ = nullptr;
     head_ = nullptr;
   } else {
-    Node *current_tail = tail_;
-    tail_ = static_cast<Node*>(current_tail->prev_);
+    Node<value_type> *current_tail = tail_;
+    tail_ = static_cast<Node<value_type>*>(current_tail->prev_);
     tail_->next_ = base_node_;
     base_node_->prev_ = tail_;
     delete current_tail; 
@@ -326,7 +326,7 @@ void s21::list<value_type>::pop_back() {
 
 template<typename value_type>
 void s21::list<value_type>::push_front(const_reference value) {
-  Node *new_node = new Node(value);
+  Node<value_type> *new_node = new Node<value_type>(value);
   if (head_ == nullptr) {
     head_ = new_node;
     tail_ = new_node;
@@ -360,8 +360,8 @@ void s21::list<value_type>::pop_front() {
     tail_ = nullptr;
     head_ = nullptr;
   } else {
-    Node *current_head = head_;
-    head_ = static_cast<Node*>(current_head->next_);
+    Node<value_type> *current_head = head_;
+    head_ = static_cast<Node<value_type>*>(current_head->next_);
     base_node_->next_ = head_;
     if (head_ == tail_) {
       head_->prev_ = base_node_;
@@ -388,8 +388,8 @@ typename s21::list<value_type>::iterator s21::list<value_type>::insert(iterator 
     return this->begin();
   }
 
-  Node *current_node = static_cast<Node*>(pos.get_ptr());
-  Node *new_node = new Node(value);
+  Node<value_type> *current_node = static_cast<Node<value_type>*>(pos.get_ptr());
+  Node<value_type> *new_node = new Node<value_type>(value);
 
   new_node->next_ = current_node;
   new_node->prev_ = current_node->prev_;
@@ -431,7 +431,7 @@ typename s21::list<value_type>::iterator s21::list<value_type>::erase(iterator p
     return this->end();
   }
   
-  Node *current_node = static_cast<Node*>(pos.get_ptr());
+  Node<value_type> *current_node = static_cast<Node<value_type>*>(pos.get_ptr());
   ++pos;
 
   BaseNode *prev_node = current_node->prev_;
@@ -465,7 +465,7 @@ typename s21::list<value_type>::size_type s21::list<value_type>::size() const no
 
 template<typename value_type>
 typename s21::list<value_type>::size_type s21::list<value_type>::max_size() const noexcept {
-  size_type size = (std::numeric_limits<size_type>::max() / sizeof(list<value_type>::Node)) / 2;
+  size_type size = (std::numeric_limits<size_type>::max() / sizeof(Node<value_type>)) / 2;
   return size;
 }
 
@@ -566,51 +566,16 @@ void s21::list<value_type>::print_reverse_list() {
 
 /* ITERATORS */
 
-// Constructors
-template<typename value_type>
-s21::list<value_type>::iterator::ListIterator() : ptr_(nullptr) {};
 
-template<typename value_type>
-s21::list<value_type>::iterator::ListIterator(BaseNode *ptr) : ptr_(ptr) {};
 
-// Operators
-template<typename value_type>
-typename s21::list<value_type>::ListIterator& s21::list<value_type>::ListIterator::operator++() {
-  this->ptr_ = ptr_->next_;
-  return *this;
-}
+// template<typename value_type>
+// bool s21::list<value_type>::ListIterator::operator==(const list<value_type>::ListIterator& other) {
+//   return this->ptr_ == other.ptr_;
+// }
 
-template<typename value_type>
-typename s21::list<value_type>::ListIterator& s21::list<value_type>::ListIterator::operator++(int) {
-  this->ptr_ = ptr_->next_;
-  return *this;
-}
-
-template<typename value_type>
-typename s21::list<value_type>::ListIterator& s21::list<value_type>::ListIterator::operator--() {
-  this->ptr_ = ptr_->prev_;
-  return *this;
-}
-
-template<typename value_type>
-typename s21::list<value_type>::ListIterator& s21::list<value_type>::ListIterator::operator--(int) {
-  this->ptr_ = ptr_->prev_;
-  return *this;
-}
-
-template<typename value_type>
-typename s21::list<value_type>::reference s21::list<value_type>::iterator::operator*() {
-  return static_cast<Node*>(ptr_)->value_;
-}
-
-template<typename value_type>
-bool s21::list<value_type>::ListIterator::operator==(const list<value_type>::ListIterator& other) {
-  return this->ptr_ == other.ptr_;
-}
-
-template<typename value_type>
-bool s21::list<value_type>::ListIterator::operator!=(const list<value_type>::ListIterator& other) {
-  return !(*this == other);
-}
+// template<typename value_type>
+// bool s21::list<value_type>::ListIterator::operator!=(const list<value_type>::ListIterator& other) {
+//   return !(*this == other);
+// }
 
 #endif //!SRC_CORE_S21_LIST_IMPLEMENT_H_
