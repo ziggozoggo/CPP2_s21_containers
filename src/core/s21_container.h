@@ -58,9 +58,9 @@ public:
 
   virtual ~IContainer() {}
 
-  virtual size_type size() const = 0;
-  virtual size_type max_size() const = 0;
-  virtual bool empty() const = 0;
+  virtual size_type size() const noexcept = 0;
+  virtual size_type max_size() const noexcept = 0;
+  virtual bool empty() const noexcept = 0;
 
   virtual void clear() = 0;
 
@@ -68,8 +68,6 @@ public:
 
   virtual IContainer<T>& operator=(const IContainer<T>& other) = 0;
   virtual IContainer<T>& operator=(IContainer<T>&& other) noexcept = 0;
-
-  virtual IContainer& test() = 0;
 };
 
 }
