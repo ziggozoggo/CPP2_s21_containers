@@ -91,6 +91,9 @@ namespace s21 {
       Node *head_;
       Node *tail_;
 
+      void merge_data(const_iterator& this_iterator, const_iterator& other_iterator);
+      void merge_tail(list& other, const_iterator& other_iterator);
+
     // Iterators stuff
     public:
       class ListIterator {
