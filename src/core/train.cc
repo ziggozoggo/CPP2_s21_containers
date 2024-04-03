@@ -5,23 +5,23 @@ int main() {
 
     // std::cout << btree.root->value;
 
-    btree.insert(10);
-    btree.insert(15);
-    btree.insert(8);
+    btree.insert(1);
+    btree.insert(2);
     btree.insert(3);
-    btree.insert(9);
+    btree.insert(4);
+    btree.insert(5);
+    btree.insert(6);
 
     // s21::Node* temp = btree.search(10);
 
     btree.printTree();
     std::cout << std::endl;
 
-    btree.deleteNode(9);
-    btree.deleteNode(15);
-    btree.deleteNode(8);
+    btree.deleteNode(2);
 
     btree.printTree();
     std::cout << std::endl;
+
 
 
     

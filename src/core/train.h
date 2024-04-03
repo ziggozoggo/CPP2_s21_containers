@@ -1,10 +1,12 @@
 #include <iostream>
+#include <algorithm>
 
 namespace s21 {
   struct Node {
     int value;
     Node* left;
     Node* right;
+    int height = 0;
 
     Node(): left(nullptr), right(nullptr) {}
     Node(int val): value(val), left(nullptr), right(nullptr) {}
@@ -37,7 +39,7 @@ namespace s21 {
     }
 
     void deleteNode(int val) {
-      deleteNode(root, val);
+      root = deleteNode(root, val);
     }
 
   private:
@@ -52,6 +54,8 @@ namespace s21 {
       } else if (val > node->value) {
         node->right = insert(node->right, val);
       }
+      updateHeight(node);
+      balance(node);
       return node;
     }
 
@@ -80,12 +84,34 @@ namespace s21 {
           Node* temp = (node->left == nullptr) ? node->right : node->left;
           delete node;
           return temp;
+        } else {
+          Node* maxInLeft = getMax(node->left);
+          node->value = maxInLeft->value;
+          node->left = deleteNode(node->left, node->value);
         }
+      }
+      if (!isEmpty(node)) {
+        updateHeight(node);
+        balance(node);
       }
       return node;
     }
 
-     void deleteTree(Node* node) {
+    Node* getMin(Node* node) {
+      if (isEmpty(node)) return nullptr;
+
+      if (node->left == nullptr) return node;
+      return getMin(node->left);
+    }
+
+    Node* getMax(Node* node) {
+      if (isEmpty(node)) return nullptr;
+
+      if (node->right == nullptr) return node;
+      return getMax(node->right);
+    }
+
+    void deleteTree(Node* node) {
       if (isEmpty(node)) return;
 
       deleteTree(node->left);
@@ -93,6 +119,56 @@ namespace s21 {
       delete node;
     }
 
+    int getHeight(Node* node) {
+      return isEmpty(node) ? -1 : node->height;
+    }
+
+    void updateHeight(Node* node) {
+      node->height = std::max(getHeight(node->left), getHeight(node->right)) + 1;
+    }
+
+    int getBalance(Node* node) {
+      return isEmpty(node) ? 0 : getHeight(node->right) - getHeight(node->left);
+    }
+
+    void swap(Node* a, Node* b) {
+      int temp = a->value;
+      a->value = b->value;
+      b->value = temp;
+    }
+
+    void rightRotate(Node* node) {
+      swap(node, node->left);
+      Node* temp = node->right;
+      node->right = node->left;
+      node->left = node->right->left;
+      node->right->left = node->right->right;
+      node->right->right = temp;
+      updateHeight(node->right);
+      updateHeight(node);
+    }
+
+    void leftRotate(Node* node) {
+      swap(node, node->right);
+      Node* temp = node->left;
+      node->left = node->right;
+      node->right = node->left->right;
+      node->left->right = node->left->left;
+      node->left->left = temp;
+      updateHeight(node->left);
+      updateHeight(node);
+    }
+
+    void balance(Node* node) {
+      int balance = getBalance(node);
+      if (balance == -2) {
+        if (getBalance(node->left) == 1) leftRotate(node->left);
+        rightRotate(node);
+      } else if (balance == 2) {
+        if (getBalance(node->right) == -1) rightRotate(node->right);
+        leftRotate(node);
+      }
+    }
   };
 }
 
