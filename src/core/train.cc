@@ -1,20 +1,31 @@
 #include "train.h"
 
 int main() {
-    Node* bst = new Node(5);
-    BST btree;
+    s21::BST btree;
 
-    bst->insert(10);
-    bst->insert(15);
-    bst->insert(3);
-    bst->insert(8);
+    // std::cout << btree.root->value;
 
-    // bst->deleteNode(8);
+    btree.insert(10);
+    btree.insert(15);
+    btree.insert(8);
+    btree.insert(3);
+    btree.insert(9);
 
-    bst->printTree();
+    // s21::Node* temp = btree.search(10);
+
+    btree.printTree();
     std::cout << std::endl;
 
-    bst->deleteTree();
+    btree.deleteNode(9);
+    btree.deleteNode(15);
+    btree.deleteNode(8);
+
+    btree.printTree();
+    std::cout << std::endl;
+
+
+    
+
 
     return 0;
 }
