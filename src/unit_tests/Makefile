@@ -62,7 +62,7 @@ gcov_flags:
 debug: clean debug_flags $(TARGET)
 
 debug_flags:
-	$(eval CFLAGS += -g)
+	$(eval CFLAGS += -g -DDEBUG)
 
 $(TARGET): $(OBJ)
 	$(CC) $(CFLAGS) $(OBJ) $(S21_CONTAINERS_LIB) -o $@ $(LIBS)
