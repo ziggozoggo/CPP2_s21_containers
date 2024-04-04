@@ -1,33 +1,44 @@
+#ifndef TRAIN_H_
+#define TRAIN_H_
+
 #include <iostream>
 #include <algorithm>
 
 namespace s21 {
-  struct Node {
-    int value;
-    Node* left;
-    Node* right;
-    int height = 0;
-
-    Node(): left(nullptr), right(nullptr) {}
-    Node(int val): value(val), left(nullptr), right(nullptr) {}
-  };
-
   class BST {
   private:
+    enum class NodeColor {
+      BLACK,
+      RED
+    };
+
+    struct Node {
+      int value;
+      Node* left;
+      Node* right;
+      Node* parent;
+      NodeColor color = NodeColor::BLACK;
+
+      Node(): left(nullptr), right(nullptr), parent(nullptr) {}
+      Node(int val, Node* nil_): value(val), left(nil_), right(nil_), parent(nil_), color(NodeColor::RED) {}
+    };
+
+    Node* nil = new Node();
     Node* root;
-
+   
   public:
-    BST(): root(nullptr) {}
-    BST(int val): root(new Node(val)) {}
+    BST(): root(nil) {}
+    BST(int val): root(new Node(val, nil)) {}
 
-    ~BST() {
+    ~BST() {  
       deleteTree(root);
+      delete nil;
     }
 
     bool isEmpty() { return root == nullptr; }
 
     void insert(int val) {
-      root = insert(root, val);
+      insertNode(val);
     }
 
     Node* search(int val) {
@@ -43,20 +54,62 @@ namespace s21 {
     }
 
   private:
-    bool isEmpty(Node* node) { return node == nullptr; }
+    bool isEmpty(Node* node) { return node == nil; }
 
-    Node* insert(Node* node, int val) {
-      if (isEmpty(node)) {
-        return new Node(val);
+    void insertNode(int val) {
+      Node* currentNode = root;
+      Node* parent = nil;
+      while (!isEmpty(currentNode)) {
+        parent = currentNode;
+        (val < currentNode->value) ? currentNode = currentNode->left
+        : currentNode = currentNode->right;
       }
-      if (val < node->value) {
-        node->left = insert(node->left, val);
-      } else if (val > node->value) {
-        node->right = insert(node->right, val);
+      Node* newNode = new Node(val, nil);
+      newNode->parent = parent;
+      if (parent == nil) root = newNode;
+      else if (val < parent->value) parent->left = newNode;
+      else parent->right = newNode;
+      balance(newNode);
+    }
+
+    void balance(Node* newNode) {
+      Node* uncle;
+      while (newNode->parent->color == NodeColor::RED) {
+        if (newNode->parent == newNode->parent->parent->left) {
+          uncle = newNode->parent->parent->right;
+          if (uncle->color == NodeColor::RED) {
+            newNode->parent->color = NodeColor::BLACK;
+            uncle->color = NodeColor::BLACK;
+            newNode->parent->parent->color = NodeColor::RED;
+            newNode = newNode->parent->parent;
+          } else {
+            if (newNode == newNode->parent->right) {
+              // newNode = newNode->parent;
+              leftRotate(newNode->parent);
+            }
+            newNode->parent->color = NodeColor::BLACK;
+            newNode->parent->parent->color = NodeColor::RED;
+            rightRotate(newNode->parent->parent);
+          }
+        } else {
+          uncle = newNode->parent->parent->left;
+          if (uncle->color == NodeColor::RED) {
+            newNode->parent->color = NodeColor::BLACK;
+            uncle->color = NodeColor::BLACK;
+            newNode->parent->parent->color = NodeColor::RED;
+            newNode = newNode->parent->parent;
+          } else {
+            if (newNode == newNode->parent->left) {
+              // newNode = newNode->parent;
+              rightRotate(newNode->parent);
+            }
+            newNode->parent->color = NodeColor::BLACK;
+            newNode->parent->parent->color = NodeColor::RED;
+            leftRotate(newNode->parent->parent);
+          }
+        }
       }
-      updateHeight(node);
-      balance(node);
-      return node;
+      root->color = NodeColor::BLACK;
     }
 
     Node* search(Node* node, int val) {
@@ -91,8 +144,8 @@ namespace s21 {
         }
       }
       if (!isEmpty(node)) {
-        updateHeight(node);
-        balance(node);
+        // updateHeight(node);
+        // balance(node);
       }
       return node;
     }
@@ -119,20 +172,12 @@ namespace s21 {
       delete node;
     }
 
-    int getHeight(Node* node) {
-      return isEmpty(node) ? -1 : node->height;
-    }
-
-    void updateHeight(Node* node) {
-      node->height = std::max(getHeight(node->left), getHeight(node->right)) + 1;
-    }
-
-    int getBalance(Node* node) {
-      return isEmpty(node) ? 0 : getHeight(node->right) - getHeight(node->left);
-    }
-
     void swap(Node* a, Node* b) {
       int temp = a->value;
+      NodeColor tempColor = a->color;
+
+      a->color = b->color;
+      b->color = tempColor;
       a->value = b->value;
       b->value = temp;
     }
@@ -144,8 +189,9 @@ namespace s21 {
       node->left = node->right->left;
       node->right->left = node->right->right;
       node->right->right = temp;
-      updateHeight(node->right);
-      updateHeight(node);
+      
+      node->left->parent = node;
+      if (!isEmpty(node->right->right)) node->right->right->parent = node->right;
     }
 
     void leftRotate(Node* node) {
@@ -155,20 +201,13 @@ namespace s21 {
       node->right = node->left->right;
       node->left->right = node->left->left;
       node->left->left = temp;
-      updateHeight(node->left);
-      updateHeight(node);
+      
+      node->right->parent = node;
+      if (!isEmpty(node->left->left)) node->left->left->parent = node->left;
     }
 
-    void balance(Node* node) {
-      int balance = getBalance(node);
-      if (balance == -2) {
-        if (getBalance(node->left) == 1) leftRotate(node->left);
-        rightRotate(node);
-      } else if (balance == 2) {
-        if (getBalance(node->right) == -1) rightRotate(node->right);
-        leftRotate(node);
-      }
-    }
+
   };
 }
 
+#endif //TRAIN_H
