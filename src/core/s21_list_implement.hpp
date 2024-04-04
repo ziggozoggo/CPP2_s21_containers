@@ -9,7 +9,7 @@
 
 // Constructors & Destructor
 template<typename value_type>
-s21::list<value_type>::list() : size_(0), base_node_(new BaseNode()), head_(nullptr), tail_(nullptr) {
+s21::list<value_type>::list() : size_(0), base_node_(new ListBaseNode()), head_(nullptr), tail_(nullptr) {
   // std::cout << "CREATE CONSTRUCTOR!" << std::endl;
 }
 
@@ -50,7 +50,7 @@ s21::list<value_type>::list(list&& other) {
   other.size_ = 0;
   other.head_ = nullptr;
   other.tail_ = nullptr;
-  other.base_node_ = new BaseNode();
+  other.base_node_ = new ListBaseNode();
 
   // std::cout << "Move constructor!!!!" << std::endl;
 }
@@ -122,8 +122,8 @@ void s21::list<value_type>::merge_data(const_iterator& this_iterator, const_iter
   if (*this_iterator <= *other_iterator) {
     ++this_iterator;
   } else {
-    Node<value_type> *other_node = static_cast<Node<value_type>*>(other_iterator.get_ptr());
-    Node<value_type> *current_node = static_cast<Node<value_type>*>(this_iterator.get_ptr());
+    ListNode<value_type> *other_node = static_cast<ListNode<value_type>*>(other_iterator.get_ptr());
+    ListNode<value_type> *current_node = static_cast<ListNode<value_type>*>(this_iterator.get_ptr());
     ++other_iterator;
 
     other_node->prev_ = current_node->prev_;
@@ -141,11 +141,11 @@ void s21::list<value_type>::merge_data(const_iterator& this_iterator, const_iter
 
 template<typename value_type>
 void s21::list<value_type>::merge_tail(list& other, const_iterator& other_iterator) {
-  BaseNode *other_node = other_iterator.get_ptr();
+  ListBaseNode *other_node = other_iterator.get_ptr();
 
   if (this->head_ == nullptr) {
     this->base_node_->next_ = other_node;
-    this->head_ = static_cast<Node<value_type>*>(other_node);
+    this->head_ = static_cast<ListNode<value_type>*>(other_node);
     other_node->prev_ = base_node_;
   } else {
     this->tail_->next_ = other_node;
@@ -170,10 +170,10 @@ void s21::list<value_type>::reverse() noexcept {
   head_->prev_ = nullptr;
   tail_->next_ = nullptr;
 
-  Node<value_type> *curr = head_;
+  ListNode<value_type> *curr = head_;
 
   while (curr != nullptr) {
-    Node<value_type> *temp = static_cast<Node<value_type>*>(curr->next_);
+    ListNode<value_type> *temp = static_cast<ListNode<value_type>*>(curr->next_);
     curr->next_ = curr->prev_;
     if (temp != nullptr) {
       curr->prev_ = temp;
@@ -212,14 +212,14 @@ template<typename value_type>
 void s21::list<value_type>::splice(const_iterator pos, list& other) {
   if (other.empty()) return;
   
-  BaseNode *current_node = pos.get_ptr();
+  ListBaseNode *current_node = pos.get_ptr();
   
   other.head_->prev_ = current_node->prev_;
   other.tail_->next_ = current_node;
   current_node->prev_->next_ = other.head_;
   current_node->prev_ = other.tail_;
 
-  if (this->head_ == static_cast<Node<value_type>*>(current_node) || 
+  if (this->head_ == static_cast<ListNode<value_type>*>(current_node) || 
       this->head_ == nullptr) {
     this->head_ = other.head_;
   }
@@ -278,7 +278,7 @@ s21::list<value_type>& s21::list<value_type>::operator=(list&& other) {
 
 template<typename value_type>
 void s21::list<value_type>::push_back(const_reference value) {
-  Node<value_type> * new_node = new Node<value_type>(value);
+  ListNode<value_type> * new_node = new ListNode<value_type>(value);
 
   if (head_ == nullptr) {
     head_ = new_node;
@@ -315,8 +315,8 @@ void s21::list<value_type>::pop_back() {
     tail_ = nullptr;
     head_ = nullptr;
   } else {
-    Node<value_type> *current_tail = tail_;
-    tail_ = static_cast<Node<value_type>*>(current_tail->prev_);
+    ListNode<value_type> *current_tail = tail_;
+    tail_ = static_cast<ListNode<value_type>*>(current_tail->prev_);
     tail_->next_ = base_node_;
     base_node_->prev_ = tail_;
     delete current_tail; 
@@ -326,7 +326,7 @@ void s21::list<value_type>::pop_back() {
 
 template<typename value_type>
 void s21::list<value_type>::push_front(const_reference value) {
-  Node<value_type> *new_node = new Node<value_type>(value);
+  ListNode<value_type> *new_node = new ListNode<value_type>(value);
   if (head_ == nullptr) {
     head_ = new_node;
     tail_ = new_node;
@@ -360,8 +360,8 @@ void s21::list<value_type>::pop_front() {
     tail_ = nullptr;
     head_ = nullptr;
   } else {
-    Node<value_type> *current_head = head_;
-    head_ = static_cast<Node<value_type>*>(current_head->next_);
+    ListNode<value_type> *current_head = head_;
+    head_ = static_cast<ListNode<value_type>*>(current_head->next_);
     base_node_->next_ = head_;
     if (head_ == tail_) {
       head_->prev_ = base_node_;
@@ -388,8 +388,8 @@ typename s21::list<value_type>::iterator s21::list<value_type>::insert(iterator 
     return this->begin();
   }
 
-  Node<value_type> *current_node = static_cast<Node<value_type>*>(pos.get_ptr());
-  Node<value_type> *new_node = new Node<value_type>(value);
+  ListNode<value_type> *current_node = static_cast<ListNode<value_type>*>(pos.get_ptr());
+  ListNode<value_type> *new_node = new ListNode<value_type>(value);
 
   new_node->next_ = current_node;
   new_node->prev_ = current_node->prev_;
@@ -431,11 +431,11 @@ typename s21::list<value_type>::iterator s21::list<value_type>::erase(iterator p
     return this->end();
   }
   
-  Node<value_type> *current_node = static_cast<Node<value_type>*>(pos.get_ptr());
+  ListNode<value_type> *current_node = static_cast<ListNode<value_type>*>(pos.get_ptr());
   ++pos;
 
-  BaseNode *prev_node = current_node->prev_;
-  BaseNode *next_node = current_node->next_;
+  ListBaseNode *prev_node = current_node->prev_;
+  ListBaseNode *next_node = current_node->next_;
 
   prev_node->next_ = next_node;
   next_node->prev_ = prev_node;
@@ -465,7 +465,7 @@ typename s21::list<value_type>::size_type s21::list<value_type>::size() const no
 
 template<typename value_type>
 typename s21::list<value_type>::size_type s21::list<value_type>::max_size() const noexcept {
-  size_type size = (std::numeric_limits<size_type>::max() / sizeof(Node<value_type>)) / 2;
+  size_type size = (std::numeric_limits<size_type>::max() / sizeof(ListNode<value_type>)) / 2;
   return size;
 }
 

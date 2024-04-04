@@ -1,7 +1,7 @@
-#pragma once
+#ifndef SRC_CORE_S21_LIST_ITERATOR_H_
+#define SRC_CORE_S21_LIST_ITERATOR_H_
 
-#include "s21_list_base_node.h"
-#include "s21_list.h"
+#include "s21_list_node.h"
 
 namespace s21 {
   template<typename T>
@@ -12,9 +12,9 @@ namespace s21 {
     // *iter
     public:
       ListIterator() : ptr_(nullptr) {}
-      ListIterator(BaseNode *ptr) : ptr_(ptr) {}
+      ListIterator(ListBaseNode *ptr) : ptr_(ptr) {}
 
-      BaseNode* get_ptr() { return ptr_;}
+      ListBaseNode* get_ptr() { return ptr_;}
 
       ListIterator& operator++() {
         this->ptr_ = ptr_->next_;
@@ -45,11 +45,11 @@ namespace s21 {
       }
 
       T& operator*() {
-        return static_cast<Node<T>*>(ptr_)->value_;
+        return static_cast<ListNode<T>*>(ptr_)->value_;
       } 
 
     private:
-      BaseNode *ptr_ = nullptr;
+      ListBaseNode *ptr_ = nullptr;
   };
 
   template<typename T>
@@ -61,3 +61,5 @@ namespace s21 {
       }
   };
 }
+
+#endif //!SRC_CORE_S21_LIST_ITERATOR_H_
