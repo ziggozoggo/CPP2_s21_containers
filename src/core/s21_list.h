@@ -7,25 +7,23 @@
 #include <iostream>
 #include <cstddef>
 
-namespace s21 {
-  struct BaseNode {
-    BaseNode() : next_(this), prev_(this) {}
-    BaseNode *next_;
-    BaseNode *prev_;
-  };
 
+#include "s21_list_iterator.h"
+#include "s21_list_node.h"
+
+namespace s21 {
   template<typename T>
   class list {
     public:
-      class ListIterator;
-      class ListConstIterator;
+      //class ListIterator;
+      //class ListConstIterator;
       
       using size_type = std::size_t;
       using value_type = T;
       using reference = T&;
       using const_reference = const T&;
-      using iterator = ListIterator;
-      using const_iterator = ListConstIterator;
+      using iterator = ListIterator<value_type>;
+      using const_iterator = ListConstIterator<value_type>;
 
       list();
       list(size_type count);
@@ -79,63 +77,15 @@ namespace s21 {
       template<class... Args>
       iterator insert_many(const_iterator pos, Args&&... args);
 
-    private:    
-      struct Node : BaseNode {
-        Node() : value_(value_type()) {}
-        Node(const_reference value) : value_(value) {}
-        value_type value_;
-      };
-      
+    private: 
+
       size_type size_;
-      BaseNode *base_node_;
-      Node *head_;
-      Node *tail_;
+      ListBaseNode *base_node_;
+      ListNode<value_type> *head_;
+      ListNode<value_type> *tail_;
 
       void merge_data(const_iterator& this_iterator, const_iterator& other_iterator);
       void merge_tail(list& other, const_iterator& other_iterator);
-
-    // Iterators stuff
-    public:
-      class ListIterator {
-        // BidirectionalIterator
-        // ++iter; iter++
-        // --iter; iter--
-        // *iter
-        public:
-          ListIterator();
-          ListIterator(BaseNode *ptr);
-
-
-          ListIterator& operator ++();
-          ListIterator& operator ++(int);
-          ListIterator& operator --();
-          ListIterator& operator --(int);
-
-          reference operator*();
-          bool operator ==(const ListIterator& other);
-          bool operator !=(const ListIterator& other);
-
-          BaseNode* get_ptr() { return ptr_;}
-        
-        private:
-          BaseNode *ptr_ = nullptr;
-      };
-
-      class ListConstIterator : public ListIterator {
-        public:
-          ListConstIterator(ListIterator other) : ListIterator(other) {}
-          const_reference operator*() {
-            return ListIterator::operator*();
-          }
-      };
-      
-      // class ListConstIterator : public ListIterator<value_type> {
-      //   public:
-      //     ListConstIterator(ListIterator<value_type> other) : ListIterator<value_type>(other) {}
-      //     const_reference operator*() {
-      //       return ListIterator<value_type>::operator*();
-      //     }
-      // };
   };
 }
 
