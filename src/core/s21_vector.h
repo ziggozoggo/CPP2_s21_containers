@@ -38,7 +38,7 @@ public:
 public:
   vector() noexcept;
   vector(size_type n);
-  // vector(std::initializer_list<value_type> const &items);
+  vector(std::initializer_list<value_type> const &items);
   // vector(const vector &v);
   // vector(vector &&v);
   ~vector();
@@ -93,6 +93,18 @@ vector<T>::vector(size_type n)
   #ifdef DEBUG
     printDebugInfo();
   #endif
+}
+
+template<typename T>
+vector<T>::vector(std::initializer_list<value_type> const &items)
+  : size_(items.size())
+  , capacity_(items.size())
+  , data_(new T[capacity_]) {
+  #ifdef DEBUG
+    printDebugInfo();
+  #endif
+
+  std::copy(items.begin(), items.end(), data_);
 }
 
 template<typename T>
