@@ -561,6 +561,78 @@ TESTS_CONST_AT(s21Vector)
 
 // --------------------------------------
 
+// --------------------------------------
+
+template<typename T>
+void OperatorAtTest(const std::initializer_list<T>& items) {
+  s21::vector<T> actual(items);
+  std::vector<T> expected(items);
+
+  checkBasicField(actual, expected);
+
+  for (std::size_t i = 0; i < actual.size(); i++) {
+    EXPECT_EQ(actual[i], expected[i]);
+  }
+}
+
+#define TESTS_OPEARTOR_AT(suiteName) \
+TEST(suiteName, uShortOperatorAt) { OperatorAtTest<unsigned short>(DEF_INT_VALS); } \
+TEST(suiteName, intOperatorAt) { OperatorAtTest<int>(DEF_INT_VALS); } \
+TEST(suiteName, doubleOperatorAt) { OperatorAtTest<double>(DEF_DBL_VALS); } \
+TEST(suiteName, MockClassOperatorAt) { OperatorAtTest<MockClass>(DEF_MOCK_VALS); } \
+TEST(suiteName, stringOperatorAt) { OperatorAtTest<std::string>(DEF_STR_VALS); } \
+
+TESTS_OPEARTOR_AT(s21Vector)
+
+// --------------------------------------
+
+template<typename T>
+void OperatorAtChangeTest(const std::initializer_list<T>& items) {
+  s21::vector<T> actual(items);
+  std::vector<T> expected(items);
+
+  checkBasicField(actual, expected);
+
+  for (std::size_t i = 0; i < actual.size(); i++) {
+    actual[i] = actual[i] * 2;
+    expected[i] = expected[i] * 2;
+    EXPECT_EQ(actual[i], expected[i]);
+  }
+}
+
+#define TESTS_OPERATOR_AT_CHANGE(suiteName) \
+TEST(suiteName, uShortOperatorAtChange) { OperatorAtChangeTest<unsigned short>(DEF_INT_VALS); } \
+TEST(suiteName, intOperatorAtChange) { OperatorAtChangeTest<int>(DEF_INT_VALS); } \
+TEST(suiteName, doubleOperatorAtChange) { OperatorAtChangeTest<double>(DEF_DBL_VALS); } \
+TEST(suiteName, MockClassOperatorAtChange) { OperatorAtChangeTest<MockClass>(DEF_MOCK_VALS); } \
+
+TESTS_OPERATOR_AT_CHANGE(s21Vector)
+
+// --------------------------------------
+
+template<typename T>
+void constOperatorAtTest(const std::initializer_list<T>& items) {
+  const s21::vector<T> actual(items);
+  const std::vector<T> expected(items);
+
+  checkBasicField(actual, expected);
+
+  for (std::size_t i = 0; i < actual.size(); i++) {
+    EXPECT_EQ(actual[i], expected[i]);
+  }
+}
+
+#define TESTS_CONST_OPERATOR_AT(suiteName) \
+TEST(suiteName, uShortConstOperatorAt) { constOperatorAtTest<unsigned short>(DEF_INT_VALS); } \
+TEST(suiteName, intConstOperatorAt) { constOperatorAtTest<int>(DEF_INT_VALS); } \
+TEST(suiteName, doubleConstOperatorAt) { constOperatorAtTest<double>(DEF_DBL_VALS); } \
+TEST(suiteName, MockClassConstOperatorAt) { constOperatorAtTest<MockClass>(DEF_MOCK_VALS); } \
+TEST(suiteName, stringConstOperatorAt) { constOperatorAtTest<std::string>(DEF_STR_VALS); } \
+
+TESTS_CONST_OPERATOR_AT(s21Vector)
+
+// --------------------------------------
+
 /* ANOMALY */
 
 template<typename T>

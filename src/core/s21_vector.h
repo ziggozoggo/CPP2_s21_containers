@@ -112,8 +112,11 @@ public:
   size_type capacity() const noexcept;
 
   value_type* data() const noexcept;
+
   reference at(size_type pos);
   const_reference at(size_type pos) const;
+  reference operator[](size_type pos);
+  const_reference operator[](size_type pos) const;
 
   virtual void clear() override;
 
@@ -265,6 +268,16 @@ template<typename value_type>
 typename vector<value_type>::const_reference vector<value_type>::at(size_type pos) const {
   if (pos >= size_) throw std::out_of_range("Index out of vector boundary");
 
+  return data_[pos];
+}
+
+template<typename value_type>
+typename vector<value_type>::reference vector<value_type>::operator[](size_type pos) {
+  return data_[pos];
+}
+
+template<typename value_type>
+typename vector<value_type>::const_reference vector<value_type>::operator[](size_type pos) const {
   return data_[pos];
 }
 
