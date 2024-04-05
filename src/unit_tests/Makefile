@@ -74,7 +74,7 @@ $(BUILD_DIR)/%.o: %.cpp
 gcov_$(TARGET): $(OBJ)
 	$(CC) $(CFLAGS) $(OBJ) $(S21_CONTAINERS_LIB) -o $(BUILD_DIR)/$@ $(LIBS)
 	$(BUILD_DIR)/$@
-	lcov -o $(BUILD_DIR)/$(TARGET_NAME).info -c -d ../$(BUILD_DIR)/
+	lcov -o $(BUILD_DIR)/$(TARGET_NAME).info -c -d ../$(BUILD_DIR)/ -d $(BUILD_DIR)/
 	lcov --remove $(BUILD_DIR)/$(TARGET_NAME).info '/usr/include/*' -o $(BUILD_DIR)/$(TARGET_NAME).info
 	genhtml -o $(GCOV_REP_DIR) $(BUILD_DIR)/$(TARGET_NAME).info
 	nohup $(OPEN_CMD) ./$(BUILD_DIR)/report/index.html >/dev/null 2>&1 &
