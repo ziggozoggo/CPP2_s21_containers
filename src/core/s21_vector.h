@@ -115,12 +115,14 @@ public:
 
   reference at(size_type pos);
   const_reference at(size_type pos) const;
+
   reference operator[](size_type pos);
   const_reference operator[](size_type pos) const;
 
   const_reference front() const;
   const_reference back() const;
 
+  void reserve(size_type size);
   virtual void clear() override;
 
   void swap(vector<value_type>& other) noexcept;
@@ -282,6 +284,23 @@ typename vector<value_type>::reference vector<value_type>::operator[](size_type 
 template<typename value_type>
 typename vector<value_type>::const_reference vector<value_type>::operator[](size_type pos) const {
   return data_[pos];
+}
+
+template<typename value_type>
+void vector<value_type>::reserve(size_type size) {
+  if (size <= capacity_) return;
+
+  capacity_ = size;
+  value_type* newData = new value_type[capacity_];
+
+  if (data_) {
+    for (size_type i = 0; i < size_; i++) {
+      newData[i] = std::move(data_[i]);
+    }
+  }
+
+  delete[] data_;
+  data_ = newData;
 }
 
 template<typename T>

@@ -650,6 +650,7 @@ TEST(suiteName, uShortFront) { frontTest<unsigned short>(DEF_INT_VALS); } \
 TEST(suiteName, intFront) { frontTest<int>(DEF_INT_VALS); } \
 TEST(suiteName, doubleFront) { frontTest<double>(DEF_DBL_VALS); } \
 TEST(suiteName, MockClassFront) { frontTest<MockClass>(DEF_MOCK_VALS); } \
+TEST(suiteName, stringFront) { frontTest<std::string>(DEF_STR_VALS); } \
 
 TESTS_FRONT(s21Vector)
 
@@ -670,8 +671,61 @@ TEST(suiteName, uShortBack) { backTest<unsigned short>(DEF_INT_VALS); } \
 TEST(suiteName, intBack) { backTest<int>(DEF_INT_VALS); } \
 TEST(suiteName, doubleBack) { backTest<double>(DEF_DBL_VALS); } \
 TEST(suiteName, MockClassBack) { backTest<MockClass>(DEF_MOCK_VALS); } \
+TEST(suiteName, stringBack) { backTest<std::string>(DEF_STR_VALS); } \
 
 TESTS_BACK(s21Vector)
+
+// --------------------------------------
+
+template<typename T>
+void reserveTest(const std::initializer_list<T>& items) {
+  s21::vector<T> actual(items);
+  std::vector<T> expected(items);
+
+  checkBasicField(actual, expected);
+
+  std::size_t newCapacity = 256;
+  actual.reserve(newCapacity);
+  expected.reserve(newCapacity);
+
+  checkBasicField(actual, expected);
+
+  EXPECT_EQ(actual.capacity(), newCapacity);
+  EXPECT_EQ(expected.capacity(), newCapacity);
+
+  std::equal(actual.begin(), actual.end(), expected.begin());
+
+  newCapacity = 1000;
+  actual.reserve(newCapacity);
+  expected.reserve(newCapacity);
+
+  checkBasicField(actual, expected);
+
+  EXPECT_EQ(actual.capacity(), newCapacity);
+  EXPECT_EQ(expected.capacity(), newCapacity);
+
+  std::equal(actual.begin(), actual.end(), expected.begin());
+
+  newCapacity = 1;
+  actual.reserve(newCapacity);
+  expected.reserve(newCapacity);
+
+  checkBasicField(actual, expected);
+
+  EXPECT_NE(actual.capacity(), newCapacity);
+  EXPECT_NE(expected.capacity(), newCapacity);
+
+  std::equal(actual.begin(), actual.end(), expected.begin());
+}
+
+#define TESTS_RESERVE(suiteName) \
+TEST(suiteName, uShortReserve) { reserveTest<unsigned short>(DEF_INT_VALS); } \
+TEST(suiteName, intReserve) { reserveTest<int>(DEF_INT_VALS); } \
+TEST(suiteName, doubleReserve) { reserveTest<double>(DEF_DBL_VALS); } \
+TEST(suiteName, MockClassReserve) { reserveTest<MockClass>(DEF_MOCK_VALS); } \
+TEST(suiteName, stringReserve) { reserveTest<std::string>(DEF_STR_VALS); } \
+
+TESTS_RESERVE(s21Vector)
 
 // --------------------------------------
 
