@@ -3,13 +3,14 @@
 
 #include <gtest/gtest.h>
 
+#include <cstddef>
+
 #include "s21_containers.h"
 
 #define LOOP_TESTS_QUANTITY 50
 
 class MockClass {
 public:
-
   MockClass() : data_(new int[size_]), subData_(42) {
     for (int i = 0; i < size_; i++) {
       data_[i] = i * 2;
@@ -58,6 +59,26 @@ public:
       other.data_ = nullptr;
       other.subData_ = 0;
     }
+    return *this;
+  }
+
+  bool operator==(const MockClass& other) const noexcept {
+    bool res = subData_ == other.subData_;
+
+    for (int i = 0; i < size_; i++) {
+      res = (data_[i] == other.data_[i]);
+    }
+
+    return res;
+  }
+
+  MockClass& operator*(const int mult) noexcept {
+    subData_ *= mult;
+
+    for (int i = 0; i < size_; i++) {
+      data_[i] *= mult;
+    }
+
     return *this;
   }
 
