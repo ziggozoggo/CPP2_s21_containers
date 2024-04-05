@@ -114,8 +114,13 @@ public:
 
   virtual void clear() override;
 
+  void swap(vector<value_type>& other) noexcept;
+
   bool operator==(const vector<value_type>& other) const;
   bool operator!=(const vector<value_type>& other) const;
+
+  vector<T>& operator=(const vector<value_type>& other);
+  vector<T>& operator=(vector<value_type>&& other);
 
 // Data
 private:
@@ -254,6 +259,13 @@ void vector<T>::clear() {
 }
 
 template<typename T>
+void vector<T>::swap(vector<T>& other) noexcept {
+  std::swap(size_, other.size_);
+  std::swap(capacity_, other.capacity_);
+  std::swap(data_, other.data_);
+}
+
+template<typename T>
 bool vector<T>::operator==(const vector<T>& other) const {
   if (size() != other.size()) return false;
 
@@ -263,6 +275,26 @@ bool vector<T>::operator==(const vector<T>& other) const {
 template<typename T>
 bool vector<T>::operator!=(const vector<T>& other) const {
   return !(*this == other);
+}
+
+template<typename T>
+vector<T>& vector<T>::operator=(const vector<T>& other) {
+  if (this == &other) {
+    return *this;
+  }
+
+  vector<T> tmp { other };
+  this->swap(tmp);
+
+  return *this;
+}
+
+template<typename T>
+vector<T>& vector<T>::operator=(vector<T>&& other) {
+  vector<T> tmp { std::move(other) };
+  this->swap(tmp);
+
+  return *this;
 }
 
 }

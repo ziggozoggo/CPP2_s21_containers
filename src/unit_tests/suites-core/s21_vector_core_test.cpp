@@ -170,6 +170,70 @@ TESTS_MOVE_INIT(s21Vector)
 // --------------------------------------
 
 template<typename T>
+void operatorInitCopyTest(const std::initializer_list<T>& items) {
+  s21::vector<T> actual(items);
+  s21::vector<T> actualCopy = actual;
+
+  std::vector<T> expected(items);
+  std::vector<T> expectedCopy = items;
+
+  EXPECT_EQ(actualCopy.size(), expectedCopy.size());
+  EXPECT_EQ(actualCopy.capacity(), expectedCopy.capacity());
+  EXPECT_NE(actualCopy.data(), expectedCopy.data());
+
+  EXPECT_EQ(actualCopy.empty(), expectedCopy.empty());
+
+  EXPECT_TRUE(actual == actualCopy);
+}
+
+#define TESTS_OPERATOR_COPY_INIT(suite_name) \
+TEST(suite_name, uShortOperatorCopyInit) { operatorInitCopyTest<unsigned short>(DEF_INT_VALS); } \
+TEST(suite_name, intOperatorCopyInit) { operatorInitCopyTest<int>(DEF_INT_VALS); } \
+TEST(suite_name, doubleOperatorCopyInit) { operatorInitCopyTest<double>(DEF_DBL_VALS); } \
+TEST(suite_name, MockClassOperatorCopyInit) { operatorInitCopyTest<MockClass>(DEF_MOCK_VALS); } \
+TEST(suite_name, stringOperatorCopyInit) { operatorInitCopyTest<std::string>(DEF_STR_VALS); } \
+
+TESTS_OPERATOR_COPY_INIT(s21Vector)
+
+// --------------------------------------
+
+template<typename T>
+void operatorInitMoveTest(const std::initializer_list<T>& items) {
+  s21::vector<T> actual(items);
+  s21::vector<T> actualMove = std::move(actual);
+
+  std::vector<T> expected(items);
+  std::vector<T> expectedMove = std::move(expected);
+
+  EXPECT_EQ(actualMove.size(), expectedMove.size());
+  EXPECT_EQ(actualMove.capacity(), expectedMove.capacity());
+  EXPECT_NE(actualMove.data(), expectedMove.data());
+
+  EXPECT_EQ(actualMove.empty(), expectedMove.empty());
+
+  EXPECT_TRUE(actual != actualMove);
+
+  EXPECT_EQ(actual.size(), 0);
+  EXPECT_EQ(actual.capacity(), 0);
+  EXPECT_EQ(actual.data(), nullptr);
+
+  EXPECT_EQ(expected.size(), 0);
+  EXPECT_EQ(expected.capacity(), 0);
+  EXPECT_EQ(expected.data(), nullptr);
+}
+
+#define TESTS_OPERATOR_MOVE_INIT(suite_name) \
+TEST(suite_name, uShortOperatorMoveInit) { operatorInitMoveTest<unsigned short>(DEF_INT_VALS); } \
+TEST(suite_name, intOperatorMoveInit) { operatorInitMoveTest<int>(DEF_INT_VALS); } \
+TEST(suite_name, doubleOperatorMoveInit) { operatorInitMoveTest<double>(DEF_DBL_VALS); } \
+TEST(suite_name, MockClassOperatorMoveInit) { operatorInitMoveTest<MockClass>(DEF_MOCK_VALS); } \
+TEST(suite_name, stringOperatorMoveInit) { operatorInitMoveTest<std::string>(DEF_STR_VALS); } \
+
+TESTS_OPERATOR_MOVE_INIT(s21Vector)
+
+// --------------------------------------
+
+template<typename T>
 void clearTest(const std::initializer_list<T>& items) {
   s21::vector<T> actual(items);
   std::vector<T> expected(items);
@@ -387,3 +451,61 @@ TEST(suite_name, stringIteratorEqual) { iteratorEqualTest<std::string>(DEF_STR_V
 TESTS_ITERATOR_EQUAL(s21Vector)
 
 // --------------------------------------
+
+template<typename T>
+void swapTest(const std::initializer_list<T>& items) {
+  s21::vector<T> actual(items);
+  std::vector<T> expected(items);
+
+  EXPECT_EQ(actual.size(), expected.size());
+  EXPECT_EQ(actual.capacity(), expected.capacity());
+  EXPECT_NE(actual.data(), expected.data());
+
+  EXPECT_EQ(actual.empty(), expected.empty());
+
+  s21::vector<T> actualSwap;
+  actualSwap.swap(actual);
+
+  EXPECT_EQ(actual.size(), 0);
+  EXPECT_EQ(actual.capacity(), 0);
+  EXPECT_EQ(actual.data(), nullptr);
+
+  EXPECT_NE(actual.size(), actualSwap.size());
+  EXPECT_NE(actual.capacity(), actualSwap.capacity());
+  EXPECT_NE(actual.data(), actualSwap.data());
+
+  EXPECT_NE(actual.empty(), actualSwap.empty());
+
+  std::vector<T> expectedSwap;
+  expectedSwap.swap(expected);
+
+  EXPECT_EQ(expected.size(), 0);
+  EXPECT_EQ(expected.capacity(), 0);
+  EXPECT_EQ(expected.data(), nullptr);
+
+  EXPECT_NE(expected.size(), expectedSwap.size());
+  EXPECT_NE(expected.capacity(), expectedSwap.capacity());
+  EXPECT_NE(expected.data(), expectedSwap.data());
+
+  EXPECT_NE(expected.empty(), expectedSwap.empty());
+
+  EXPECT_EQ(actual.size(), expected.size());
+  EXPECT_EQ(actual.capacity(), expected.capacity());
+  EXPECT_EQ(actual.data(), expected.data());
+
+  EXPECT_EQ(actual.empty(), expected.empty());
+
+  EXPECT_EQ(actualSwap.size(), expectedSwap.size());
+  EXPECT_EQ(actualSwap.capacity(), expectedSwap.capacity());
+  EXPECT_NE(actualSwap.data(), expectedSwap.data());
+
+  EXPECT_EQ(actualSwap.empty(), expectedSwap.empty());
+}
+
+#define TESTS_SWAP(suite_name) \
+TEST(suite_name, uShortSwap) { swapTest<unsigned short>(DEF_INT_VALS); } \
+TEST(suite_name, intSwap) { swapTest<int>(DEF_INT_VALS); } \
+TEST(suite_name, doubleSwap) { swapTest<double>(DEF_DBL_VALS); } \
+TEST(suite_name, MockClassSwap) { swapTest<MockClass>(DEF_MOCK_VALS); } \
+
+TESTS_SWAP(s21Vector)
