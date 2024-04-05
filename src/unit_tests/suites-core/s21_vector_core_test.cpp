@@ -3,8 +3,14 @@
 #include <algorithm>
 #include <vector>
 #include <type_traits>
+#include <string>
 
 #include "core/s21_vector.h"
+
+#define DEF_INT_VALS {1, 2, 3, 4, 5}
+#define DEF_DBL_VALS {1.42, 2.5, 0.003, 664.452, 1.0035}
+#define DEF_MOCK_VALS {1, 2, 44, 45}
+#define DEF_STR_VALS {"hello", "world", "!"}
 
 template<typename T>
 void defaultInitAsContTest() {
@@ -21,6 +27,7 @@ TEST(suite_name, uShortEmptyInitAsCont) { defaultInitAsContTest<unsigned short>(
 TEST(suite_name, intEmptyInitAsCont) { defaultInitAsContTest<int>(); } \
 TEST(suite_name, doubleEmptyInitAsCont) { defaultInitAsContTest<double>(); } \
 TEST(suite_name, MockClassEmptyInitAsCont) { defaultInitAsContTest<MockClass>(); } \
+TEST(suite_name, stringEmptyInitAsCont) { defaultInitAsContTest<std::string>(); } \
 
 TESTS_EMPTY_INIT_AS_CONT(s21Vector)
 
@@ -43,6 +50,7 @@ TEST(suite_name, uShortEmptyInit) { defaultInitTest<unsigned short>(); } \
 TEST(suite_name, intEmptyInit) { defaultInitTest<int>(); } \
 TEST(suite_name, doubleEmptyInit) { defaultInitTest<double>(); } \
 TEST(suite_name, MockClassEmptyInit) { defaultInitTest<MockClass>(); } \
+TEST(suite_name, stringEmptyInit) { defaultInitTest<std::string>(); } \
 
 TESTS_EMPTY_INIT(s21Vector)
 
@@ -68,6 +76,7 @@ TEST(suite_name, uShortSizeInit) { sizeInitTest<unsigned short>(); } \
 TEST(suite_name, intSizeInit) { sizeInitTest<int>(); } \
 TEST(suite_name, doubleSizeInit) { sizeInitTest<double>(); } \
 TEST(suite_name, MockClassSizeInit) { sizeInitTest<MockClass>(); } \
+TEST(suite_name, stringSizeInit) { sizeInitTest<std::string>(); } \
 
 TESTS_SIZE_INIT(s21Vector)
 
@@ -86,10 +95,11 @@ void listInitTest(const std::initializer_list<T>& items) {
 }
 
 #define TESTS_LIST_INIT(suite_name) \
-TEST(suite_name, uShortListInit) { listInitTest<unsigned short>({1, 2, 3, 4, 5}); } \
-TEST(suite_name, intListInit) { listInitTest<int>({1, 2, 3, 4, 5}); } \
-TEST(suite_name, doubleListInit) { listInitTest<double>({1.42, 2.5, 0.003, 664.452, 1.0035}); } \
-TEST(suite_name, MockClassListInit) { listInitTest<MockClass>({1, 2, 44, 45}); } \
+TEST(suite_name, uShortListInit) { listInitTest<unsigned short>(DEF_INT_VALS); } \
+TEST(suite_name, intListInit) { listInitTest<int>(DEF_INT_VALS); } \
+TEST(suite_name, doubleListInit) { listInitTest<double>(DEF_DBL_VALS); } \
+TEST(suite_name, MockClassListInit) { listInitTest<MockClass>(DEF_MOCK_VALS); } \
+TEST(suite_name, stringListInit) { listInitTest<std::string>(DEF_STR_VALS); } \
 
 TESTS_LIST_INIT(s21Vector)
 
@@ -113,10 +123,11 @@ void copyInitTest(const std::initializer_list<T>& items) {
 }
 
 #define TESTS_COPY_INIT(suite_name) \
-TEST(suite_name, uShortCopyInit) { copyInitTest<unsigned short>({1, 2, 3, 4, 5}); } \
-TEST(suite_name, intCopyInit) { copyInitTest<int>({1, 2, 3, 4, 5}); } \
-TEST(suite_name, doubleCopyInit) { copyInitTest<double>({1.42, 2.5, 0.003, 664.452, 1.0035}); } \
-TEST(suite_name, MockClassCopyInit) { copyInitTest<MockClass>({1, 2, 44, 45}); } \
+TEST(suite_name, uShortCopyInit) { copyInitTest<unsigned short>(DEF_INT_VALS); } \
+TEST(suite_name, intCopyInit) { copyInitTest<int>(DEF_INT_VALS); } \
+TEST(suite_name, doubleCopyInit) { copyInitTest<double>(DEF_DBL_VALS); } \
+TEST(suite_name, MockClassCopyInit) { copyInitTest<MockClass>(DEF_MOCK_VALS); } \
+TEST(suite_name, stringCopyInit) { copyInitTest<std::string>(DEF_STR_VALS); } \
 
 TESTS_COPY_INIT(s21Vector)
 
@@ -148,21 +159,20 @@ void moveInitTest(const std::initializer_list<T>& items) {
 }
 
 #define TESTS_MOVE_INIT(suite_name) \
-TEST(suite_name, uShortMoveInit) { moveInitTest<unsigned short>({1, 2, 3, 4, 5}); } \
-TEST(suite_name, intMoveInit) { moveInitTest<int>({1, 2, 3, 4, 5}); } \
-TEST(suite_name, doubleMoveInit) { moveInitTest<double>({1.42, 2.5, 0.003, 664.452, 1.0035}); } \
-TEST(suite_name, MockClassMoveInit) { moveInitTest<MockClass>({1, 2, 44, 45}); } \
+TEST(suite_name, uShortMoveInit) { moveInitTest<unsigned short>(DEF_INT_VALS); } \
+TEST(suite_name, intMoveInit) { moveInitTest<int>(DEF_INT_VALS); } \
+TEST(suite_name, doubleMoveInit) { moveInitTest<double>(DEF_DBL_VALS); } \
+TEST(suite_name, MockClassMoveInit) { moveInitTest<MockClass>(DEF_MOCK_VALS); } \
+TEST(suite_name, stringMoveInit) { moveInitTest<std::string>(DEF_STR_VALS); } \
 
 TESTS_MOVE_INIT(s21Vector)
 
 // --------------------------------------
 
 template<typename T>
-void clearTest() {
-  const std::size_t size = 100;
-
-  s21::vector<T> actual(size);
-  std::vector<T> expected(size);
+void clearTest(const std::initializer_list<T>& items) {
+  s21::vector<T> actual(items);
+  std::vector<T> expected(items);
 
   actual.clear();
   expected.clear();
@@ -175,10 +185,11 @@ void clearTest() {
 }
 
 #define TESTS_CLEAR(suite_name) \
-TEST(suite_name, uShortClear) { clearTest<unsigned short>(); } \
-TEST(suite_name, intClear) { clearTest<int>(); } \
-TEST(suite_name, doubleClear) { clearTest<double>(); } \
-TEST(suite_name, MockClassClear) { clearTest<MockClass>(); } \
+TEST(suite_name, uShortClear) { clearTest<unsigned short>(DEF_INT_VALS); } \
+TEST(suite_name, intClear) { clearTest<int>(DEF_INT_VALS); } \
+TEST(suite_name, doubleClear) { clearTest<double>(DEF_DBL_VALS); } \
+TEST(suite_name, MockClassClear) { clearTest<MockClass>(DEF_MOCK_VALS); } \
+TEST(suite_name, stringClear) { clearTest<std::string>(DEF_STR_VALS); } \
 
 TESTS_CLEAR(s21Vector)
 
@@ -206,6 +217,7 @@ TEST(suite_name, uShortClearAsCont) { clearAsContTest<unsigned short>(); } \
 TEST(suite_name, intClearAsContr) { clearAsContTest<int>(); } \
 TEST(suite_name, doubleClearAsCont) { clearAsContTest<double>(); } \
 TEST(suite_name, MockClassClearAsCont) { clearAsContTest<MockClass>(); } \
+TEST(suite_name, stringClearAsCont) { clearAsContTest<std::string>(); } \
 
 TESTS_CLEAR_AS_CONT(s21Vector)
 
@@ -226,10 +238,11 @@ void beginTest(const std::initializer_list<T>& items) {
 }
 
 #define TESTS_BEGIN(suite_name) \
-TEST(suite_name, uShortBegin) { beginTest<unsigned short>({1, 2, 3, 4, 5}); } \
-TEST(suite_name, intBegin) { beginTest<int>({1, 2, 3, 4, 5}); } \
-TEST(suite_name, doubleBegin) { beginTest<double>({1.42, 2.5, 0.003, 664.452, 1.0035}); } \
-TEST(suite_name, MockClassBegin) { beginTest<MockClass>({1, 2, 44, 45}); } \
+TEST(suite_name, uShortBegin) { beginTest<unsigned short>(DEF_INT_VALS); } \
+TEST(suite_name, intBegin) { beginTest<int>(DEF_INT_VALS); } \
+TEST(suite_name, doubleBegin) { beginTest<double>(DEF_DBL_VALS); } \
+TEST(suite_name, MockClassBegin) { beginTest<MockClass>(DEF_MOCK_VALS); } \
+TEST(suite_name, stringBegin) { beginTest<std::string>(DEF_STR_VALS); } \
 
 TESTS_BEGIN(s21Vector)
 
@@ -251,10 +264,11 @@ void endTest(const std::initializer_list<T>& items) {
 }
 
 #define TESTS_END(suite_name) \
-TEST(suite_name, uShortEnd) { endTest<unsigned short>({1, 2, 3, 4, 5}); } \
-TEST(suite_name, intEnd) { endTest<int>({1, 2, 3, 4, 5}); } \
-TEST(suite_name, doubleEnd) { endTest<double>({1.42, 2.5, 0.003, 664.452, 1.0035}); } \
-TEST(suite_name, MockClassEnd) { endTest<MockClass>({1, 2, 44, 45}); } \
+TEST(suite_name, uShortEnd) { endTest<unsigned short>(DEF_INT_VALS); } \
+TEST(suite_name, intEnd) { endTest<int>(DEF_INT_VALS); } \
+TEST(suite_name, doubleEnd) { endTest<double>(DEF_DBL_VALS); } \
+TEST(suite_name, MockClassEnd) { endTest<MockClass>(DEF_MOCK_VALS); } \
+TEST(suite_name, stringEnd) { endTest<std::string>(DEF_STR_VALS); } \
 
 TESTS_END(s21Vector)
 
@@ -295,10 +309,11 @@ void iteratorManualTest(const std::initializer_list<T>& items) {
 }
 
 #define TESTS_ITERATOR_MANUAL(suite_name) \
-TEST(suite_name, uShortIteratorManual) { iteratorManualTest<unsigned short>({1, 2, 3, 4, 5}); } \
-TEST(suite_name, intIteratorManual) { iteratorManualTest<int>({1, 2, 3, 4, 5}); } \
-TEST(suite_name, doubleIteratorManual) { iteratorManualTest<double>({1.42, 2.5, 0.003, 664.452, 1.0035}); } \
-TEST(suite_name, MockClassIteratorManual) { iteratorManualTest<MockClass>({1, 2, 44, 45}); } \
+TEST(suite_name, uShortIteratorManual) { iteratorManualTest<unsigned short>(DEF_INT_VALS); } \
+TEST(suite_name, intIteratorManual) { iteratorManualTest<int>(DEF_INT_VALS); } \
+TEST(suite_name, doubleIteratorManual) { iteratorManualTest<double>(DEF_DBL_VALS); } \
+TEST(suite_name, MockClassIteratorManual) { iteratorManualTest<MockClass>(DEF_MOCK_VALS); } \
+TEST(suite_name, stringIteratorManual) { iteratorManualTest<std::string>(DEF_STR_VALS); } \
 
 TESTS_ITERATOR_MANUAL(s21Vector)
 
@@ -316,6 +331,8 @@ void iteratorForeachTest(const std::initializer_list<T>& items) {
   EXPECT_EQ(actual.empty(), expected.empty());
 
   for (auto i : actual) {
+    // #DEFECT - std::is_same() not work
+    // if (std::is_same<T, std::string>::value) {
     i = i * 2;
   }
 
@@ -337,10 +354,10 @@ void iteratorForeachTest(const std::initializer_list<T>& items) {
 }
 
 #define TESTS_ITERATOR_FOREACH(suite_name) \
-TEST(suite_name, uShortIteratorForeach) { iteratorForeachTest<unsigned short>({1, 2, 3, 4, 5}); } \
-TEST(suite_name, intIteratorForeach) { iteratorForeachTest<int>({1, 2, 3, 4, 5}); } \
-TEST(suite_name, doubleIteratorForeach) { iteratorForeachTest<double>({1.42, 2.5, 0.003, 664.452, 1.0035}); } \
-TEST(suite_name, MockClassIteratorForeach) { iteratorForeachTest<MockClass>({1, 2, 44, 45}); } \
+TEST(suite_name, uShortIteratorForeach) { iteratorForeachTest<unsigned short>(DEF_INT_VALS); } \
+TEST(suite_name, intIteratorForeach) { iteratorForeachTest<int>(DEF_INT_VALS); } \
+TEST(suite_name, doubleIteratorForeach) { iteratorForeachTest<double>(DEF_DBL_VALS); } \
+TEST(suite_name, MockClassIteratorForeach) { iteratorForeachTest<MockClass>(DEF_MOCK_VALS); } \
 
 TESTS_ITERATOR_FOREACH(s21Vector)
 
@@ -361,10 +378,11 @@ void iteratorEqualTest(const std::initializer_list<T>& items) {
 }
 
 #define TESTS_ITERATOR_EQUAL(suite_name) \
-TEST(suite_name, uShortIteratorEqual) { iteratorEqualTest<unsigned short>({1, 2, 3, 4, 5}); } \
-TEST(suite_name, intIteratorEqual) { iteratorEqualTest<int>({1, 2, 3, 4, 5}); } \
-TEST(suite_name, doubleIteratorEqual) { iteratorEqualTest<double>({1.42, 2.5, 0.003, 664.452, 1.0035}); } \
-TEST(suite_name, MockClassIteratorEqual) { iteratorEqualTest<MockClass>({1, 2, 44, 45}); } \
+TEST(suite_name, uShortIteratorEqual) { iteratorEqualTest<unsigned short>(DEF_INT_VALS); } \
+TEST(suite_name, intIteratorEqual) { iteratorEqualTest<int>(DEF_INT_VALS); } \
+TEST(suite_name, doubleIteratorEqual) { iteratorEqualTest<double>(DEF_DBL_VALS); } \
+TEST(suite_name, MockClassIteratorEqual) { iteratorEqualTest<MockClass>(DEF_MOCK_VALS); } \
+TEST(suite_name, stringIteratorEqual) { iteratorEqualTest<std::string>(DEF_STR_VALS); } \
 
 TESTS_ITERATOR_EQUAL(s21Vector)
 
