@@ -7,6 +7,15 @@
 
 #include "core/s21_vector.h"
 
+template <typename T>
+void checkBasicField(const s21::vector<T>& actual, const std::vector<T>& expected) {
+  EXPECT_EQ(actual.size(), expected.size());
+  EXPECT_EQ(actual.capacity(), expected.capacity());
+  EXPECT_NE(actual.data(), expected.data());
+
+  EXPECT_EQ(actual.empty(), expected.empty());
+}
+
 /* NORMAL */
 
 #define DEF_INT_VALS {1, 2, 3, 4, 5}
@@ -65,11 +74,7 @@ void sizeInitTest() {
   s21::vector<T> actual(size);
   std::vector<T> expected(size);
 
-  EXPECT_EQ(actual.size(), expected.size());
-  EXPECT_EQ(actual.capacity(), expected.capacity());
-  EXPECT_NE(actual.data(), expected.data());
-
-  EXPECT_EQ(actual.empty(), expected.empty());
+  checkBasicField(actual, expected);
 }
 
 
@@ -89,11 +94,7 @@ void listInitTest(const std::initializer_list<T>& items) {
   s21::vector<T> actual(items);
   std::vector<T> expected(items);
 
-  EXPECT_EQ(actual.size(), expected.size());
-  EXPECT_EQ(actual.capacity(), expected.capacity());
-  EXPECT_NE(actual.data(), expected.data());
-
-  EXPECT_EQ(actual.empty(), expected.empty());
+  checkBasicField(actual, expected);
 }
 
 #define TESTS_LIST_INIT(suiteName) \
@@ -243,11 +244,7 @@ void clearTest(const std::initializer_list<T>& items) {
   actual.clear();
   expected.clear();
 
-  EXPECT_EQ(actual.size(), expected.size());
-  EXPECT_EQ(actual.capacity(), expected.capacity());
-  EXPECT_NE(actual.data(), expected.data());
-
-  EXPECT_EQ(actual.empty(), expected.empty());
+  checkBasicField(actual, expected);
 }
 
 #define TESTS_CLEAR(suiteName) \
@@ -294,11 +291,7 @@ void beginTest(const std::initializer_list<T>& items) {
   s21::vector<T> actual(items);
   std::vector<T> expected(items);
 
-  EXPECT_EQ(actual.size(), expected.size());
-  EXPECT_EQ(actual.capacity(), expected.capacity());
-  EXPECT_NE(actual.data(), expected.data());
-
-  EXPECT_EQ(actual.empty(), expected.empty());
+  checkBasicField(actual, expected);
 
   EXPECT_EQ(*actual.begin(), *expected.begin());
 }
@@ -319,11 +312,7 @@ void endTest(const std::initializer_list<T>& items) {
   s21::vector<T> actual(items);
   std::vector<T> expected(items);
 
-  EXPECT_EQ(actual.size(), expected.size());
-  EXPECT_EQ(actual.capacity(), expected.capacity());
-  EXPECT_NE(actual.data(), expected.data());
-
-  EXPECT_EQ(actual.empty(), expected.empty());
+  checkBasicField(actual, expected);
 
   EXPECT_EQ(&(*actual.end()), actual.data() + actual.size());
   EXPECT_EQ(&(*expected.end()), expected.data() + expected.size());
@@ -345,11 +334,7 @@ void iteratorManualTest(const std::initializer_list<T>& items) {
   s21::vector<T> actual(items);
   std::vector<T> expected(items);
 
-  EXPECT_EQ(actual.size(), expected.size());
-  EXPECT_EQ(actual.capacity(), expected.capacity());
-  EXPECT_NE(actual.data(), expected.data());
-
-  EXPECT_EQ(actual.empty(), expected.empty());
+  checkBasicField(actual, expected);
 
   auto itActual = actual.begin();
   auto itExpected = expected.begin();
@@ -390,11 +375,7 @@ void iteratorForeachTest(const std::initializer_list<T>& items) {
   s21::vector<T> actual(items);
   std::vector<T> expected(items);
 
-  EXPECT_EQ(actual.size(), expected.size());
-  EXPECT_EQ(actual.capacity(), expected.capacity());
-  EXPECT_NE(actual.data(), expected.data());
-
-  EXPECT_EQ(actual.empty(), expected.empty());
+  checkBasicField(actual, expected);
 
   for (auto i : actual) {
     // #DEFECT - std::is_same() not work
@@ -459,11 +440,7 @@ void swapTest(const std::initializer_list<T>& items) {
   s21::vector<T> actual(items);
   std::vector<T> expected(items);
 
-  EXPECT_EQ(actual.size(), expected.size());
-  EXPECT_EQ(actual.capacity(), expected.capacity());
-  EXPECT_NE(actual.data(), expected.data());
-
-  EXPECT_EQ(actual.empty(), expected.empty());
+  checkBasicField(actual, expected);
 
   s21::vector<T> actualSwap;
   actualSwap.swap(actual);
@@ -512,16 +489,14 @@ TEST(suiteName, MockClassSwap) { swapTest<MockClass>(DEF_MOCK_VALS); } \
 
 TESTS_SWAP(s21Vector)
 
+// --------------------------------------
+
 template<typename T>
 void atTest(const std::initializer_list<T>& items) {
   s21::vector<T> actual(items);
   std::vector<T> expected(items);
 
-  EXPECT_EQ(actual.size(), expected.size());
-  EXPECT_EQ(actual.capacity(), expected.capacity());
-  EXPECT_NE(actual.data(), expected.data());
-
-  EXPECT_EQ(actual.empty(), expected.empty());
+  checkBasicField(actual, expected);
 
   for (std::size_t i = 0; i < actual.size(); i++) {
     EXPECT_EQ(actual.at(i), expected.at(i));
@@ -539,6 +514,53 @@ TESTS_AT(s21Vector)
 
 // --------------------------------------
 
+template<typename T>
+void atChangeTest(const std::initializer_list<T>& items) {
+  s21::vector<T> actual(items);
+  std::vector<T> expected(items);
+
+  checkBasicField(actual, expected);
+
+  for (std::size_t i = 0; i < actual.size(); i++) {
+    actual.at(i) = actual.at(i) * 2;
+    expected.at(i) = expected.at(i) * 2;
+    EXPECT_EQ(actual.at(i), expected.at(i));
+  }
+}
+
+#define TESTS_AT_CHANGE(suiteName) \
+TEST(suiteName, uShortAtChange) { atChangeTest<unsigned short>(DEF_INT_VALS); } \
+TEST(suiteName, intAtChange) { atChangeTest<int>(DEF_INT_VALS); } \
+TEST(suiteName, doubleAtChange) { atChangeTest<double>(DEF_DBL_VALS); } \
+TEST(suiteName, MockClassAtChange) { atChangeTest<MockClass>(DEF_MOCK_VALS); } \
+
+TESTS_AT_CHANGE(s21Vector)
+
+// --------------------------------------
+
+template<typename T>
+void constAtTest(const std::initializer_list<T>& items) {
+  const s21::vector<T> actual(items);
+  const std::vector<T> expected(items);
+
+  checkBasicField(actual, expected);
+
+  for (std::size_t i = 0; i < actual.size(); i++) {
+    EXPECT_EQ(actual.at(i), expected.at(i));
+  }
+}
+
+#define TESTS_CONST_AT(suiteName) \
+TEST(suiteName, uShortConstAt) { constAtTest<unsigned short>(DEF_INT_VALS); } \
+TEST(suiteName, intConstAt) { constAtTest<int>(DEF_INT_VALS); } \
+TEST(suiteName, doubleConstAt) { constAtTest<double>(DEF_DBL_VALS); } \
+TEST(suiteName, MockClassConstAt) { constAtTest<MockClass>(DEF_MOCK_VALS); } \
+TEST(suiteName, stringConstAt) { constAtTest<std::string>(DEF_STR_VALS); } \
+
+TESTS_CONST_AT(s21Vector)
+
+// --------------------------------------
+
 /* ANOMALY */
 
 template<typename T>
@@ -546,11 +568,7 @@ void atOutOfRangeTest(const std::initializer_list<T>& items) {
   s21::vector<T> actual(items);
   std::vector<T> expected(items);
 
-  EXPECT_EQ(actual.size(), expected.size());
-  EXPECT_EQ(actual.capacity(), expected.capacity());
-  EXPECT_NE(actual.data(), expected.data());
-
-  EXPECT_EQ(actual.empty(), expected.empty());
+  checkBasicField(actual, expected);
 
   std::size_t pos = actual.size();
 
@@ -581,5 +599,44 @@ TEST(suiteName, MockClassAnomalyAtOutRange) { atOutOfRangeTest<MockClass>(DEF_MO
 TEST(suiteName, stringAnomalyAtOutRange) { atOutOfRangeTest<std::string>(DEF_STR_VALS); } \
 
 TESTS_ANOMALY_AT_OUT_RANGE(s21Vector)
+
+// --------------------------------------
+
+template<typename T>
+void constAtOutOfRangeTest(const std::initializer_list<T>& items) {
+  const s21::vector<T> actual(items);
+  const std::vector<T> expected(items);
+
+  checkBasicField(actual, expected);
+
+  std::size_t pos = actual.size();
+
+  EXPECT_THROW({
+    actual.at(pos);
+  }, std::out_of_range);
+
+  EXPECT_THROW({
+    expected.at(pos);
+  }, std::out_of_range);
+
+  pos = actual.size() + 2;
+
+  EXPECT_THROW({
+    actual.at(pos);
+  }, std::out_of_range);
+
+  EXPECT_THROW({
+    expected.at(pos);
+  }, std::out_of_range);
+}
+
+#define TESTS_ANOMALY_CONST_AT_OUT_RANGE(suiteName) \
+TEST(suiteName, uShortAnomalyConstAtOutRange) { constAtOutOfRangeTest<unsigned short>(DEF_INT_VALS); } \
+TEST(suiteName, intAnomalyConstAtOutRange) { constAtOutOfRangeTest<int>(DEF_INT_VALS); } \
+TEST(suiteName, doubleAnomalyConstAtOutRange) { constAtOutOfRangeTest<double>(DEF_DBL_VALS); } \
+TEST(suiteName, MockClassAnomalyConstAtOutRange) { constAtOutOfRangeTest<MockClass>(DEF_MOCK_VALS); } \
+TEST(suiteName, stringAnomalyConstAtOutRange) { constAtOutOfRangeTest<std::string>(DEF_STR_VALS); } \
+
+TESTS_ANOMALY_CONST_AT_OUT_RANGE(s21Vector)
 
 // --------------------------------------

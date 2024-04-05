@@ -113,6 +113,7 @@ public:
 
   value_type* data() const noexcept;
   reference at(size_type pos);
+  const_reference at(size_type pos) const;
 
   virtual void clear() override;
 
@@ -253,8 +254,15 @@ T* vector<T>::data() const noexcept {
   return data_;
 }
 
-template<typename valye_type>
-typename vector<valye_type>::reference vector<valye_type>::at(size_type pos) {
+template<typename value_type>
+typename vector<value_type>::reference vector<value_type>::at(size_type pos) {
+  if (pos >= size_) throw std::out_of_range("Index out of vector boundary");
+
+  return data_[pos];
+}
+
+template<typename value_type>
+typename vector<value_type>::const_reference vector<value_type>::at(size_type pos) const {
   if (pos >= size_) throw std::out_of_range("Index out of vector boundary");
 
   return data_[pos];
