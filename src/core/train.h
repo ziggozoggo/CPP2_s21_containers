@@ -49,8 +49,8 @@ namespace s21 {
       printTree(root);
     }
 
-    void deleteNode(int val) {
-      root = deleteNode(root, val);
+    void remove(int val) {
+      removeNode(val);
     }
 
   private:
@@ -69,10 +69,10 @@ namespace s21 {
       if (parent == nil) root = newNode;
       else if (val < parent->value) parent->left = newNode;
       else parent->right = newNode;
-      balance(newNode);
+      balanceInsert(newNode);
     }
 
-    void balance(Node* newNode) {
+    void balanceInsert(Node* newNode) {
       Node* uncle;
       while (newNode->parent->color == NodeColor::RED) {
         if (newNode->parent == newNode->parent->parent->left) {
@@ -127,33 +127,105 @@ namespace s21 {
       printTree(node->right);
     }
 
-    Node* deleteNode(Node* node, int val) {
-      if (isEmpty(node)) return nullptr;
+    int getChildrenCount(Node* node) {
+      int count = 0;
+      if (!isEmpty(node->left)) count++;
+      if (!isEmpty(node->right)) count++;
+      return count;
+    }
 
-      if (val < node->value) node->left = deleteNode(node->left, val);
-      else if (val > node->value) node->right = deleteNode(node->right, val);
-      else {
-        if (node->left == nullptr || node->right == nullptr) {
-          Node* temp = (node->left == nullptr) ? node->right : node->left;
-          delete node;
-          return temp;
+    Node* getChildOrMock(Node* node) {
+      return isEmpty(node->left) ? node->right : node->left;
+    }
+
+    void transplateNode(Node* dest, Node* src) {
+      if (dest == root) root = src;
+      else if (dest == dest->parent->left) dest->parent->left = src;
+      else dest->parent->right = src;
+      src->parent = dest->parent;
+      delete dest;
+    }
+
+    void removeNode(int val) {
+      Node* nodeToDelete = search(val);
+      NodeColor removedNodeColor = nodeToDelete->color;
+      Node* child;
+
+      if (getChildrenCount(nodeToDelete) < 2) {
+        child = getChildOrMock(nodeToDelete);
+        transplateNode(nodeToDelete, child);
+      } else {
+        Node* minNode = getMin(nodeToDelete->right);
+        nodeToDelete->value = minNode->value;
+        removedNodeColor = minNode->color;
+        child = getChildOrMock(minNode);
+        transplateNode(minNode, child);
+      }
+      if (removedNodeColor == NodeColor::BLACK) balanceRemove(child);
+    }
+
+    void balanceRemove(Node* node) {
+      while (node != root && node->color == NodeColor::BLACK) {
+        Node* brother;
+        if (node == node->parent->left) {
+          brother = node->parent->right;
+          if (brother->color == NodeColor::RED) {
+            brother->color = NodeColor::BLACK;
+            node->parent->color = NodeColor::RED;
+            leftRotate(node->parent);
+            brother = node->parent->right;
+          }
+          if (brother->left->color == NodeColor::BLACK && brother->right->color == NodeColor::BLACK) {
+            brother->color = NodeColor::RED;
+            node = node->parent;
+          } else {
+            if (brother->right->color == NodeColor::BLACK) {
+              brother->left->color = NodeColor::BLACK;
+              brother->color = NodeColor::RED;
+              rightRotate(brother);
+              brother = node->parent->right;
+            }
+            brother->color = node->parent->color;
+            node->parent->color = NodeColor::BLACK;
+            brother->right->color = NodeColor::BLACK;
+            leftRotate(node->parent);
+            node = root;
+          }
         } else {
-          Node* maxInLeft = getMax(node->left);
-          node->value = maxInLeft->value;
-          node->left = deleteNode(node->left, node->value);
+          brother = node->parent->left;
+          if (brother->color == NodeColor::RED) {
+            brother->color = NodeColor::BLACK;
+            node->parent->color = NodeColor::RED;
+            rightRotate(node->parent);
+            brother = node->parent->left;
+          }
+          if (brother->left->color == NodeColor::BLACK && brother->right->color == NodeColor::BLACK) {
+            // rightRotate(node->parent);
+            // brother = node->parent->left;
+            brother->color = NodeColor::RED;
+            node = node->parent;
+          } else {
+            if (brother->left->color == NodeColor::BLACK) {
+              brother->right->color = NodeColor::BLACK;
+              brother->color = NodeColor::RED;
+              leftRotate(brother);
+              brother = node->parent->left;
+            }
+            brother->color = node->parent->color;
+            node->parent->color = NodeColor::BLACK;
+            brother->left->color = NodeColor::BLACK;
+            rightRotate(node->parent);
+            node = root;
+          }
         }
       }
-      if (!isEmpty(node)) {
-        // updateHeight(node);
-        // balance(node);
-      }
-      return node;
+      node->color = NodeColor::BLACK;
     }
 
     Node* getMin(Node* node) {
-      if (isEmpty(node)) return nullptr;
+      if (isEmpty(node)) return node;
 
-      if (node->left == nullptr) return node;
+      if (isEmpty(node->left)) return node;
       return getMin(node->left);
     }
 
@@ -191,7 +263,7 @@ namespace s21 {
       node->right->right = temp;
       
       node->left->parent = node;
-      if (!isEmpty(node->right->right)) node->right->right->parent = node->right;
+      node->right->right->parent = node->right;
     }
 
     void leftRotate(Node* node) {
@@ -203,7 +275,7 @@ namespace s21 {
       node->left->left = temp;
       
       node->right->parent = node;
-      if (!isEmpty(node->left->left)) node->left->left->parent = node->left;
+      node->left->left->parent = node->left;
     }
 
 

@@ -20,20 +20,29 @@ int main() {
     btree.insert(25);
     btree.insert(35);
     btree.insert(45);
+    btree.insert(5);
     btree.insert(50);
-
-    // s21::Node* temp = btree.search(10);
-
-    // btree.printTree();
-    // std::cout << std::endl;
-
-    // btree.deleteNode(2);
+    btree.insert(42);
+    btree.insert(48);
 
     btree.printTree();
     std::cout << std::endl;
 
-    
+    btree.remove(25);
+    btree.remove(45);
+    btree.remove(40);
+    btree.remove(35);
+    btree.remove(10);
+    btree.remove(30);
+    btree.remove(5);
+    btree.remove(48);
+    btree.remove(42);
+    btree.remove(50);
+    btree.remove(20);
 
+    btree.printTree();
+    std::cout << std::endl;
+    
 
 
     
