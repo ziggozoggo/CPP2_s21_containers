@@ -3,8 +3,6 @@
 
 #include <gtest/gtest.h>
 
-#include <cstddef>
-
 #include "s21_containers.h"
 
 #define LOOP_TESTS_QUANTITY 50
@@ -86,6 +84,11 @@ private:
   const int size_ = 10;
   int* data_;
   int subData_;
+};
+
+class NoConstructClass {
+  NoConstructClass() = delete;
+  int inner_value = 5;
 };
 
 #endif  // SRC_UNIT_S21_MATRIX_CORE_TEST_H_
