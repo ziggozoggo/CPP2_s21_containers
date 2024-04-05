@@ -7,6 +7,8 @@
 
 #include "core/s21_vector.h"
 
+/* NORMAL */
+
 #define DEF_INT_VALS {1, 2, 3, 4, 5}
 #define DEF_DBL_VALS {1.42, 2.5, 0.003, 664.452, 1.0035}
 #define DEF_MOCK_VALS {1, 2, 44, 45}
@@ -509,3 +511,75 @@ TEST(suite_name, doubleSwap) { swapTest<double>(DEF_DBL_VALS); } \
 TEST(suite_name, MockClassSwap) { swapTest<MockClass>(DEF_MOCK_VALS); } \
 
 TESTS_SWAP(s21Vector)
+
+template<typename T>
+void atTest(const std::initializer_list<T>& items) {
+  s21::vector<T> actual(items);
+  std::vector<T> expected(items);
+
+  EXPECT_EQ(actual.size(), expected.size());
+  EXPECT_EQ(actual.capacity(), expected.capacity());
+  EXPECT_NE(actual.data(), expected.data());
+
+  EXPECT_EQ(actual.empty(), expected.empty());
+
+  for (std::size_t i = 0; i < actual.size(); i++) {
+    EXPECT_EQ(actual.at(i), expected.at(i));
+  }
+}
+
+#define TESTS_AT(suite_name) \
+TEST(suite_name, uShortAt) { atTest<unsigned short>(DEF_INT_VALS); } \
+TEST(suite_name, intAt) { atTest<int>(DEF_INT_VALS); } \
+TEST(suite_name, doubleAt) { atTest<double>(DEF_DBL_VALS); } \
+TEST(suite_name, MockClassAt) { atTest<MockClass>(DEF_MOCK_VALS); } \
+TEST(suite_name, stringAt) { atTest<std::string>(DEF_STR_VALS); } \
+
+TESTS_AT(s21Vector)
+
+// --------------------------------------
+
+/* ANOMALY */
+
+template<typename T>
+void atOutOfRangeTest(const std::initializer_list<T>& items) {
+  s21::vector<T> actual(items);
+  std::vector<T> expected(items);
+
+  EXPECT_EQ(actual.size(), expected.size());
+  EXPECT_EQ(actual.capacity(), expected.capacity());
+  EXPECT_NE(actual.data(), expected.data());
+
+  EXPECT_EQ(actual.empty(), expected.empty());
+
+  std::size_t pos = actual.size();
+
+  EXPECT_THROW({
+    actual.at(pos);
+  }, std::out_of_range);
+
+  EXPECT_THROW({
+    expected.at(pos);
+  }, std::out_of_range);
+
+  pos = actual.size() + 2;
+
+  EXPECT_THROW({
+    actual.at(pos);
+  }, std::out_of_range);
+
+  EXPECT_THROW({
+    expected.at(pos);
+  }, std::out_of_range);
+}
+
+#define TESTS_ANOMALY_AT_OUT_RANGE(suite_name) \
+TEST(suite_name, uShortAnomalyAtOutRange) { atOutOfRangeTest<unsigned short>(DEF_INT_VALS); } \
+TEST(suite_name, intAnomalyAtOutRange) { atOutOfRangeTest<int>(DEF_INT_VALS); } \
+TEST(suite_name, doubleAnomalyAtOutRange) { atOutOfRangeTest<double>(DEF_DBL_VALS); } \
+TEST(suite_name, MockClassAnomalyAtOutRange) { atOutOfRangeTest<MockClass>(DEF_MOCK_VALS); } \
+TEST(suite_name, stringAnomalyAtOutRange) { atOutOfRangeTest<std::string>(DEF_STR_VALS); } \
+
+TESTS_ANOMALY_AT_OUT_RANGE(s21Vector)
+
+// --------------------------------------

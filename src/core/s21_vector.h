@@ -110,7 +110,9 @@ public:
   virtual bool empty() const noexcept override;
 
   size_type capacity() const noexcept;
+
   value_type* data() const noexcept;
+  reference at(size_type pos);
 
   virtual void clear() override;
 
@@ -249,6 +251,13 @@ typename vector<T>::size_type vector<T>::capacity() const noexcept {
 template<typename T>
 T* vector<T>::data() const noexcept {
   return data_;
+}
+
+template<typename valye_type>
+typename vector<valye_type>::reference vector<valye_type>::at(size_type pos) {
+  if (pos >= size_) throw std::out_of_range("Index out of vector boundary");
+
+  return data_[pos];
 }
 
 template<typename T>
