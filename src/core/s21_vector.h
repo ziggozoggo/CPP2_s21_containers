@@ -209,22 +209,22 @@ vector<T>::~vector() {
 }
 
 template<typename T>
-vector<T>::iterator vector<T>::begin() {
+typename vector<T>::iterator vector<T>::begin() {
   return iterator(&data_[0]);
 };
 
 template<typename T>
-vector<T>::const_iterator vector<T>::begin() const {
+typename vector<T>::const_iterator vector<T>::begin() const {
   return const_iterator(&data_[0]);
 };
 
 template<typename T>
-vector<T>::iterator vector<T>::end() {
+typename vector<T>::iterator vector<T>::end() {
   return iterator(&data_[size_]);
 };
 
 template<typename T>
-vector<T>::const_iterator vector<T>::end() const {
+typename vector<T>::const_iterator vector<T>::end() const {
   return const_iterator(&data_[size_]);
 };
 
