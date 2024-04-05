@@ -125,7 +125,6 @@ private:
 
 // Private Methods
 private:
-
 #ifdef DEBUG
 void printDebugInfo() {
     std::cout << "Vector: " << std::endl;
