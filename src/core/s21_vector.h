@@ -118,6 +118,9 @@ public:
   reference operator[](size_type pos);
   const_reference operator[](size_type pos) const;
 
+  const_reference front() const;
+  const_reference back() const;
+
   virtual void clear() override;
 
   void swap(vector<value_type>& other) noexcept;
@@ -325,6 +328,16 @@ vector<T>& vector<T>::operator=(vector<T>&& other) {
   this->swap(tmp);
 
   return *this;
+}
+
+template<typename value_type>
+typename vector<value_type>::const_reference vector<value_type>::front() const {
+  return data_[0];
+}
+
+template<typename value_type>
+typename vector<value_type>::const_reference vector<value_type>::back() const {
+  return data_[size_ - 1];
 }
 
 }

@@ -561,8 +561,6 @@ TESTS_CONST_AT(s21Vector)
 
 // --------------------------------------
 
-// --------------------------------------
-
 template<typename T>
 void OperatorAtTest(const std::initializer_list<T>& items) {
   s21::vector<T> actual(items);
@@ -630,6 +628,46 @@ TEST(suiteName, MockClassConstOperatorAt) { constOperatorAtTest<MockClass>(DEF_M
 TEST(suiteName, stringConstOperatorAt) { constOperatorAtTest<std::string>(DEF_STR_VALS); } \
 
 TESTS_CONST_OPERATOR_AT(s21Vector)
+
+// --------------------------------------
+
+template<typename T>
+void frontTest(const std::initializer_list<T>& items) {
+  s21::vector<T> actual(items);
+  std::vector<T> expected(items);
+
+  checkBasicField(actual, expected);
+
+  EXPECT_EQ(actual.front(), expected.front());
+}
+
+#define TESTS_FRONT(suiteName) \
+TEST(suiteName, uShortFront) { frontTest<unsigned short>(DEF_INT_VALS); } \
+TEST(suiteName, intFront) { frontTest<int>(DEF_INT_VALS); } \
+TEST(suiteName, doubleFront) { frontTest<double>(DEF_DBL_VALS); } \
+TEST(suiteName, MockClassFront) { frontTest<MockClass>(DEF_MOCK_VALS); } \
+
+TESTS_FRONT(s21Vector)
+
+// --------------------------------------
+
+template<typename T>
+void backTest(const std::initializer_list<T>& items) {
+  s21::vector<T> actual(items);
+  std::vector<T> expected(items);
+
+  checkBasicField(actual, expected);
+
+  EXPECT_EQ(actual.back(), expected.back());
+}
+
+#define TESTS_BACK(suiteName) \
+TEST(suiteName, uShortBack) { backTest<unsigned short>(DEF_INT_VALS); } \
+TEST(suiteName, intBack) { backTest<int>(DEF_INT_VALS); } \
+TEST(suiteName, doubleBack) { backTest<double>(DEF_DBL_VALS); } \
+TEST(suiteName, MockClassBack) { backTest<MockClass>(DEF_MOCK_VALS); } \
+
+TESTS_BACK(s21Vector)
 
 // --------------------------------------
 
