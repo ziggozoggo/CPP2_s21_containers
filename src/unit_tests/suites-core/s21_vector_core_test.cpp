@@ -277,6 +277,9 @@ void iteratorManualTest(const std::initializer_list<T>& items) {
   EXPECT_EQ(*itActual, *itExpected);
 
   for (std::size_t i = 0; i < actual.size() - 1; i++) {
+    EXPECT_TRUE(itActual == itActual);
+    EXPECT_FALSE(itActual != itActual);
+
     itActual++;
     itExpected++;
 
