@@ -75,6 +75,10 @@ void sizeInitTest() {
   std::vector<T> expected(size);
 
   checkBasicField(actual, expected);
+
+  for (std::size_t i = 0; i < size; i++) {
+    EXPECT_EQ(actual[i], expected[i]);
+  }
 }
 
 
