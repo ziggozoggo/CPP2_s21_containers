@@ -52,7 +52,7 @@ namespace s21 {
 */
 
 template <typename T>
-class IContainer : public IIterable<T> {
+class IContainer {
 public:
   using size_type = std::size_t;
 
