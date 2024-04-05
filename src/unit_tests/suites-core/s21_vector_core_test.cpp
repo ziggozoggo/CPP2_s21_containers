@@ -8,7 +8,7 @@
 
 template<typename T>
 void defaultInitAsContTest() {
-  s21::IContainer<T>* ct = new s21::vector<T>();
+  s21::IContainer* ct = new s21::vector<T>();
 
   EXPECT_EQ(ct->size(), 0);
   EXPECT_TRUE(ct->empty());
@@ -188,7 +188,7 @@ template<typename T>
 void clearAsContTest() {
   const std::size_t size = 100;
 
-  s21::IContainer<T>* ct = new s21::vector<T>(size);
+  s21::IContainer* ct = new s21::vector<T>(size);
 
   EXPECT_EQ(ct->size(), size);
   EXPECT_FALSE(ct->empty());

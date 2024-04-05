@@ -10,7 +10,6 @@
 #include <limits>
 #include <algorithm>
 
-#include "s21_BaseIterator.h"
 #include "s21_container.h"
 
 namespace s21 {
@@ -80,7 +79,7 @@ public:
 };
 
 template <typename T>
-class vector : public IContainer<T> {
+class vector : public IContainer {
 
 // Types
 public:
@@ -115,13 +114,8 @@ public:
 
   virtual void clear() override;
 
-  virtual void swap(IContainer<value_type>& other) noexcept override { (void)other; };
-
   bool operator==(const vector<value_type>& other) const;
   bool operator!=(const vector<value_type>& other) const;
-
-  virtual vector<value_type>& operator=(const IContainer<value_type>& other) { (void)other; return *this; };
-  virtual vector<value_type>& operator=(IContainer<value_type>&& other) noexcept { (void)other; return *this; };
 
 // Data
 private:

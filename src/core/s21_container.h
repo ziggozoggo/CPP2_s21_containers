@@ -3,8 +3,6 @@
 
 #include <cstddef>
 
-#include "s21_Iterable.h"
-
 namespace s21 {
 
 /*
@@ -51,7 +49,6 @@ namespace s21 {
   - operator=(): assignment operators for copying and moving the container.
 */
 
-template <typename T>
 class IContainer {
 public:
   using size_type = std::size_t;
@@ -63,11 +60,6 @@ public:
   virtual bool empty() const noexcept = 0;
 
   virtual void clear() = 0;
-
-  virtual void swap(IContainer<T>& other) noexcept = 0;
-
-  virtual IContainer<T>& operator=(const IContainer<T>& other) = 0;
-  virtual IContainer<T>& operator=(IContainer<T>&& other) noexcept = 0;
 };
 
 }
