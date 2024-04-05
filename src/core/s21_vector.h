@@ -119,8 +119,8 @@ public:
   bool operator==(const vector<value_type>& other) const;
   bool operator!=(const vector<value_type>& other) const;
 
-  vector<T>& operator=(const vector<value_type>& other);
-  vector<T>& operator=(vector<value_type>&& other);
+  vector<value_type>& operator=(const vector<value_type>& other);
+  vector<value_type>& operator=(vector<value_type>&& other);
 
 // Data
 private:
