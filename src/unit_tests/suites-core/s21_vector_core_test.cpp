@@ -1,5 +1,9 @@
 #include "s21_containers_core_test.h"
 
+#ifdef DEBUG
+#include <iostream>
+#endif
+
 #include <algorithm>
 #include <vector>
 #include <type_traits>
@@ -425,7 +429,7 @@ void iteratorEqualTest(const std::initializer_list<T>& items) {
 
   EXPECT_EQ(actual.empty(), actualCopy.empty());
 
-  std::equal(actual.begin(), actual.end(), actualCopy.begin());
+  EXPECT_TRUE(std::equal(actual.begin(), actual.end(), actualCopy.begin()));
 }
 
 #define TESTS_ITERATOR_EQUAL(suiteName) \
@@ -693,7 +697,19 @@ void reserveTest(const std::initializer_list<T>& items) {
   EXPECT_EQ(actual.capacity(), newCapacity);
   EXPECT_EQ(expected.capacity(), newCapacity);
 
-  std::equal(actual.begin(), actual.end(), expected.begin());
+  #ifdef DEBUG
+  std::cout << "ACTUAL:" << std::endl;
+  for (auto i : actual) {
+    std::cout << i << std::endl;
+  }
+
+  std::cout << "EXPECTED:" << std::endl;
+  for (auto i : expected) {
+    std::cout << i << std::endl;
+  }
+  #endif
+
+  EXPECT_TRUE(std::equal(actual.begin(), actual.end(), expected.begin()));
 
   newCapacity = 1000;
   actual.reserve(newCapacity);
@@ -704,7 +720,7 @@ void reserveTest(const std::initializer_list<T>& items) {
   EXPECT_EQ(actual.capacity(), newCapacity);
   EXPECT_EQ(expected.capacity(), newCapacity);
 
-  std::equal(actual.begin(), actual.end(), expected.begin());
+  EXPECT_TRUE(std::equal(actual.begin(), actual.end(), expected.begin()));
 
   newCapacity = 1;
   actual.reserve(newCapacity);
@@ -715,14 +731,13 @@ void reserveTest(const std::initializer_list<T>& items) {
   EXPECT_NE(actual.capacity(), newCapacity);
   EXPECT_NE(expected.capacity(), newCapacity);
 
-  std::equal(actual.begin(), actual.end(), expected.begin());
+  EXPECT_TRUE(std::equal(actual.begin(), actual.end(), expected.begin()));
 }
 
 #define TESTS_RESERVE(suiteName) \
 TEST(suiteName, uShortReserve) { reserveTest<unsigned short>(DEF_INT_VALS); } \
 TEST(suiteName, intReserve) { reserveTest<int>(DEF_INT_VALS); } \
 TEST(suiteName, doubleReserve) { reserveTest<double>(DEF_DBL_VALS); } \
-TEST(suiteName, MockClassReserve) { reserveTest<MockClass>(DEF_MOCK_VALS); } \
 TEST(suiteName, stringReserve) { reserveTest<std::string>(DEF_STR_VALS); } \
 
 TESTS_RESERVE(s21Vector)

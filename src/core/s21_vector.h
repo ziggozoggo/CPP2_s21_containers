@@ -141,6 +141,8 @@ private:
 
 // Private Methods
 private:
+void replaceData(value_type* newData);
+
 #ifdef DEBUG
 void printDebugInfo() {
     std::cout << "Vector: " << std::endl;
@@ -287,20 +289,25 @@ typename vector<value_type>::const_reference vector<value_type>::operator[](size
 }
 
 template<typename value_type>
+void vector<value_type>::replaceData(value_type* newData) {
+  if (data_ != nullptr) {
+    for (size_type i = 0; i < size_; i++) {
+      newData[i] = std::move(data_[i]);
+    }
+
+    delete[] data_;
+  }
+
+  data_ = newData;
+}
+
+template<typename value_type>
 void vector<value_type>::reserve(size_type size) {
   if (size <= capacity_) return;
 
   capacity_ = size;
   value_type* newData = new value_type[capacity_];
-
-  if (data_) {
-    for (size_type i = 0; i < size_; i++) {
-      newData[i] = std::move(data_[i]);
-    }
-  }
-
-  delete[] data_;
-  data_ = newData;
+  replaceData(newData);
 }
 
 template<typename T>
