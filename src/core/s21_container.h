@@ -57,7 +57,6 @@ public:
   virtual ~IContainer() {}
 
   virtual size_type size() const noexcept = 0;
-  virtual size_type max_size() const noexcept = 0;
   virtual bool empty() const noexcept = 0;
 
   virtual void clear() = 0;

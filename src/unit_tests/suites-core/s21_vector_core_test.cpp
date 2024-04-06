@@ -747,6 +747,26 @@ TESTS_RESERVE(s21Vector)
 /* ANOMALY */
 
 template<typename T>
+void sizeErrorInitTest() {
+  const std::size_t size = s21::vector<T>::max_size() + 1;
+
+  EXPECT_THROW({
+    s21::vector<T> actual(size);
+  }, std::length_error);
+}
+
+#define TESTS_SIZE_ERROR_INIT(suiteName) \
+TEST(suiteName, uShortSizeErrorInit) { sizeErrorInitTest<unsigned short>(); } \
+TEST(suiteName, intSizeErrorInit) { sizeErrorInitTest<int>(); } \
+TEST(suiteName, doubleSizeErrorInit) { sizeErrorInitTest<double>(); } \
+TEST(suiteName, MockClassSizeErrorInit) { sizeErrorInitTest<MockClass>(); } \
+TEST(suiteName, stringSizeErrorInit) { sizeErrorInitTest<std::string>(); } \
+
+TESTS_SIZE_ERROR_INIT(s21Vector)
+
+// --------------------------------------
+
+template<typename T>
 void atOutOfRangeTest(const std::initializer_list<T>& items) {
   s21::vector<T> actual(items);
   std::vector<T> expected(items);

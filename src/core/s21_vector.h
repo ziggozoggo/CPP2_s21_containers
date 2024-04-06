@@ -99,19 +99,21 @@ public:
   vector(vector<value_type> &&v) noexcept;
   ~vector();
 
+  static size_type max_size();
+
+  virtual size_type size() const noexcept override;
+  virtual bool empty() const noexcept override;
+  virtual void clear() override;
+
+  size_type capacity() const noexcept;
+
+  value_type* data() const noexcept;
+
   iterator begin();
   const_iterator begin() const;
 
   iterator end();
   const_iterator end() const;
-
-  virtual size_type size() const noexcept override;
-  virtual size_type max_size() const noexcept override;
-  virtual bool empty() const noexcept override;
-
-  size_type capacity() const noexcept;
-
-  value_type* data() const noexcept;
 
   reference at(size_type pos);
   const_reference at(size_type pos) const;
@@ -123,7 +125,6 @@ public:
   const_reference back() const;
 
   void reserve(size_type size);
-  virtual void clear() override;
 
   void swap(vector<value_type>& other) noexcept;
 
@@ -157,31 +158,26 @@ template<typename T>
 vector<T>::vector() noexcept
   : size_     { 0 }
   , capacity_ { 0 }
-  , data_     { nullptr } {
-  #ifdef DEBUG
-    printDebugInfo();
-  #endif
-}
+  , data_     { nullptr } {}
 
 template<typename T>
 vector<T>::vector(size_type n)
   : size_     { n }
   , capacity_ { n }
-  , data_     { new T[capacity_] } {
-  #ifdef DEBUG
-    printDebugInfo();
-  #endif
+  , data_     { nullptr } {
+  if (capacity_ > max_size()) throw std::length_error("Cannot create s21::vecotr larger than max_size()");
+
+  data_ = new T[capacity_];
 }
 
 template<typename T>
 vector<T>::vector(std::initializer_list<value_type> const &items)
   : size_     { items.size() }
   , capacity_ { items.size() }
-  , data_     { new T[capacity_] } {
-  #ifdef DEBUG
-    printDebugInfo();
-  #endif
+  , data_     { nullptr } {
+  if (capacity_ > max_size()) throw std::length_error("Cannot create s21::vecotr larger than max_size()");
 
+  data_ = new T[capacity_];
   std::copy(items.begin(), items.end(), data_);
 }
 
@@ -190,10 +186,6 @@ vector<T>::vector(const vector<T>& other)
   : size_     { other.size_ }
   , capacity_ { other.capacity_ }
   , data_     { new T[capacity_] } {
-  #ifdef DEBUG
-    printDebugInfo();
-  #endif
-
   std::copy(other.data_, other.data_ + size_, data_);
 }
 
@@ -203,10 +195,6 @@ vector<T>::vector(vector<T>&& other) noexcept
   , capacity_ { other.capacity_ }
   , data_     { other.data_ }
 {
-  #ifdef DEBUG
-    printDebugInfo();
-  #endif
-
   if (this != &other) {
     other.size_ = 0;
     other.capacity_ = 0;
@@ -245,7 +233,7 @@ typename vector<T>::size_type vector<T>::size() const noexcept {
 }
 
 template<typename T>
-typename vector<T>::size_type vector<T>::max_size() const noexcept {
+typename vector<T>::size_type vector<T>::max_size() {
   return ((std::numeric_limits<size_type>::max() / sizeof(T)) / 2);
 }
 
