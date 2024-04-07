@@ -841,7 +841,6 @@ void pushBackEmptyTest(const std::initializer_list<T>& items) {
   }
 
   checkBasicField(actual, expected);
-
   EXPECT_TRUE(std::equal(actual.begin(), actual.end(), expected.begin()));
 }
 
@@ -853,6 +852,63 @@ TEST(suiteName, MockClassPushBackEmpty) { pushBackEmptyTest<MockClass>(DEF_MOCK_
 TEST(suiteName, stringPushBackEmpty) { pushBackEmptyTest<std::string>(DEF_STR_VALS); } \
 
 TESTS_PUSH_BACK_EMPTY(s21Vector)
+
+// --------------------------------------
+
+
+template<typename T>
+void popBackTest(const std::initializer_list<T>& items) {
+  s21::vector<T> actual(items);
+  std::vector<T> expected(items);
+
+  checkBasicField(actual, expected);
+
+  actual.pop_back();
+  expected.pop_back();
+
+  checkBasicField(actual, expected);
+  EXPECT_TRUE(std::equal(actual.begin(), actual.end(), expected.begin()));
+
+  actual.push_back(*items.begin());
+  expected.push_back(*items.begin());
+
+  actual.pop_back();
+  expected.pop_back();
+
+  checkBasicField(actual, expected);
+  EXPECT_TRUE(std::equal(actual.begin(), actual.end(), expected.begin()));
+
+  for (auto i : items) {
+    actual.push_back(i);
+    expected.push_back(i);
+  }
+
+  checkBasicField(actual, expected);
+  EXPECT_TRUE(std::equal(actual.begin(), actual.end(), expected.begin()));
+
+  for (std::size_t i = 0; i < items.size(); i++) {
+    actual.pop_back();
+    expected.pop_back();
+  }
+
+  checkBasicField(actual, expected);
+  EXPECT_TRUE(std::equal(actual.begin(), actual.end(), expected.begin()));
+
+  actual.pop_back();
+  expected.pop_back();
+
+  checkBasicField(actual, expected);
+  EXPECT_TRUE(std::equal(actual.begin(), actual.end(), expected.begin()));
+}
+
+#define TESTS_POP_BACK(suiteName) \
+TEST(suiteName, uShortPopBack) { popBackTest<unsigned short>(DEF_INT_VALS); } \
+TEST(suiteName, intPopBack) { popBackTest<int>(DEF_INT_VALS); } \
+TEST(suiteName, doublePopBack) { popBackTest<double>(DEF_DBL_VALS); } \
+TEST(suiteName, MockClassPopBack) { popBackTest<MockClass>(DEF_MOCK_VALS); } \
+TEST(suiteName, stringPopBack) { popBackTest<std::string>(DEF_STR_VALS); } \
+
+TESTS_POP_BACK(s21Vector)
 
 // --------------------------------------
 
@@ -1039,5 +1095,29 @@ TEST(suiteName, intPushBackOutOfRange) { pushBackOutOfRangeTest<int>(DEF_INT_VAL
 TEST(suiteName, doublePushBackOutOfRange) { pushBackOutOfRangeTest<double>(DEF_DBL_VALS); } \
 
 TESTS_ANOMALY_PUSH_BACK_OUT_RANGE(s21Vector)
+
+// --------------------------------------
+
+// #NOTE: std::vector does not check empty when pop_back
+template<typename T>
+void popBackEmptyTest() {
+  s21::vector<T> actual;
+  std::vector<T> expected;
+
+  checkBasicFieldEmpty(actual, expected);
+
+  EXPECT_THROW({
+    actual.pop_back();
+  }, std::out_of_range);
+}
+
+#define TESTS_ANOMALY_POP_BACK_EMPTY(suiteName) \
+TEST(suiteName, uShortPopBackEmpty) { popBackEmptyTest<unsigned short>(); } \
+TEST(suiteName, intPopBackEmpty) { popBackEmptyTest<int>(); } \
+TEST(suiteName, doublePopBackEmpty) { popBackEmptyTest<double>(); } \
+TEST(suiteName, MockClassPopBackEmpty) { popBackEmptyTest<MockClass>(); } \
+TEST(suiteName, stringPopBackEmpty) { popBackEmptyTest<std::string>(); } \
+
+TESTS_ANOMALY_POP_BACK_EMPTY(s21Vector)
 
 // --------------------------------------

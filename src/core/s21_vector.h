@@ -129,6 +129,7 @@ public:
 
   void swap(vector<value_type>& other) noexcept;
   void push_back(const_reference value);
+  void pop_back();
 
   bool operator==(const vector<value_type>& other) const;
   bool operator!=(const vector<value_type>& other) const;
@@ -386,7 +387,14 @@ void vector<value_type>::push_back(const_reference value) {
     }
   }
 
-  data_[size_++] = value;
+  data_[size_] = value;
+  size_++;
+}
+
+template<typename value_type>
+void vector<value_type>::pop_back() {
+  if (empty()) throw std::out_of_range("Vector is empty");
+  --size_;
 }
 
 }
