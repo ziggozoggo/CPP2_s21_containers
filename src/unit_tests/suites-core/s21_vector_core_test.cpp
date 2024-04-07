@@ -744,6 +744,34 @@ TESTS_RESERVE(s21Vector)
 
 // --------------------------------------
 
+template<typename T>
+void pushBackTest(const std::initializer_list<T>& items, std::vector<T> newItems) {
+  s21::vector<T> actual(items);
+  std::vector<T> expected(items);
+
+  checkBasicField(actual, expected);
+
+  for (auto i : newItems) {
+    actual.push_back(i);
+    expected.push_back(i);
+  }
+
+  checkBasicField(actual, expected);
+
+  EXPECT_TRUE(std::equal(actual.begin(), actual.end(), expected.begin()));
+}
+
+#define TESTS_PUSH_BACK(suiteName) \
+TEST(suiteName, uShortPushBack) { pushBackTest<unsigned short>(DEF_INT_VALS, DEF_INT_VALS); } \
+TEST(suiteName, intPushBack) { pushBackTest<int>(DEF_INT_VALS, DEF_INT_VALS); } \
+TEST(suiteName, doublePushBack) { pushBackTest<double>(DEF_DBL_VALS, DEF_DBL_VALS); } \
+TEST(suiteName, MockClassPushBack) { pushBackTest<MockClass>(DEF_MOCK_VALS, DEF_MOCK_VALS); } \
+TEST(suiteName, stringPushBack) { pushBackTest<std::string>(DEF_STR_VALS, DEF_STR_VALS); } \
+
+TESTS_PUSH_BACK(s21Vector)
+
+// --------------------------------------
+
 /* ANOMALY */
 
 template<typename T>
@@ -755,14 +783,14 @@ void sizeErrorInitTest() {
   }, std::length_error);
 }
 
-#define TESTS_SIZE_ERROR_INIT(suiteName) \
+#define TESTS_ANOMALY_SIZE_ERROR_INIT(suiteName) \
 TEST(suiteName, uShortSizeErrorInit) { sizeErrorInitTest<unsigned short>(); } \
 TEST(suiteName, intSizeErrorInit) { sizeErrorInitTest<int>(); } \
 TEST(suiteName, doubleSizeErrorInit) { sizeErrorInitTest<double>(); } \
 TEST(suiteName, MockClassSizeErrorInit) { sizeErrorInitTest<MockClass>(); } \
 TEST(suiteName, stringSizeErrorInit) { sizeErrorInitTest<std::string>(); } \
 
-TESTS_SIZE_ERROR_INIT(s21Vector)
+TESTS_ANOMALY_SIZE_ERROR_INIT(s21Vector)
 
 // --------------------------------------
 
@@ -841,5 +869,44 @@ TEST(suiteName, MockClassAnomalyConstAtOutRange) { constAtOutOfRangeTest<MockCla
 TEST(suiteName, stringAnomalyConstAtOutRange) { constAtOutOfRangeTest<std::string>(DEF_STR_VALS); } \
 
 TESTS_ANOMALY_CONST_AT_OUT_RANGE(s21Vector)
+
+// --------------------------------------
+
+template<typename T>
+void reserveOutOfRangeTest(const std::initializer_list<T>& items) {
+  s21::vector<T> actual(items);
+
+  std::size_t size = s21::vector<T>::max_size() + 1;
+
+  EXPECT_THROW({
+    actual.reserve(size);
+  }, std::length_error);
+}
+
+#define TESTS_ANOMALY_RESERVE_OUT_RANGE(suiteName) \
+TEST(suiteName, uShortReserveOutOfRange) { reserveOutOfRangeTest<unsigned short>(DEF_INT_VALS); } \
+TEST(suiteName, intReserveOutOfRange) { reserveOutOfRangeTest<int>(DEF_INT_VALS); } \
+TEST(suiteName, doubleReserveOutOfRange) { reserveOutOfRangeTest<double>(DEF_DBL_VALS); } \
+
+TESTS_ANOMALY_RESERVE_OUT_RANGE(s21Vector)
+
+// --------------------------------------
+
+template<typename T>
+void pushBackOutOfRangeTest(const std::initializer_list<T>& items) {
+  std::size_t size = s21::vector<T>::max_size();
+  s21::vector<T> actual(size);
+
+  EXPECT_THROW({
+    actual.push_back(*items.begin());
+  }, std::length_error);
+}
+
+#define TESTS_ANOMALY_PUSH_BACK_OUT_RANGE(suiteName) \
+TEST(suiteName, uShortPushBackOutOfRange) { pushBackOutOfRangeTest<unsigned short>(DEF_INT_VALS); } \
+TEST(suiteName, intPushBackOutOfRange) { pushBackOutOfRangeTest<int>(DEF_INT_VALS); } \
+TEST(suiteName, doublePushBackOutOfRange) { pushBackOutOfRangeTest<double>(DEF_DBL_VALS); } \
+
+TESTS_ANOMALY_PUSH_BACK_OUT_RANGE(s21Vector)
 
 // --------------------------------------

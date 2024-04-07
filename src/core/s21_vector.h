@@ -127,6 +127,7 @@ public:
   void reserve(size_type size);
 
   void swap(vector<value_type>& other) noexcept;
+  void push_back(const_reference value);
 
   bool operator==(const vector<value_type>& other) const;
   bool operator!=(const vector<value_type>& other) const;
@@ -143,6 +144,7 @@ private:
 // Private Methods
 private:
 void replaceData(value_type* newData);
+void expandCapacity(size_type newCapacity);
 
 #ifdef DEBUG
 void printDebugInfo() {
@@ -165,7 +167,7 @@ vector<T>::vector(size_type n)
   : size_     { n }
   , capacity_ { n }
   , data_     { nullptr } {
-  if (capacity_ > max_size()) throw std::length_error("Cannot create s21::vecotr larger than max_size()");
+  if (capacity_ > max_size()) throw std::length_error("Cannot create s21::vector larger than max_size()");
 
   data_ = new T[capacity_];
 }
@@ -175,7 +177,7 @@ vector<T>::vector(std::initializer_list<value_type> const &items)
   : size_     { items.size() }
   , capacity_ { items.size() }
   , data_     { nullptr } {
-  if (capacity_ > max_size()) throw std::length_error("Cannot create s21::vecotr larger than max_size()");
+  if (capacity_ > max_size()) throw std::length_error("Cannot create s21::vector larger than max_size()");
 
   data_ = new T[capacity_];
   std::copy(items.begin(), items.end(), data_);
@@ -234,7 +236,7 @@ typename vector<T>::size_type vector<T>::size() const noexcept {
 
 template<typename T>
 typename vector<T>::size_type vector<T>::max_size() {
-  return ((std::numeric_limits<size_type>::max() / sizeof(T)) / 2);
+  return ((std::numeric_limits<size_type>::max() / sizeof(T)) / 4294967296); // #NOTE: 2^32
 }
 
 template<typename T>
@@ -278,6 +280,8 @@ typename vector<value_type>::const_reference vector<value_type>::operator[](size
 
 template<typename value_type>
 void vector<value_type>::replaceData(value_type* newData) {
+  if (newData == nullptr) throw std::invalid_argument("newData argument cannot be null");
+
   if (data_ != nullptr) {
     for (size_type i = 0; i < size_; i++) {
       newData[i] = std::move(data_[i]);
@@ -290,12 +294,18 @@ void vector<value_type>::replaceData(value_type* newData) {
 }
 
 template<typename value_type>
-void vector<value_type>::reserve(size_type size) {
-  if (size <= capacity_) return;
+void vector<value_type>::expandCapacity(size_type newCapacity) {
+  capacity_ = newCapacity;
+  if (capacity_ > max_size()) throw std::length_error("Cannot expand s21::vector larger than max_size()");
 
-  capacity_ = size;
   value_type* newData = new value_type[capacity_];
   replaceData(newData);
+}
+
+template<typename value_type>
+void vector<value_type>::reserve(size_type size) {
+  if (size <= capacity_) return;
+  expandCapacity(size);
 }
 
 template<typename T>
@@ -352,6 +362,16 @@ typename vector<value_type>::const_reference vector<value_type>::front() const {
 template<typename value_type>
 typename vector<value_type>::const_reference vector<value_type>::back() const {
   return data_[size_ - 1];
+}
+
+template<typename value_type>
+void vector<value_type>::push_back(const_reference value) {
+  size_type newSize = size_ + 1;
+
+  if (newSize > capacity_) expandCapacity(capacity_ * 2);
+  size_ = newSize;
+
+  data_[size_ - 1] = value_type(value);
 }
 
 }
