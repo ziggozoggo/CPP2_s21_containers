@@ -125,6 +125,7 @@ public:
   const_reference back() const;
 
   void reserve(size_type size);
+  void shrink_to_fit();
 
   void swap(vector<value_type>& other) noexcept;
   void push_back(const_reference value);
@@ -144,7 +145,7 @@ private:
 // Private Methods
 private:
 void replaceData(value_type* newData);
-void expandCapacity(size_type newCapacity);
+void setCapacity(size_type newCapacity);
 
 #ifdef DEBUG
 void printDebugInfo() {
@@ -294,7 +295,7 @@ void vector<value_type>::replaceData(value_type* newData) {
 }
 
 template<typename value_type>
-void vector<value_type>::expandCapacity(size_type newCapacity) {
+void vector<value_type>::setCapacity(size_type newCapacity) {
   capacity_ = newCapacity;
   if (capacity_ > max_size()) throw std::length_error("Cannot expand s21::vector larger than max_size()");
 
@@ -305,7 +306,13 @@ void vector<value_type>::expandCapacity(size_type newCapacity) {
 template<typename value_type>
 void vector<value_type>::reserve(size_type size) {
   if (size <= capacity_) return;
-  expandCapacity(size);
+  setCapacity(size);
+}
+
+template<typename value_type>
+void vector<value_type>::shrink_to_fit() {
+  if (size_ == capacity_) return;
+  setCapacity(size_);
 }
 
 template<typename T>
@@ -368,7 +375,7 @@ template<typename value_type>
 void vector<value_type>::push_back(const_reference value) {
   size_type newSize = size_ + 1;
 
-  if (newSize > capacity_) expandCapacity(capacity_ * 2);
+  if (newSize > capacity_) setCapacity(capacity_ * 2);
   size_ = newSize;
 
   data_[size_ - 1] = value_type(value);

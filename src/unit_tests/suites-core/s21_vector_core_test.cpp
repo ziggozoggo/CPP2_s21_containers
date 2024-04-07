@@ -745,6 +745,61 @@ TESTS_RESERVE(s21Vector)
 // --------------------------------------
 
 template<typename T>
+void shrinkToFitTest(const std::initializer_list<T>& items) {
+  s21::vector<T> actual(items);
+  std::vector<T> expected(items);
+
+  actual.shrink_to_fit();
+  expected.shrink_to_fit();
+
+  checkBasicField(actual, expected);
+
+  std::size_t newCapacity = 256;
+  actual.reserve(newCapacity);
+  expected.reserve(newCapacity);
+
+  checkBasicField(actual, expected);
+
+  EXPECT_TRUE(std::equal(actual.begin(), actual.end(), expected.begin()));
+
+  actual.shrink_to_fit();
+  expected.shrink_to_fit();
+
+  checkBasicField(actual, expected);
+
+  EXPECT_TRUE(std::equal(actual.begin(), actual.end(), expected.begin()));
+
+  for (auto i : items) {
+    actual.push_back(i);
+    expected.push_back(i);
+  }
+
+  newCapacity = 1000;
+  actual.reserve(newCapacity);
+  expected.reserve(newCapacity);
+
+  checkBasicField(actual, expected);
+
+  actual.shrink_to_fit();
+  expected.shrink_to_fit();
+
+  checkBasicField(actual, expected);
+
+  EXPECT_TRUE(std::equal(actual.begin(), actual.end(), expected.begin()));
+}
+
+#define TESTS_SHRINK_TO_FIT(suiteName) \
+TEST(suiteName, uShortShrinkToFit) { shrinkToFitTest<unsigned short>(DEF_INT_VALS); } \
+TEST(suiteName, intShrinkToFit) { shrinkToFitTest<int>(DEF_INT_VALS); } \
+TEST(suiteName, doubleShrinkToFit) { shrinkToFitTest<double>(DEF_DBL_VALS); } \
+TEST(suiteName, MockClassShrinkToFit) { shrinkToFitTest<MockClass>(DEF_MOCK_VALS); } \
+TEST(suiteName, stringShrinkToFit) { shrinkToFitTest<std::string>(DEF_STR_VALS); } \
+
+TESTS_SHRINK_TO_FIT(s21Vector)
+
+// --------------------------------------
+
+template<typename T>
 void pushBackTest(const std::initializer_list<T>& items, std::vector<T> newItems) {
   s21::vector<T> actual(items);
   std::vector<T> expected(items);
