@@ -83,7 +83,7 @@ class vector : public IContainer {
 
 // Types
 public:
-  using size_type = std::size_t;
+  using typename IContainer::size_type;
   using value_type = T;
   using reference = T&;
   using const_reference = const T&;
@@ -95,8 +95,8 @@ public:
   vector() noexcept;
   vector(size_type n);
   vector(std::initializer_list<value_type> const &items);
-  vector(const vector<value_type> &v);
-  vector(vector<value_type> &&v) noexcept;
+  vector(const vector &v);
+  vector(vector &&v) noexcept;
   ~vector();
 
   static size_type max_size();
@@ -185,7 +185,7 @@ vector<T>::vector(std::initializer_list<value_type> const &items)
 }
 
 template<typename T>
-vector<T>::vector(const vector<T>& other)
+vector<T>::vector(const vector& other)
   : size_     { other.size_ }
   , capacity_ { other.capacity_ }
   , data_     { new T[capacity_] } {
@@ -193,7 +193,7 @@ vector<T>::vector(const vector<T>& other)
 }
 
 template<typename T>
-vector<T>::vector(vector<T>&& other) noexcept
+vector<T>::vector(vector&& other) noexcept
   : size_     { other.size_ }
   , capacity_ { other.capacity_ }
   , data_     { other.data_ }
