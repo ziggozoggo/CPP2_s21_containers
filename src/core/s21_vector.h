@@ -331,6 +331,7 @@ void vector<T>::swap(vector<T>& other) noexcept {
 
 template<typename T>
 bool vector<T>::operator==(const vector<T>& other) const {
+  if (this == &other) return true;
   if (size() != other.size()) return false;
 
   return (std::equal(begin(), end(), other.begin()));
@@ -355,6 +356,10 @@ vector<T>& vector<T>::operator=(const vector<T>& other) {
 
 template<typename T>
 vector<T>& vector<T>::operator=(vector<T>&& other) {
+  if (this == &other) {
+    return *this;
+  }
+
   vector<T> tmp { std::move(other) };
   this->swap(tmp);
 

@@ -856,6 +856,53 @@ TESTS_PUSH_BACK_EMPTY(s21Vector)
 
 // --------------------------------------
 
+/* EDGE */
+
+template<typename T>
+void operatorInitCopySelfTest(const std::initializer_list<T>& items) {
+  s21::vector<T> actual(items);
+  actual = actual;
+
+  std::vector<T> expected(items);
+  expected = expected;
+
+  checkBasicField(actual, expected);
+
+  EXPECT_TRUE(actual == actual);
+  EXPECT_TRUE(std::equal(actual.begin(), actual.end(), expected.begin()));
+}
+
+#define TESTS_EDGE_OPERATOR_COPY_SELF_INIT(suiteName) \
+TEST(suiteName, uShortOperatorCopyInitSelt) { operatorInitCopySelfTest<unsigned short>(DEF_INT_VALS); } \
+TEST(suiteName, intOperatorCopyInitSelt) { operatorInitCopySelfTest<int>(DEF_INT_VALS); } \
+TEST(suiteName, doubleOperatorCopyInitSelt) { operatorInitCopySelfTest<double>(DEF_DBL_VALS); } \
+TEST(suiteName, MockClassOperatorCopyInitSelt) { operatorInitCopySelfTest<MockClass>(DEF_MOCK_VALS); } \
+TEST(suiteName, stringOperatorCopyInitSelt) { operatorInitCopySelfTest<std::string>(DEF_STR_VALS); } \
+
+TESTS_EDGE_OPERATOR_COPY_SELF_INIT(s21Vector)
+
+// --------------------------------------
+
+// #NOTE: std::vector does not check the case of self-assignment
+template<typename T>
+void operatorInitMoveSelfTest(const std::initializer_list<T>& items) {
+  s21::vector<T> actual(items);
+  actual = std::move(actual);
+
+  EXPECT_TRUE(actual == actual);
+}
+
+#define TESTS_EDGE_OPERATOR_MOVE_SELF_INIT(suiteName) \
+TEST(suiteName, uShortOperatorMoveSelfInit) { operatorInitMoveSelfTest<unsigned short>(DEF_INT_VALS); } \
+TEST(suiteName, intOperatorMoveSelfInit) { operatorInitMoveSelfTest<int>(DEF_INT_VALS); } \
+TEST(suiteName, doubleOperatorMoveSelfInit) { operatorInitMoveSelfTest<double>(DEF_DBL_VALS); } \
+TEST(suiteName, MockClassOperatorMoveSelfInit) { operatorInitMoveSelfTest<MockClass>(DEF_MOCK_VALS); } \
+TEST(suiteName, stringOperatorMoveSelfInit) { operatorInitMoveSelfTest<std::string>(DEF_STR_VALS); } \
+
+TESTS_EDGE_OPERATOR_MOVE_SELF_INIT(s21Vector)
+
+// --------------------------------------
+
 /* ANOMALY */
 
 template<typename T>
