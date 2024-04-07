@@ -373,12 +373,15 @@ typename vector<value_type>::const_reference vector<value_type>::back() const {
 
 template<typename value_type>
 void vector<value_type>::push_back(const_reference value) {
-  size_type newSize = size_ + 1;
+  if (size_ >= capacity_) {
+    if (capacity_ == 0) {
+      setCapacity(1);
+    } else {
+      setCapacity(capacity_ * 2);
+    }
+  }
 
-  if (newSize > capacity_) setCapacity(capacity_ * 2);
-  size_ = newSize;
-
-  data_[size_ - 1] = value_type(value);
+  data_[size_++] = value;
 }
 
 }

@@ -12,6 +12,15 @@
 #include "core/s21_vector.h"
 
 template <typename T>
+void checkBasicFieldEmpty(const s21::vector<T>& actual, const std::vector<T>& expected) {
+  EXPECT_EQ(actual.size(), expected.size());
+  EXPECT_EQ(actual.capacity(), expected.capacity());
+  EXPECT_EQ(actual.data(), expected.data());
+
+  EXPECT_EQ(actual.empty(), expected.empty());
+}
+
+template <typename T>
 void checkBasicField(const s21::vector<T>& actual, const std::vector<T>& expected) {
   EXPECT_EQ(actual.size(), expected.size());
   EXPECT_EQ(actual.capacity(), expected.capacity());
@@ -53,11 +62,7 @@ void defaultInitTest() {
   s21::vector<T> actual;
   std::vector<T> expected;
 
-  EXPECT_EQ(actual.size(), expected.size());
-  EXPECT_EQ(actual.capacity(), expected.capacity());
-  EXPECT_EQ(actual.data(), expected.data());
-
-  EXPECT_EQ(actual.empty(), expected.empty());
+  checkBasicFieldEmpty(actual, expected);
 }
 
 #define TESTS_EMPTY_INIT(suiteName) \
@@ -476,11 +481,7 @@ void swapTest(const std::initializer_list<T>& items) {
 
   EXPECT_NE(expected.empty(), expectedSwap.empty());
 
-  EXPECT_EQ(actual.size(), expected.size());
-  EXPECT_EQ(actual.capacity(), expected.capacity());
-  EXPECT_EQ(actual.data(), expected.data());
-
-  EXPECT_EQ(actual.empty(), expected.empty());
+  checkBasicFieldEmpty(actual, expected);
 
   EXPECT_EQ(actualSwap.size(), expectedSwap.size());
   EXPECT_EQ(actualSwap.capacity(), expectedSwap.capacity());
@@ -800,13 +801,13 @@ TESTS_SHRINK_TO_FIT(s21Vector)
 // --------------------------------------
 
 template<typename T>
-void pushBackTest(const std::initializer_list<T>& items, std::vector<T> newItems) {
+void pushBackTest(const std::initializer_list<T>& items) {
   s21::vector<T> actual(items);
   std::vector<T> expected(items);
 
   checkBasicField(actual, expected);
 
-  for (auto i : newItems) {
+  for (auto i : items) {
     actual.push_back(i);
     expected.push_back(i);
   }
@@ -817,13 +818,41 @@ void pushBackTest(const std::initializer_list<T>& items, std::vector<T> newItems
 }
 
 #define TESTS_PUSH_BACK(suiteName) \
-TEST(suiteName, uShortPushBack) { pushBackTest<unsigned short>(DEF_INT_VALS, DEF_INT_VALS); } \
-TEST(suiteName, intPushBack) { pushBackTest<int>(DEF_INT_VALS, DEF_INT_VALS); } \
-TEST(suiteName, doublePushBack) { pushBackTest<double>(DEF_DBL_VALS, DEF_DBL_VALS); } \
-TEST(suiteName, MockClassPushBack) { pushBackTest<MockClass>(DEF_MOCK_VALS, DEF_MOCK_VALS); } \
-TEST(suiteName, stringPushBack) { pushBackTest<std::string>(DEF_STR_VALS, DEF_STR_VALS); } \
+TEST(suiteName, uShortPushBack) { pushBackTest<unsigned short>(DEF_INT_VALS); } \
+TEST(suiteName, intPushBack) { pushBackTest<int>(DEF_INT_VALS); } \
+TEST(suiteName, doublePushBack) { pushBackTest<double>(DEF_DBL_VALS); } \
+TEST(suiteName, MockClassPushBack) { pushBackTest<MockClass>(DEF_MOCK_VALS); } \
+TEST(suiteName, stringPushBack) { pushBackTest<std::string>(DEF_STR_VALS); } \
 
 TESTS_PUSH_BACK(s21Vector)
+
+// --------------------------------------
+
+template<typename T>
+void pushBackEmptyTest(const std::initializer_list<T>& items) {
+  s21::vector<T> actual;
+  std::vector<T> expected;
+
+  checkBasicFieldEmpty(actual, expected);
+
+  for (auto i : items) {
+    actual.push_back(i);
+    expected.push_back(i);
+  }
+
+  checkBasicField(actual, expected);
+
+  EXPECT_TRUE(std::equal(actual.begin(), actual.end(), expected.begin()));
+}
+
+#define TESTS_PUSH_BACK_EMPTY(suiteName) \
+TEST(suiteName, uShortPushBackEmpty) { pushBackEmptyTest<unsigned short>(DEF_INT_VALS); } \
+TEST(suiteName, intPushBackEmpty) { pushBackEmptyTest<int>(DEF_INT_VALS); } \
+TEST(suiteName, doublePushBackEmpty) { pushBackEmptyTest<double>(DEF_DBL_VALS); } \
+TEST(suiteName, MockClassPushBackEmpty) { pushBackEmptyTest<MockClass>(DEF_MOCK_VALS); } \
+TEST(suiteName, stringPushBackEmpty) { pushBackEmptyTest<std::string>(DEF_STR_VALS); } \
+
+TESTS_PUSH_BACK_EMPTY(s21Vector)
 
 // --------------------------------------
 
