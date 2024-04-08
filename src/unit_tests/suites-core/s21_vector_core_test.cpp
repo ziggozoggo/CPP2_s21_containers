@@ -129,11 +129,8 @@ void copyInitTest(const std::initializer_list<T>& items) {
   std::vector<T> expected(items);
   std::vector<T> expectedCopy(items);
 
-  EXPECT_EQ(actualCopy.size(), expectedCopy.size());
-  EXPECT_EQ(actualCopy.capacity(), expectedCopy.capacity());
-  EXPECT_NE(actualCopy.data(), expectedCopy.data());
-
-  EXPECT_EQ(actualCopy.empty(), expectedCopy.empty());
+  checkBasicField(actual, expected);
+  checkBasicField(actualCopy, expectedCopy);
 
   EXPECT_TRUE(actual == actualCopy);
 }
@@ -157,11 +154,7 @@ void moveInitTest(const std::initializer_list<T>& items) {
   std::vector<T> expected(items);
   std::vector<T> expectedMove(std::move(expected));
 
-  EXPECT_EQ(actualMove.size(), expectedMove.size());
-  EXPECT_EQ(actualMove.capacity(), expectedMove.capacity());
-  EXPECT_NE(actualMove.data(), expectedMove.data());
-
-  EXPECT_EQ(actualMove.empty(), expectedMove.empty());
+  checkBasicField(actualMove, expectedMove);
 
   EXPECT_TRUE(actual != actualMove);
 
@@ -197,11 +190,7 @@ void operatorCopyTest(const std::initializer_list<T>& items) {
   std::vector<T> expectedCopy(size);
   expectedCopy = expected;
 
-  EXPECT_EQ(actualCopy.size(), expectedCopy.size());
-  EXPECT_EQ(actualCopy.capacity(), expectedCopy.capacity());
-  EXPECT_NE(actualCopy.data(), expectedCopy.data());
-
-  EXPECT_EQ(actualCopy.empty(), expectedCopy.empty());
+  checkBasicField(actualCopy, expectedCopy);
 
   EXPECT_TRUE(actual == actualCopy);
 }
@@ -229,11 +218,7 @@ void operatorMoveTest(const std::initializer_list<T>& items) {
   std::vector<T> expectedMove(size);
   expectedMove = std::move(expected);
 
-  EXPECT_EQ(actualMove.size(), expectedMove.size());
-  EXPECT_EQ(actualMove.capacity(), expectedMove.capacity());
-  EXPECT_NE(actualMove.data(), expectedMove.data());
-
-  EXPECT_EQ(actualMove.empty(), expectedMove.empty());
+  checkBasicField(actualMove, expectedMove);
 
   EXPECT_TRUE(actual != actualMove);
   EXPECT_TRUE(std::equal(actualMove.begin(), actualMove.end(), expectedMove.begin()));
