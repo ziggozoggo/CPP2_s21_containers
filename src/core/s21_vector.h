@@ -18,63 +18,102 @@ template <typename T>
 class VectorIterator {
 // Types
 public:
+  using iterator_category = std::random_access_iterator_tag;
   using difference_type = std::ptrdiff_t;
   using value_type = T;
   using pointer = T*;
   using reference = T&;
-  using iterator_category = std::random_access_iterator_tag;
   using const_reference = const T&;
 
 // Public Methods
 public:
-  VectorIterator(T* ptr) : ptr_(ptr) {}
+  VectorIterator(value_type* ptr) : ptr_(ptr) {}
+  VectorIterator(const_reference obj) : ptr_(&obj) {}
+
   VectorIterator(VectorIterator& other) : ptr_(other.ptr_) {}
 
-  VectorIterator<T>& operator++() {
+  VectorIterator<value_type>& operator++() {
     ++ptr_;
     return *this;
   }
 
-  VectorIterator<T> operator++(int) {
-    VectorIterator<T> temp = *this;
+  VectorIterator<value_type> operator++(int) {
+    VectorIterator<value_type> temp = *this;
     ++ptr_;
     return temp;
   }
 
-  VectorIterator<T>& operator--() {
+  VectorIterator<value_type> operator+(int shift) {
+    VectorIterator<value_type> temp = *this;
+    temp.ptr_ += shift;
+    return temp;
+  }
+
+  VectorIterator<value_type> operator+(const VectorIterator<value_type>& shift) {
+    VectorIterator<value_type> temp = *this;
+    temp.ptr_ += shift.ptr_;
+    return temp;
+  }
+
+  VectorIterator<value_type>& operator--() {
     --ptr_;
     return *this;
   }
 
-  VectorIterator<T> operator--(int) {
-    VectorIterator<T> temp = *this;
+  VectorIterator<value_type> operator--(int) {
+    VectorIterator<value_type> temp = *this;
     --ptr_;
     return temp;
   }
 
-  bool operator==(VectorIterator<T>& other) const {
+  VectorIterator<value_type> operator-(int shift) {
+    VectorIterator<value_type> temp = *this;
+    temp.ptr_ -= shift;
+    return temp;
+  }
+
+  VectorIterator<value_type> operator-(const VectorIterator<value_type>& shift) {
+    VectorIterator<value_type> temp = *this;
+    temp.ptr_ -= shift.ptr_;
+    return temp;
+  }
+
+  bool operator==(VectorIterator<value_type>& other) const {
     return (ptr_ == other.ptr_);
   }
 
-  bool operator!=(VectorIterator<T>& other) const {
+  bool operator!=(VectorIterator<value_type>& other) const {
     return !(*this == other);
   }
 
-  T& operator*() const {
+  reference operator*() const {
     return *ptr_;
+  }
+
+  static difference_type distance(const VectorIterator<value_type>& first, const VectorIterator<value_type>& second) {
+    return std::distance(first.ptr_, second.ptr_);
   }
 
 // Data
 private:
-  T* ptr_;
+  value_type* ptr_;
 };
 
 template<typename T>
 class VectorConstIterator : public VectorIterator<T> {
+// Types
 public:
-  VectorConstIterator(VectorIterator<T> other) : VectorIterator<T>(other) {}
-  const T& operator*() {
-    return VectorIterator<T>::operator*();
+  using iterator_category = std::random_access_iterator_tag;
+  using difference_type = std::ptrdiff_t;
+  using value_type = T;
+  using pointer = T*;
+  using reference = T&;
+  using const_reference = const T&;
+
+public:
+  VectorConstIterator(VectorIterator<value_type> other) : VectorIterator<value_type>(other) {}
+  const_reference operator*() {
+    return VectorIterator<value_type>::operator*();
   }
 };
 
@@ -128,6 +167,7 @@ public:
   void shrink_to_fit();
 
   void swap(vector<value_type>& other) noexcept;
+  iterator insert(iterator pos, const_reference value);
   void push_back(const_reference value);
   void pop_back();
 
@@ -147,6 +187,7 @@ private:
 private:
 void replaceData(value_type* newData);
 void setCapacity(size_type newCapacity);
+void growCapacity();
 
 #ifdef DEBUG
 void printDebugInfo() {
@@ -285,10 +326,7 @@ void vector<value_type>::replaceData(value_type* newData) {
   if (newData == nullptr) throw std::invalid_argument("newData argument cannot be null");
 
   if (data_ != nullptr) {
-    for (size_type i = 0; i < size_; i++) {
-      newData[i] = std::move(data_[i]);
-    }
-
+    std::move(data_, data_ + size_, newData);
     delete[] data_;
   }
 
@@ -302,6 +340,15 @@ void vector<value_type>::setCapacity(size_type newCapacity) {
 
   value_type* newData = new value_type[capacity_];
   replaceData(newData);
+}
+
+template<typename value_type>
+void vector<value_type>::growCapacity() {
+  if (capacity_ == 0) {
+    setCapacity(1);
+  } else {
+    setCapacity(capacity_ * 2);
+  }
 }
 
 template<typename value_type>
@@ -379,22 +426,37 @@ typename vector<value_type>::const_reference vector<value_type>::back() const {
 
 template<typename value_type>
 void vector<value_type>::push_back(const_reference value) {
-  if (size_ >= capacity_) {
-    if (capacity_ == 0) {
-      setCapacity(1);
-    } else {
-      setCapacity(capacity_ * 2);
-    }
-  }
+  if (size_ >= capacity_) growCapacity();
 
   data_[size_] = value;
-  size_++;
+  ++size_;
 }
 
 template<typename value_type>
 void vector<value_type>::pop_back() {
   if (empty()) throw std::out_of_range("Vector is empty");
   --size_;
+}
+
+template<typename value_type>
+typename vector<value_type>::iterator vector<value_type>::insert(iterator pos, const_reference value) {
+  const auto index = VectorIterator<value_type>::distance(begin(), pos);
+
+  if (size_ >= capacity_) growCapacity();
+
+  value_type* newData = new value_type[capacity_];
+  std::move(data_, data_ + index, newData);
+
+  newData[index] = value;
+
+  std::move(data_ + index, data_ + size_, newData + index + 1);
+
+  delete[] data_;
+  data_ = newData;
+
+  ++size_;
+
+  return begin() + index;
 }
 
 }

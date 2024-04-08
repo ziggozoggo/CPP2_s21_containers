@@ -186,12 +186,16 @@ TESTS_MOVE_INIT(s21Vector)
 // --------------------------------------
 
 template<typename T>
-void operatorInitCopyTest(const std::initializer_list<T>& items) {
+void operatorCopyTest(const std::initializer_list<T>& items) {
+  const std::size_t size = 1;
+
   s21::vector<T> actual(items);
-  s21::vector<T> actualCopy = actual;
+  s21::vector<T> actualCopy(size);
+  actualCopy = actual;
 
   std::vector<T> expected(items);
-  std::vector<T> expectedCopy = items;
+  std::vector<T> expectedCopy(size);
+  expectedCopy = expected;
 
   EXPECT_EQ(actualCopy.size(), expectedCopy.size());
   EXPECT_EQ(actualCopy.capacity(), expectedCopy.capacity());
@@ -202,24 +206,28 @@ void operatorInitCopyTest(const std::initializer_list<T>& items) {
   EXPECT_TRUE(actual == actualCopy);
 }
 
-#define TESTS_OPERATOR_COPY_INIT(suiteName) \
-TEST(suiteName, uShortOperatorCopyInit) { operatorInitCopyTest<unsigned short>(DEF_INT_VALS); } \
-TEST(suiteName, intOperatorCopyInit) { operatorInitCopyTest<int>(DEF_INT_VALS); } \
-TEST(suiteName, doubleOperatorCopyInit) { operatorInitCopyTest<double>(DEF_DBL_VALS); } \
-TEST(suiteName, MockClassOperatorCopyInit) { operatorInitCopyTest<MockClass>(DEF_MOCK_VALS); } \
-TEST(suiteName, stringOperatorCopyInit) { operatorInitCopyTest<std::string>(DEF_STR_VALS); } \
+#define TESTS_OPERATOR_COPY(suiteName) \
+TEST(suiteName, uShortOperatorCopy) { operatorCopyTest<unsigned short>(DEF_INT_VALS); } \
+TEST(suiteName, intOperatorCopy) { operatorCopyTest<int>(DEF_INT_VALS); } \
+TEST(suiteName, doubleOperatorCopy) { operatorCopyTest<double>(DEF_DBL_VALS); } \
+TEST(suiteName, MockClassOperatorCopy) { operatorCopyTest<MockClass>(DEF_MOCK_VALS); } \
+TEST(suiteName, stringOperatorCopy) { operatorCopyTest<std::string>(DEF_STR_VALS); } \
 
-TESTS_OPERATOR_COPY_INIT(s21Vector)
+TESTS_OPERATOR_COPY(s21Vector)
 
 // --------------------------------------
 
 template<typename T>
-void operatorInitMoveTest(const std::initializer_list<T>& items) {
+void operatorMoveTest(const std::initializer_list<T>& items) {
+  const std::size_t size = 5;
+
   s21::vector<T> actual(items);
-  s21::vector<T> actualMove = std::move(actual);
+  s21::vector<T> actualMove(size);
+  actualMove = std::move(actual);
 
   std::vector<T> expected(items);
-  std::vector<T> expectedMove = std::move(expected);
+  std::vector<T> expectedMove(size);
+  expectedMove = std::move(expected);
 
   EXPECT_EQ(actualMove.size(), expectedMove.size());
   EXPECT_EQ(actualMove.capacity(), expectedMove.capacity());
@@ -228,6 +236,7 @@ void operatorInitMoveTest(const std::initializer_list<T>& items) {
   EXPECT_EQ(actualMove.empty(), expectedMove.empty());
 
   EXPECT_TRUE(actual != actualMove);
+  EXPECT_TRUE(std::equal(actualMove.begin(), actualMove.end(), expectedMove.begin()));
 
   EXPECT_EQ(actual.size(), 0);
   EXPECT_EQ(actual.capacity(), 0);
@@ -238,14 +247,14 @@ void operatorInitMoveTest(const std::initializer_list<T>& items) {
   EXPECT_EQ(expected.data(), nullptr);
 }
 
-#define TESTS_OPERATOR_MOVE_INIT(suiteName) \
-TEST(suiteName, uShortOperatorMoveInit) { operatorInitMoveTest<unsigned short>(DEF_INT_VALS); } \
-TEST(suiteName, intOperatorMoveInit) { operatorInitMoveTest<int>(DEF_INT_VALS); } \
-TEST(suiteName, doubleOperatorMoveInit) { operatorInitMoveTest<double>(DEF_DBL_VALS); } \
-TEST(suiteName, MockClassOperatorMoveInit) { operatorInitMoveTest<MockClass>(DEF_MOCK_VALS); } \
-TEST(suiteName, stringOperatorMoveInit) { operatorInitMoveTest<std::string>(DEF_STR_VALS); } \
+#define TESTS_OPERATOR_MOVE(suiteName) \
+TEST(suiteName, uShortOperatorMove) { operatorMoveTest<unsigned short>(DEF_INT_VALS); } \
+TEST(suiteName, intOperatorMove) { operatorMoveTest<int>(DEF_INT_VALS); } \
+TEST(suiteName, doubleOperatorMove) { operatorMoveTest<double>(DEF_DBL_VALS); } \
+TEST(suiteName, MockClassOperatorMove) { operatorMoveTest<MockClass>(DEF_MOCK_VALS); } \
+TEST(suiteName, stringOperatorMove) { operatorMoveTest<std::string>(DEF_STR_VALS); } \
 
-TESTS_OPERATOR_MOVE_INIT(s21Vector)
+TESTS_OPERATOR_MOVE(s21Vector)
 
 // --------------------------------------
 
@@ -855,6 +864,92 @@ TESTS_PUSH_BACK_EMPTY(s21Vector)
 
 // --------------------------------------
 
+template<typename T>
+void insertTest(const std::initializer_list<T>& items) {
+  s21::vector<T> actual(items);
+  std::vector<T> expected(items);
+
+  checkBasicField(actual, expected);
+
+  actual.insert(actual.begin() + 1, *items.begin());
+  expected.insert(expected.begin() + 1, *items.begin());
+
+  checkBasicField(actual, expected);
+  EXPECT_TRUE(std::equal(actual.begin(), actual.end(), expected.begin()));
+
+  actual.insert(actual.begin() + 3, *items.begin());
+  expected.insert(expected.begin() + 3, *items.begin());
+
+  checkBasicField(actual, expected);
+  EXPECT_TRUE(std::equal(actual.begin(), actual.end(), expected.begin()));
+
+  actual.insert(actual.end() - 1, *items.begin());
+  expected.insert(expected.end() - 1, *items.begin());
+
+  checkBasicField(actual, expected);
+  EXPECT_TRUE(std::equal(actual.begin(), actual.end(), expected.begin()));
+
+  actual.insert(actual.end() - 3, *(items.end() - 1));
+  expected.insert(expected.end() - 3, *(items.end() - 1));
+
+  checkBasicField(actual, expected);
+  EXPECT_TRUE(std::equal(actual.begin(), actual.end(), expected.begin()));
+
+  for (std::size_t i = 0; i < 100; i++) {
+    actual.insert(actual.end() - 3, *(items.end() - 1));
+    expected.insert(expected.end() - 3, *(items.end() - 1));
+
+    checkBasicField(actual, expected);
+    EXPECT_TRUE(std::equal(actual.begin(), actual.end(), expected.begin()));
+  }
+
+  checkBasicField(actual, expected);
+  EXPECT_TRUE(std::equal(actual.begin(), actual.end(), expected.begin()));
+}
+
+#define TESTS_INSERT(suiteName) \
+TEST(suiteName, uShortInsert) { insertTest<unsigned short>(DEF_INT_VALS); } \
+TEST(suiteName, intInsert) { insertTest<int>(DEF_INT_VALS); } \
+TEST(suiteName, doubleInsert) { insertTest<double>(DEF_DBL_VALS); } \
+TEST(suiteName, MockClassInsert) { insertTest<MockClass>(DEF_MOCK_VALS); } \
+TEST(suiteName, stringInsert) { insertTest<std::string>(DEF_STR_VALS); } \
+
+TESTS_INSERT(s21Vector)
+
+// --------------------------------------
+
+template<typename T>
+void insertEmptyTest(const std::initializer_list<T>& items) {
+  s21::vector<T> actual;
+  std::vector<T> expected;
+
+  checkBasicFieldEmpty(actual, expected);
+
+  actual.insert(actual.begin(), *items.begin());
+  expected.insert(expected.begin(), *items.begin());
+
+  for (std::size_t i = 0; i < 100; i++) {
+    actual.insert(actual.begin() + 1, *(items.end() - 1));
+    expected.insert(expected.begin() + 1, *(items.end() - 1));
+
+    checkBasicField(actual, expected);
+    EXPECT_TRUE(std::equal(actual.begin(), actual.end(), expected.begin()));
+  }
+
+  checkBasicField(actual, expected);
+  EXPECT_TRUE(std::equal(actual.begin(), actual.end(), expected.begin()));
+}
+
+#define TESTS_INSERT_EMPTY(suiteName) \
+TEST(suiteName, uShortInsertEmpty) { insertEmptyTest<unsigned short>(DEF_INT_VALS); } \
+TEST(suiteName, intInsertEmpty) { insertEmptyTest<int>(DEF_INT_VALS); } \
+TEST(suiteName, doubleInsertEmpty) { insertEmptyTest<double>(DEF_DBL_VALS); } \
+TEST(suiteName, MockClassInsertEmpty) { insertEmptyTest<MockClass>(DEF_MOCK_VALS); } \
+TEST(suiteName, stringInsertEmpty) { insertEmptyTest<std::string>(DEF_STR_VALS); } \
+
+TESTS_INSERT_EMPTY(s21Vector)
+
+// --------------------------------------
 
 template<typename T>
 void popBackTest(const std::initializer_list<T>& items) {
