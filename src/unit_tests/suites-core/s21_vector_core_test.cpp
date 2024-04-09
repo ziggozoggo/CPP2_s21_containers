@@ -861,10 +861,14 @@ void insertTest(const std::initializer_list<T>& items) {
 
   checkBasicField(actual, expected);
 
-  actual.insert(actual.begin() + 1, *items.begin());
-  expected.insert(expected.begin() + 1, *items.begin());
+  auto actualIt = actual.insert(actual.begin() + 1, *items.begin());
+  auto expectedIt = expected.insert(expected.begin() + 1, *items.begin());
 
   checkBasicField(actual, expected);
+
+  EXPECT_TRUE(actualIt == (actual.begin() + 1));
+  EXPECT_TRUE(expectedIt == (expected.begin() + 1));
+
   EXPECT_TRUE(std::equal(actual.begin(), actual.end(), expected.begin()));
 
   actual.insert(actual.begin() + 3, *items.begin());
@@ -873,8 +877,17 @@ void insertTest(const std::initializer_list<T>& items) {
   checkBasicField(actual, expected);
   EXPECT_TRUE(std::equal(actual.begin(), actual.end(), expected.begin()));
 
-  actual.insert(actual.end() - 1, *items.begin());
-  expected.insert(expected.end() - 1, *items.begin());
+  actual.insert(actual.begin(), *items.begin());
+  expected.insert(expected.begin(), *items.begin());
+
+  checkBasicField(actual, expected);
+  EXPECT_TRUE(std::equal(actual.begin(), actual.end(), expected.begin()));
+
+  auto actualIt_2 = actual.insert(actual.end() - 1, *items.begin());
+  auto expectedIt_2 = expected.insert(expected.end() - 1, *items.begin());
+
+  EXPECT_TRUE(actualIt_2 == actual.end() - 2);
+  EXPECT_TRUE(expectedIt_2 == expected.end() - 2);
 
   checkBasicField(actual, expected);
   EXPECT_TRUE(std::equal(actual.begin(), actual.end(), expected.begin()));
