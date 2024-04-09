@@ -138,6 +138,9 @@ public:
   vector(vector &&v) noexcept;
   ~vector();
 
+  vector<value_type>& operator=(const vector<value_type>& other);
+  vector<value_type>& operator=(vector<value_type>&& other);
+
   static size_type max_size();
 
   size_type capacity() const noexcept;
@@ -174,9 +177,6 @@ public:
   bool operator==(const vector<value_type>& other) const;
   bool operator!=(const vector<value_type>& other) const;
 
-  vector<value_type>& operator=(const vector<value_type>& other);
-  vector<value_type>& operator=(vector<value_type>&& other);
-
 // Data
 private:
   size_type size_;
@@ -199,43 +199,43 @@ void printDebugInfo() {
 #endif
 };
 
-template<typename T>
-vector<T>::vector() noexcept
+template<typename value_type>
+vector<value_type>::vector() noexcept
   : size_     { 0 }
   , capacity_ { 0 }
   , data_     { nullptr } {}
 
-template<typename T>
-vector<T>::vector(size_type n)
+template<typename value_type>
+vector<value_type>::vector(size_type n)
   : size_     { n }
   , capacity_ { n }
   , data_     { nullptr } {
   if (capacity_ > max_size()) throw std::length_error("Cannot create s21::vector larger than max_size()");
 
-  data_ = new T[capacity_];
+  data_ = new value_type[capacity_];
 }
 
-template<typename T>
-vector<T>::vector(std::initializer_list<value_type> const &items)
+template<typename value_type>
+vector<value_type>::vector(std::initializer_list<value_type> const &items)
   : size_     { items.size() }
   , capacity_ { items.size() }
   , data_     { nullptr } {
   if (capacity_ > max_size()) throw std::length_error("Cannot create s21::vector larger than max_size()");
 
-  data_ = new T[capacity_];
+  data_ = new value_type[capacity_];
   std::copy(items.begin(), items.end(), data_);
 }
 
-template<typename T>
-vector<T>::vector(const vector& other)
+template<typename value_type>
+vector<value_type>::vector(const vector& other)
   : size_     { other.size_ }
   , capacity_ { other.capacity_ }
-  , data_     { new T[capacity_] } {
+  , data_     { new value_type[capacity_] } {
   std::copy(other.data_, other.data_ + size_, data_);
 }
 
-template<typename T>
-vector<T>::vector(vector&& other) noexcept
+template<typename value_type>
+vector<value_type>::vector(vector&& other) noexcept
   : size_     { other.size_ }
   , capacity_ { other.capacity_ }
   , data_     { other.data_ }
@@ -247,53 +247,53 @@ vector<T>::vector(vector&& other) noexcept
   }
 }
 
-template<typename T>
-vector<T>::~vector() {
+template<typename value_type>
+vector<value_type>::~vector() {
   if (data_ != nullptr) delete[] data_;
 }
 
-template<typename T>
-typename vector<T>::iterator vector<T>::begin() {
+template<typename value_type>
+typename vector<value_type>::iterator vector<value_type>::begin() {
   return iterator(&data_[0]);
 };
 
-template<typename T>
-typename vector<T>::const_iterator vector<T>::begin() const {
+template<typename value_type>
+typename vector<value_type>::const_iterator vector<value_type>::begin() const {
   return const_iterator(&data_[0]);
 };
 
-template<typename T>
-typename vector<T>::iterator vector<T>::end() {
+template<typename value_type>
+typename vector<value_type>::iterator vector<value_type>::end() {
   return iterator(&data_[size_]);
 };
 
-template<typename T>
-typename vector<T>::const_iterator vector<T>::end() const {
+template<typename value_type>
+typename vector<value_type>::const_iterator vector<value_type>::end() const {
   return const_iterator(&data_[size_]);
 };
 
-template<typename T>
-typename vector<T>::size_type vector<T>::size() const noexcept {
+template<typename value_type>
+typename vector<value_type>::size_type vector<value_type>::size() const noexcept {
   return size_;
 }
 
-template<typename T>
-typename vector<T>::size_type vector<T>::max_size() {
-  return ((std::numeric_limits<size_type>::max() / sizeof(T)) / 4294967296); // #NOTE: 2^32
+template<typename value_type>
+typename vector<value_type>::size_type vector<value_type>::max_size() {
+  return ((std::numeric_limits<size_type>::max() / sizeof(value_type)) / 4294967296); // #NOvalue_typeE: 2^32
 }
 
-template<typename T>
-bool vector<T>::empty() const noexcept {
+template<typename value_type>
+bool vector<value_type>::empty() const noexcept {
   return (size_ == 0);
 }
 
-template<typename T>
-typename vector<T>::size_type vector<T>::capacity() const noexcept {
+template<typename value_type>
+typename vector<value_type>::size_type vector<value_type>::capacity() const noexcept {
   return capacity_;
 }
 
-template<typename T>
-T* vector<T>::data() const noexcept {
+template<typename value_type>
+value_type* vector<value_type>::data() const noexcept {
   return data_;
 }
 
@@ -363,52 +363,52 @@ void vector<value_type>::shrink_to_fit() {
   setCapacity(size_);
 }
 
-template<typename T>
-void vector<T>::clear() {
+template<typename value_type>
+void vector<value_type>::clear() {
   if (data_ != nullptr) delete[] data_;
-  data_ = new T[capacity_];
+  data_ = new value_type[capacity_];
   size_ = 0;
 }
 
-template<typename T>
-void vector<T>::swap(vector<T>& other) noexcept {
+template<typename value_type>
+void vector<value_type>::swap(vector<value_type>& other) noexcept {
   std::swap(size_, other.size_);
   std::swap(capacity_, other.capacity_);
   std::swap(data_, other.data_);
 }
 
-template<typename T>
-bool vector<T>::operator==(const vector<T>& other) const {
+template<typename value_type>
+bool vector<value_type>::operator==(const vector<value_type>& other) const {
   if (this == &other) return true;
   if (size() != other.size()) return false;
 
   return (std::equal(begin(), end(), other.begin()));
 }
 
-template<typename T>
-bool vector<T>::operator!=(const vector<T>& other) const {
+template<typename value_type>
+bool vector<value_type>::operator!=(const vector<value_type>& other) const {
   return !(*this == other);
 }
 
-template<typename T>
-vector<T>& vector<T>::operator=(const vector<T>& other) {
+template<typename value_type>
+vector<value_type>& vector<value_type>::operator=(const vector<value_type>& other) {
   if (this == &other) {
     return *this;
   }
 
-  vector<T> tmp { other };
+  vector<value_type> tmp { other };
   this->swap(tmp);
 
   return *this;
 }
 
-template<typename T>
-vector<T>& vector<T>::operator=(vector<T>&& other) {
+template<typename value_type>
+vector<value_type>& vector<value_type>::operator=(vector<value_type>&& other) {
   if (this == &other) {
     return *this;
   }
 
-  vector<T> tmp { std::move(other) };
+  vector<value_type> tmp { std::move(other) };
   this->swap(tmp);
 
   return *this;
