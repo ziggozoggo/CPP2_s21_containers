@@ -922,6 +922,54 @@ TESTS_INSERT(s21Vector)
 // --------------------------------------
 
 template<typename T>
+void insertManyBackTest(const std::initializer_list<T>& items) {
+  s21::vector<T> actual(items);
+
+  auto endIndex = actual.size();
+
+  actual.insert_many_back(*items.begin(), *(items.begin() + 1), *(items.begin() + 2));
+
+  EXPECT_EQ(*items.begin(), actual[endIndex]);
+  EXPECT_EQ(*(items.begin() + 1), actual[endIndex + 1]);
+  EXPECT_EQ(*(items.begin() + 2), actual[endIndex + 2]);
+}
+
+#define TESTS_INSERT_MANY_BACK(suiteName) \
+TEST(suiteName, uShortInsertManyBack) { insertManyBackTest<unsigned short>(DEF_INT_VALS); } \
+TEST(suiteName, intInsertManyBack) { insertManyBackTest<int>(DEF_INT_VALS); } \
+TEST(suiteName, doubleInsertManyBack) { insertManyBackTest<double>(DEF_DBL_VALS); } \
+TEST(suiteName, MockClassInsertManyBack) { insertManyBackTest<MockClass>(DEF_MOCK_VALS); } \
+TEST(suiteName, stringInsertManyBack) { insertManyBackTest<std::string>(DEF_STR_VALS); } \
+
+TESTS_INSERT_MANY_BACK(s21Vector)
+
+// --------------------------------------
+
+template<typename T>
+void insertManyBackEmptyTest(const std::initializer_list<T>& items) {
+  s21::vector<T> actual;
+
+  auto endIndex = actual.size();
+
+  actual.insert_many_back(*items.begin(), *(items.begin() + 1), *(items.begin() + 2));
+
+  EXPECT_EQ(*items.begin(), actual[endIndex]);
+  EXPECT_EQ(*(items.begin() + 1), actual[endIndex + 1]);
+  EXPECT_EQ(*(items.begin() + 2), actual[endIndex + 2]);
+}
+
+#define TESTS_INSERT_MANY_BACK_EMPTY(suiteName) \
+TEST(suiteName, uShortInsertManyBackEmpty) { insertManyBackEmptyTest<unsigned short>(DEF_INT_VALS); } \
+TEST(suiteName, intInsertManyBackEmpty) { insertManyBackEmptyTest<int>(DEF_INT_VALS); } \
+TEST(suiteName, doubleInsertManyBackEmpty) { insertManyBackEmptyTest<double>(DEF_DBL_VALS); } \
+TEST(suiteName, MockClassInsertManyBackEmpty) { insertManyBackEmptyTest<MockClass>(DEF_MOCK_VALS); } \
+TEST(suiteName, stringInsertManyBackEmpty) { insertManyBackEmptyTest<std::string>(DEF_STR_VALS); } \
+
+TESTS_INSERT_MANY_BACK_EMPTY(s21Vector)
+
+// --------------------------------------
+
+template<typename T>
 void insertEmptyTest(const std::initializer_list<T>& items) {
   s21::vector<T> actual;
   std::vector<T> expected;

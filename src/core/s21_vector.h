@@ -174,6 +174,9 @@ public:
   void pop_back();
   void erase(iterator pos);
 
+  template<typename... Args>
+  void insert_many_back(Args&&... args);
+
   bool operator==(const vector<value_type>& other) const;
   bool operator!=(const vector<value_type>& other) const;
 
@@ -468,6 +471,14 @@ typename vector<value_type>::iterator vector<value_type>::insert(iterator pos, c
   ++size_;
 
   return begin() + index;
+}
+
+template<typename value_type>
+template<class... Args>
+void vector<value_type>::insert_many_back(Args&&... args) {
+  for (auto arg : {args...}) {
+    push_back(arg);
+  }
 }
 
 }
