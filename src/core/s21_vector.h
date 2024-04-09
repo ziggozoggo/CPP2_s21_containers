@@ -16,6 +16,7 @@ namespace s21 {
 
 template <typename T>
 class VectorIterator {
+
 // Types
 public:
   using iterator_category = std::random_access_iterator_tag;
@@ -28,8 +29,6 @@ public:
 // Public Methods
 public:
   VectorIterator(value_type* ptr) : ptr_(ptr) {}
-  VectorIterator(const_reference obj) : ptr_(&obj) {}
-
   VectorIterator(VectorIterator& other) : ptr_(other.ptr_) {}
 
   VectorIterator<value_type>& operator++() {
@@ -78,11 +77,11 @@ public:
     return temp;
   }
 
-  bool operator==(VectorIterator<value_type>& other) const {
+  bool operator==(const VectorIterator<value_type>& other) const {
     return (ptr_ == other.ptr_);
   }
 
-  bool operator!=(VectorIterator<value_type>& other) const {
+  bool operator!=(const VectorIterator<value_type>& other) const {
     return !(*this == other);
   }
 
@@ -101,6 +100,7 @@ private:
 
 template<typename T>
 class VectorConstIterator : public VectorIterator<T> {
+
 // Types
 public:
   using iterator_category = std::random_access_iterator_tag;
@@ -140,11 +140,10 @@ public:
 
   static size_type max_size();
 
+  size_type capacity() const noexcept;
   virtual size_type size() const noexcept override;
   virtual bool empty() const noexcept override;
   virtual void clear() override;
-
-  size_type capacity() const noexcept;
 
   value_type* data() const noexcept;
 
@@ -170,6 +169,7 @@ public:
   iterator insert(iterator pos, const_reference value);
   void push_back(const_reference value);
   void pop_back();
+  void erase(iterator pos);
 
   bool operator==(const vector<value_type>& other) const;
   bool operator!=(const vector<value_type>& other) const;
@@ -435,6 +435,17 @@ void vector<value_type>::push_back(const_reference value) {
 template<typename value_type>
 void vector<value_type>::pop_back() {
   if (empty()) throw std::out_of_range("Vector is empty");
+  --size_;
+}
+
+template<typename value_type>
+void vector<value_type>::erase(iterator pos) {
+  if (pos == end()) return;
+
+  for (auto it = pos; it != (end() - 1); ++it) {
+    *it = *(it + 1);
+  }
+
   --size_;
 }
 

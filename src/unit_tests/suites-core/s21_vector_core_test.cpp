@@ -29,6 +29,15 @@ void checkBasicField(const s21::vector<T>& actual, const std::vector<T>& expecte
   EXPECT_EQ(actual.empty(), expected.empty());
 }
 
+template <typename T>
+void checkBasicField(const s21::vector<T>& actual, const s21::vector<T>& expected) {
+  EXPECT_EQ(actual.size(), expected.size());
+  EXPECT_EQ(actual.capacity(), expected.capacity());
+  EXPECT_NE(actual.data(), expected.data());
+
+  EXPECT_EQ(actual.empty(), expected.empty());
+}
+
 /* NORMAL */
 
 #define DEF_INT_VALS {1, 2, 3, 4, 5}
@@ -992,6 +1001,127 @@ TESTS_POP_BACK(s21Vector)
 
 // --------------------------------------
 
+template<typename T>
+void eraseTest(const std::initializer_list<T>& items) {
+  s21::vector<T> actual(items);
+  std::vector<T> expected(items);
+
+  checkBasicField(actual, expected);
+
+  actual.erase(actual.begin());
+  expected.erase(expected.begin());
+
+  #ifdef DEBUG
+  std::cout << "ACTUAL:" << std::endl;
+  for (auto i : actual) {
+    std::cout << i << std::endl;
+  }
+
+  std::cout << "EXPECTED:" << std::endl;
+  for (auto i : expected) {
+    std::cout << i << std::endl;
+  }
+  #endif
+
+  checkBasicField(actual, expected);
+  EXPECT_TRUE(std::equal(actual.begin(), actual.end(), expected.begin()));
+
+  actual.push_back(*(items.end() - 2));
+  expected.push_back(*(items.end() - 2));
+
+  actual.erase(actual.begin() + 1);
+  expected.erase(expected.begin() + 1);
+
+
+  #ifdef DEBUG
+  std::cout << "ACTUAL:" << std::endl;
+  for (auto i : actual) {
+    std::cout << i << std::endl;
+  }
+
+  std::cout << "EXPECTED:" << std::endl;
+  for (auto i : expected) {
+    std::cout << i << std::endl;
+  }
+  #endif
+
+  checkBasicField(actual, expected);
+  EXPECT_TRUE(std::equal(actual.begin(), actual.end(), expected.begin()));
+
+  for (auto i : items) {
+    actual.push_back(i);
+    expected.push_back(i);
+  }
+
+  #ifdef DEBUG
+  std::cout << "ACTUAL:" << std::endl;
+  for (auto i : actual) {
+    std::cout << i << std::endl;
+  }
+
+  std::cout << "EXPECTED:" << std::endl;
+  for (auto i : expected) {
+    std::cout << i << std::endl;
+  }
+  #endif
+
+  checkBasicField(actual, expected);
+  EXPECT_TRUE(std::equal(actual.begin(), actual.end(), expected.begin()));
+
+  for (std::size_t i = 0; i < items.size(); i++) {
+    actual.erase(actual.end() - 1);
+    expected.erase(expected.end() - 1);
+  }
+
+
+  #ifdef DEBUG
+  std::cout << "ACTUAL:" << std::endl;
+  for (auto i : actual) {
+    std::cout << i << std::endl;
+  }
+
+  std::cout << "EXPECTED:" << std::endl;
+  for (auto i : expected) {
+    std::cout << i << std::endl;
+  }
+  #endif
+
+  checkBasicField(actual, expected);
+  EXPECT_TRUE(std::equal(actual.begin(), actual.end(), expected.begin()));
+
+  for (std::size_t i = 0; i < actual.size(); i++) {
+    actual.erase(actual.begin());
+    expected.erase(expected.begin());
+  }
+
+
+  #ifdef DEBUG
+  std::cout << "ACTUAL:" << std::endl;
+  for (auto i : actual) {
+    std::cout << i << std::endl;
+  }
+
+  std::cout << "EXPECTED:" << std::endl;
+  for (auto i : expected) {
+    std::cout << i << std::endl;
+  }
+  #endif
+
+  checkBasicField(actual, expected);
+  EXPECT_TRUE(std::equal(actual.begin(), actual.end(), expected.begin()));
+}
+
+#define TESTS_ERASE(suiteName) \
+TEST(suiteName, uShortErase) { eraseTest<unsigned short>(DEF_INT_VALS); } \
+TEST(suiteName, intErase) { eraseTest<int>(DEF_INT_VALS); } \
+TEST(suiteName, doubleErase) { eraseTest<double>(DEF_DBL_VALS); } \
+TEST(suiteName, MockClassErase) { eraseTest<MockClass>(DEF_MOCK_VALS); } \
+TEST(suiteName, stringErase) { eraseTest<std::string>(DEF_STR_VALS); } \
+
+TESTS_ERASE(s21Vector)
+
+// --------------------------------------
+
 /* EDGE */
 
 template<typename T>
@@ -1036,6 +1166,47 @@ TEST(suiteName, MockClassOperatorMoveSelfInit) { operatorInitMoveSelfTest<MockCl
 TEST(suiteName, stringOperatorMoveSelfInit) { operatorInitMoveSelfTest<std::string>(DEF_STR_VALS); } \
 
 TESTS_EDGE_OPERATOR_MOVE_SELF_INIT(s21Vector)
+
+// --------------------------------------
+
+// #NOTE: erase in empty std::vector is undefined behavior
+template<typename T>
+void eraseEmptyTest(const std::initializer_list<T>& items) {
+  s21::vector<T> actual;
+  s21::vector<T> actualInit = actual;
+
+  checkBasicField(actual, actualInit);
+
+  actual.erase(actual.begin());
+  actualInit.erase(actualInit.begin());
+
+  checkBasicField(actual, actualInit);
+  EXPECT_TRUE(std::equal(actual.begin(), actual.end(), actualInit.begin()));
+
+  actual.push_back(*(items.end() - 2));
+  actualInit.push_back(*(items.end() - 2));
+
+  actual.erase(actual.begin());
+  actualInit.erase(actualInit.begin());
+
+  checkBasicField(actual, actualInit);
+  EXPECT_TRUE(std::equal(actual.begin(), actual.end(), actualInit.begin()));
+
+  actual.erase(actual.end());
+  actualInit.erase(actualInit.end());
+
+  checkBasicField(actual, actualInit);
+  EXPECT_TRUE(std::equal(actual.begin(), actual.end(), actualInit.begin()));
+}
+
+#define TESTS_EDGE_ERASE_EMPTY(suiteName) \
+TEST(suiteName, uShortEraseEmpty) { eraseEmptyTest<unsigned short>(DEF_INT_VALS); } \
+TEST(suiteName, intEraseEmpty) { eraseEmptyTest<int>(DEF_INT_VALS); } \
+TEST(suiteName, doubleEraseEmpty) { eraseEmptyTest<double>(DEF_DBL_VALS); } \
+TEST(suiteName, MockClassEraseEmpty) { eraseEmptyTest<MockClass>(DEF_MOCK_VALS); } \
+TEST(suiteName, stringEraseEmpty) { eraseEmptyTest<std::string>(DEF_STR_VALS); } \
+
+TESTS_EDGE_ERASE_EMPTY(s21Vector)
 
 // --------------------------------------
 
@@ -1178,7 +1349,7 @@ TESTS_ANOMALY_PUSH_BACK_OUT_RANGE(s21Vector)
 
 // --------------------------------------
 
-// #NOTE: std::vector does not check empty when pop_back
+// #NOTE: std::vector does not check empty when pop_back - UB
 template<typename T>
 void popBackEmptyTest() {
   s21::vector<T> actual;

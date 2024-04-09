@@ -80,6 +80,16 @@ public:
     return *this;
   }
 
+  friend std::ostream& operator<<(std::ostream& os, const MockClass& obj) {
+    os << "Size: " << obj.size_ << ", " << "Subdata: " << obj.subData_ << std::endl;
+    os << "Data: " << std::endl;
+    for (int i = 0; i < obj.size_; i++) {
+      os << "[" << i << "] = " << obj.data_[i] << std::endl;
+    }
+
+    return os;
+  }
+
 private:
   const int size_ = 10;
   int* data_;
