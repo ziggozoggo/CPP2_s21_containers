@@ -1,12 +1,6 @@
 #ifndef SRC_S21_VECTOR_H_
 #define SRC_S21_VECTOR_H_
 
-#ifdef DEBUG
-#include <iostream>
-#include <typeinfo>
-#include <utility>
-#endif
-
 #include <limits>
 #include <algorithm>
 
@@ -191,21 +185,12 @@ private:
 
 // Private Methods
 private:
-void replaceData(value_type* newData);
-void setCapacity(size_type newCapacity);
-void growCapacity();
-void checkRange(const_iterator begin, const_iterator pos) const;
+  void replaceData(value_type* newData);
+  void setCapacity(size_type newCapacity);
+  void growCapacity();
+  void checkRange(const_iterator begin, const_iterator pos) const;
 
-iterator insertImpl(iterator pos, const_reference value);
-
-#ifdef DEBUG
-void printDebugInfo() {
-    std::cout << "Vector: " << std::endl;
-    std::cout << "\tValues type: " << typeid(decltype(std::declval<value_type>())).name() << std::endl;
-    std::cout << "\tSize: " << size_ << std::endl;
-    std::cout << "\tCapacity: " << capacity_ << std::endl;
-}
-#endif
+  iterator insertImpl(iterator pos, const_reference value);
 };
 
 template<typename value_type>
