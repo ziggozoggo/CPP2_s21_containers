@@ -922,6 +922,42 @@ TESTS_INSERT(s21Vector)
 // --------------------------------------
 
 template<typename T>
+void insertEmptyTest(const std::initializer_list<T>& items) {
+  s21::vector<T> actual;
+  std::vector<T> expected;
+
+  checkBasicFieldEmpty(actual, expected);
+
+  actual.insert(actual.begin(), *items.begin());
+  expected.insert(expected.begin(), *items.begin());
+
+  actual.insert(actual.begin(), *items.begin());
+  expected.insert(expected.begin(), *items.begin());
+
+  for (std::size_t i = 0; i < 100; i++) {
+    actual.insert(actual.begin() + 1, *(items.end() - 1));
+    expected.insert(expected.begin() + 1, *(items.end() - 1));
+
+    checkBasicField(actual, expected);
+    EXPECT_TRUE(std::equal(actual.begin(), actual.end(), expected.begin()));
+  }
+
+  checkBasicField(actual, expected);
+  EXPECT_TRUE(std::equal(actual.begin(), actual.end(), expected.begin()));
+}
+
+#define TESTS_INSERT_EMPTY(suiteName) \
+TEST(suiteName, uShortInsertEmpty) { insertEmptyTest<unsigned short>(DEF_INT_VALS); } \
+TEST(suiteName, intInsertEmpty) { insertEmptyTest<int>(DEF_INT_VALS); } \
+TEST(suiteName, doubleInsertEmpty) { insertEmptyTest<double>(DEF_DBL_VALS); } \
+TEST(suiteName, MockClassInsertEmpty) { insertEmptyTest<MockClass>(DEF_MOCK_VALS); } \
+TEST(suiteName, stringInsertEmpty) { insertEmptyTest<std::string>(DEF_STR_VALS); } \
+
+TESTS_INSERT_EMPTY(s21Vector)
+
+// --------------------------------------
+
+template<typename T>
 void insertManyBackTest(const std::initializer_list<T>& items) {
   s21::vector<T> actual(items);
 
@@ -970,35 +1006,87 @@ TESTS_INSERT_MANY_BACK_EMPTY(s21Vector)
 // --------------------------------------
 
 template<typename T>
-void insertEmptyTest(const std::initializer_list<T>& items) {
-  s21::vector<T> actual;
-  std::vector<T> expected;
+void insertManyTest(const std::initializer_list<T>& items) {
+  s21::vector<T> actual(items);
 
-  checkBasicFieldEmpty(actual, expected);
+  std::size_t posIndex = 2;
 
-  actual.insert(actual.begin(), *items.begin());
-  expected.insert(expected.begin(), *items.begin());
-
-  for (std::size_t i = 0; i < 100; i++) {
-    actual.insert(actual.begin() + 1, *(items.end() - 1));
-    expected.insert(expected.begin() + 1, *(items.end() - 1));
-
-    checkBasicField(actual, expected);
-    EXPECT_TRUE(std::equal(actual.begin(), actual.end(), expected.begin()));
+  #ifdef DEBUG
+  std::cout << "ACTUAL:" << std::endl;
+  for (auto i : actual) {
+    std::cout << i << std::endl;
   }
+  #endif
 
-  checkBasicField(actual, expected);
-  EXPECT_TRUE(std::equal(actual.begin(), actual.end(), expected.begin()));
+  actual.insert_many(actual.begin() + posIndex, *items.begin(), *(items.begin() + 1), *(items.begin() + 2));
+
+  #ifdef DEBUG
+  std::cout << "ACTUAL:" << std::endl;
+  for (auto i : actual) {
+    std::cout << i << std::endl;
+  }
+  #endif
+
+  EXPECT_EQ(*items.begin(), actual[posIndex]);
+  EXPECT_EQ(*(items.begin() + 1), actual[posIndex + 1]);
+  EXPECT_EQ(*(items.begin() + 2), actual[posIndex + 2]);
+
+  posIndex = 1;
+  actual.insert_many(actual.begin() + posIndex, *items.begin());
+
+  #ifdef DEBUG
+  std::cout << "ACTUAL:" << std::endl;
+  for (auto i : actual) {
+    std::cout << i << std::endl;
+  }
+  #endif
+
+  EXPECT_EQ(*items.begin(), actual[posIndex]);
+
+  actual.insert_many(actual.end() - 1, *(items.end() - 1), *(items.end() - 1));
+  EXPECT_EQ(*(items.end() - 1), *(actual.end() - 1));
+  EXPECT_EQ(*(items.end() - 1), *(actual.end() - 2));
 }
 
-#define TESTS_INSERT_EMPTY(suiteName) \
-TEST(suiteName, uShortInsertEmpty) { insertEmptyTest<unsigned short>(DEF_INT_VALS); } \
-TEST(suiteName, intInsertEmpty) { insertEmptyTest<int>(DEF_INT_VALS); } \
-TEST(suiteName, doubleInsertEmpty) { insertEmptyTest<double>(DEF_DBL_VALS); } \
-TEST(suiteName, MockClassInsertEmpty) { insertEmptyTest<MockClass>(DEF_MOCK_VALS); } \
-TEST(suiteName, stringInsertEmpty) { insertEmptyTest<std::string>(DEF_STR_VALS); } \
+#define TESTS_INSERT_MANY(suiteName) \
+TEST(suiteName, uShortInsertMany) { insertManyTest<unsigned short>(DEF_INT_VALS); } \
+TEST(suiteName, intInsertMany) { insertManyTest<int>(DEF_INT_VALS); } \
+TEST(suiteName, doubleInsertMany) { insertManyTest<double>(DEF_DBL_VALS); } \
+TEST(suiteName, MockClassInsertMany) { insertManyTest<MockClass>(DEF_MOCK_VALS); } \
+TEST(suiteName, stringInsertMany) { insertManyTest<std::string>(DEF_STR_VALS); } \
 
-TESTS_INSERT_EMPTY(s21Vector)
+TESTS_INSERT_MANY(s21Vector)
+
+// --------------------------------------
+
+template<typename T>
+void insertManyEmptyTest(const std::initializer_list<T>& items) {
+  s21::vector<T> actual;
+
+  std::size_t posIndex = 0;
+
+  actual.insert_many(actual.begin() + posIndex, *items.begin(), *(items.begin() + 1), *(items.begin() + 2));
+
+  #ifdef DEBUG
+  std::cout << "ACTUAL:" << std::endl;
+  for (auto i : actual) {
+    std::cout << i << std::endl;
+  }
+  #endif
+
+  EXPECT_EQ(*items.begin(), actual[posIndex]);
+  EXPECT_EQ(*(items.begin() + 1), actual[posIndex + 1]);
+  EXPECT_EQ(*(items.begin() + 2), actual[posIndex + 2]);
+}
+
+#define TESTS_INSERT_MANY_EMPTY(suiteName) \
+TEST(suiteName, uShortInsertManyEmpty) { insertManyEmptyTest<unsigned short>(DEF_INT_VALS); } \
+TEST(suiteName, intInsertManyEmpty) { insertManyEmptyTest<int>(DEF_INT_VALS); } \
+TEST(suiteName, doubleInsertManyEmpty) { insertManyEmptyTest<double>(DEF_DBL_VALS); } \
+TEST(suiteName, MockClassInsertManyEmpty) { insertManyEmptyTest<MockClass>(DEF_MOCK_VALS); } \
+TEST(suiteName, stringInsertManyEmpty) { insertManyEmptyTest<std::string>(DEF_STR_VALS); } \
+
+TESTS_INSERT_MANY_EMPTY(s21Vector)
 
 // --------------------------------------
 

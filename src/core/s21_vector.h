@@ -177,6 +177,9 @@ public:
   template<typename... Args>
   void insert_many_back(Args&&... args);
 
+  template<typename... Args>
+  iterator insert_many(const_iterator pos, Args&&... args);
+
   bool operator==(const vector<value_type>& other) const;
   bool operator!=(const vector<value_type>& other) const;
 
@@ -191,6 +194,9 @@ private:
 void replaceData(value_type* newData);
 void setCapacity(size_type newCapacity);
 void growCapacity();
+void checkRange(const_iterator begin, const_iterator pos) const;
+
+iterator insertImpl(iterator pos, const_reference value);
 
 #ifdef DEBUG
 void printDebugInfo() {
@@ -443,7 +449,8 @@ void vector<value_type>::pop_back() {
 
 template<typename value_type>
 void vector<value_type>::erase(iterator pos) {
-  if (pos == end()) return;
+  const auto index = (size_type)VectorIterator<value_type>::distance(begin(), pos);
+  if (index >= size_) return;
 
   for (auto it = pos; it != (end() - 1); ++it) {
     *it = *(it + 1);
@@ -453,32 +460,52 @@ void vector<value_type>::erase(iterator pos) {
 }
 
 template<typename value_type>
-typename vector<value_type>::iterator vector<value_type>::insert(iterator pos, const_reference value) {
-  const auto index = VectorIterator<value_type>::distance(begin(), pos);
-
+typename vector<value_type>::iterator vector<value_type>::insertImpl(iterator pos, const_reference value) {
+  const auto index = (size_type)VectorIterator<value_type>::distance(begin(), pos);
   if (size_ >= capacity_) growCapacity();
 
-  value_type* newData = new value_type[capacity_];
-  std::move(data_, data_ + index, newData);
+  const iterator newPos = begin() + index;
+  for (iterator it = end(); it != newPos; --it) {
+    *it = std::move(*(it - 1));
+  }
 
-  newData[index] = value;
-
-  std::move(data_ + index, data_ + size_, newData + index + 1);
-
-  delete[] data_;
-  data_ = newData;
-
+  data_[index] = value;
   ++size_;
 
   return begin() + index;
 }
 
 template<typename value_type>
-template<class... Args>
+void vector<value_type>::checkRange(const_iterator begin, const_iterator pos) const {
+  const auto index = (size_type)VectorIterator<value_type>::distance(begin, pos);
+  if ((index >= size_) && (index != 0)) throw std::out_of_range("Selected position is out of range of the vector");
+}
+
+template<typename value_type>
+typename vector<value_type>::iterator vector<value_type>::insert(iterator pos, const_reference value) {
+  checkRange(begin(), pos);
+
+  return insertImpl(pos, value);
+}
+
+template<typename value_type>
+template<typename... Args>
 void vector<value_type>::insert_many_back(Args&&... args) {
   for (auto arg : {args...}) {
     push_back(arg);
   }
+}
+
+template<typename value_type>
+template<typename... Args>
+typename vector<value_type>::iterator vector<value_type>::insert_many(const_iterator pos, Args&&... args) {
+  checkRange(begin(), pos);
+
+  for (auto arg : {args...}) {
+    pos = insertImpl(pos, arg) + 1;
+  }
+
+  return pos;
 }
 
 }

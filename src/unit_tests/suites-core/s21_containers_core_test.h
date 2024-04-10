@@ -40,7 +40,7 @@ public:
   MockClass& operator=(const MockClass& other) {
     if (this != &other) {
       delete[] data_;
-      data_ = new int[size_];
+      data_ = new int[other.size_];
       for (int i = 0; i < size_; i++) {
         data_[i] = other.data_[i];
       }
