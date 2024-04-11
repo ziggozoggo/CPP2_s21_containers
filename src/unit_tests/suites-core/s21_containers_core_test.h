@@ -21,13 +21,13 @@ public:
     }
   }
 
-  MockClass(const MockClass& other) : data_(new int[size_]), subData_(other.subData_) {
+  MockClass(const MockClass& other) : size_(other.size_), data_(new int[size_]), subData_(other.subData_) {
     for (int i = 0; i < size_; i++) {
       data_[i] = other.data_[i];
     }
   }
 
-  MockClass(MockClass&& other) noexcept : data_(other.data_), subData_(other.subData_) {
+  MockClass(MockClass&& other) noexcept : size_(other.size_), data_(other.data_), subData_(other.subData_) {
     other.data_ = nullptr;
     other.subData_ = 0;
   }
@@ -39,7 +39,7 @@ public:
 
   MockClass& operator=(const MockClass& other) {
     if (this != &other) {
-      delete[] data_;
+      if (data_ != nullptr) delete[] data_;
       data_ = new int[other.size_];
       for (int i = 0; i < size_; i++) {
         data_[i] = other.data_[i];
@@ -51,7 +51,7 @@ public:
 
   MockClass& operator=(MockClass&& other) noexcept {
     if (this != &other) {
-      delete[] data_;
+      if (data_ != nullptr) delete[] data_;
       data_ = other.data_;
       subData_ = other.subData_;
       other.data_ = nullptr;

@@ -185,9 +185,15 @@ private:
 
 // Private Methods
 private:
-  void replaceData(value_type* newData);
+  void moveValData(size_type indx, value_type&& val);
+  void freeValData(size_type indx);
+
+  void makeNewData();
+  void freeData();
+
   void setCapacity(size_type newCapacity);
   void growCapacity();
+
   void checkRange(const_iterator begin, const_iterator pos) const;
 
   iterator insertImpl(iterator pos, const_reference value);
@@ -206,7 +212,11 @@ vector<value_type>::vector(size_type n)
   , data_     { nullptr } {
   if (capacity_ > max_size()) throw std::length_error("Cannot create s21::vector larger than max_size()");
 
-  data_ = new value_type[capacity_];
+  data_ = reinterpret_cast<value_type*>(new std::byte[capacity_ * sizeof(value_type)]);
+
+  for (size_type i = 0; i < size_; i++) {
+    new(data_+i) value_type();
+  }
 }
 
 template<typename value_type>
@@ -216,16 +226,25 @@ vector<value_type>::vector(std::initializer_list<value_type> const &items)
   , data_     { nullptr } {
   if (capacity_ > max_size()) throw std::length_error("Cannot create s21::vector larger than max_size()");
 
-  data_ = new value_type[capacity_];
-  std::copy(items.begin(), items.end(), data_);
+  data_ = reinterpret_cast<value_type*>(new std::byte[capacity_ * sizeof(value_type)]);
+
+  size_type i = 0;
+  for (auto item : items) {
+    new(data_+i) value_type(item);
+    i++;
+  }
 }
 
 template<typename value_type>
 vector<value_type>::vector(const vector& other)
   : size_     { other.size_ }
   , capacity_ { other.capacity_ }
-  , data_     { new value_type[capacity_] } {
-  std::copy(other.data_, other.data_ + size_, data_);
+  , data_     { nullptr } {
+  data_ = reinterpret_cast<value_type*>(new std::byte[capacity_ * sizeof(value_type)]);
+
+  for (size_type i = 0; i < size_; i++) {
+    new(data_+i) value_type(other[i]);
+  }
 }
 
 template<typename value_type>
@@ -243,7 +262,7 @@ vector<value_type>::vector(vector&& other) noexcept
 
 template<typename value_type>
 vector<value_type>::~vector() {
-  if (data_ != nullptr) delete[] data_;
+  freeData();
 }
 
 template<typename value_type>
@@ -316,15 +335,38 @@ typename vector<value_type>::const_reference vector<value_type>::operator[](size
 }
 
 template<typename value_type>
-void vector<value_type>::replaceData(value_type* newData) {
-  if (newData == nullptr) throw std::invalid_argument("newData argument cannot be null");
+void vector<value_type>::moveValData(size_type indx, value_type&& val) {
+  new(data_+indx) value_type(std::move(val));
+}
 
+template<typename value_type>
+void vector<value_type>::freeValData(size_type indx) {
+  if (data_ != nullptr) (data_+indx)->~value_type();
+}
+
+template<typename value_type>
+void vector<value_type>::makeNewData() {
+  value_type* newData = reinterpret_cast<value_type*>(new std::byte[capacity_ * sizeof(value_type)]);
   if (data_ != nullptr) {
-    std::move(data_, data_ + size_, newData);
-    delete[] data_;
+    for (size_type i = 0; i < size_; i++) {
+      new(newData+i) value_type(std::move(data_[i]));
+    }
+
+    freeData();
   }
 
   data_ = newData;
+}
+
+template<typename value_type>
+void vector<value_type>::freeData() {
+  if (data_ == nullptr) return;
+
+  for (size_type i = 0; i < size_; i++) {
+    freeValData(i);
+  }
+
+  delete[] reinterpret_cast<uint8_t*>(data_);
 }
 
 template<typename value_type>
@@ -332,23 +374,22 @@ void vector<value_type>::setCapacity(size_type newCapacity) {
   capacity_ = newCapacity;
   if (capacity_ > max_size()) throw std::length_error("Cannot expand s21::vector larger than max_size()");
 
-  value_type* newData = new value_type[capacity_];
-  replaceData(newData);
+  makeNewData();
 }
 
 template<typename value_type>
 void vector<value_type>::growCapacity() {
   if (capacity_ == 0) {
-    setCapacity(1);
+    reserve(1);
   } else {
-    setCapacity(capacity_ * 2);
+    reserve(capacity_ * 2);
   }
 }
 
 template<typename value_type>
-void vector<value_type>::reserve(size_type size) {
-  if (size <= capacity_) return;
-  setCapacity(size);
+void vector<value_type>::reserve(size_type newCapacity) {
+  if (newCapacity <= capacity_) return;
+  setCapacity(newCapacity);
 }
 
 template<typename value_type>
@@ -359,8 +400,10 @@ void vector<value_type>::shrink_to_fit() {
 
 template<typename value_type>
 void vector<value_type>::clear() {
-  if (data_ != nullptr) delete[] data_;
-  data_ = new value_type[capacity_];
+  for (size_type i = 0; i < size_; i++) {
+    (data_+i)->~value_type();
+  }
+
   size_ = 0;
 }
 
@@ -422,7 +465,9 @@ template<typename value_type>
 void vector<value_type>::push_back(const_reference value) {
   if (size_ >= capacity_) growCapacity();
 
-  data_[size_] = value;
+  value_type tmp { value };
+  moveValData(size_, std::move(tmp));
+
   ++size_;
 }
 
@@ -430,6 +475,8 @@ template<typename value_type>
 void vector<value_type>::pop_back() {
   if (empty()) throw std::out_of_range("Vector is empty");
   --size_;
+
+  freeValData(size_);
 }
 
 template<typename value_type>
@@ -437,8 +484,10 @@ void vector<value_type>::erase(iterator pos) {
   const auto index = (size_type)VectorIterator<value_type>::distance(begin(), pos);
   if (index >= size_) return;
 
-  for (auto it = pos; it != (end() - 1); ++it) {
-    *it = *(it + 1);
+  freeValData(index);
+
+  for (size_type i = index; i < (size_ - 1); i++) {
+    moveValData(i, std::move(data_[i + 1]));
   }
 
   --size_;
@@ -449,12 +498,13 @@ typename vector<value_type>::iterator vector<value_type>::insertImpl(iterator po
   const auto index = (size_type)VectorIterator<value_type>::distance(begin(), pos);
   if (size_ >= capacity_) growCapacity();
 
-  const iterator newPos = begin() + index;
-  for (iterator it = end(); it != newPos; --it) {
-    *it = std::move(*(it - 1));
+  for (size_type i = size_; i > index; i--) {
+    moveValData(i, std::move(data_[i - 1]));
   }
 
-  data_[index] = value;
+  // #DEFECT - how to correct move value to data without tmp?
+  value_type tmp { value };
+  moveValData(index, std::move(tmp));
   ++size_;
 
   return begin() + index;
