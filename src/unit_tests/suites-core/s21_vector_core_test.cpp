@@ -61,6 +61,7 @@ TEST(suiteName, intEmptyInitAsCont) { defaultInitAsContTest<int>(); } \
 TEST(suiteName, doubleEmptyInitAsCont) { defaultInitAsContTest<double>(); } \
 TEST(suiteName, MockClassEmptyInitAsCont) { defaultInitAsContTest<MockClass>(); } \
 TEST(suiteName, stringEmptyInitAsCont) { defaultInitAsContTest<std::string>(); } \
+TEST(suiteName, NoConstructClassEmptyInitAsCont) { defaultInitAsContTest<NoConstructClass>(); } \
 
 TESTS_EMPTY_INIT_AS_CONT(s21Vector)
 
@@ -80,6 +81,7 @@ TEST(suiteName, intEmptyInit) { defaultInitTest<int>(); } \
 TEST(suiteName, doubleEmptyInit) { defaultInitTest<double>(); } \
 TEST(suiteName, MockClassEmptyInit) { defaultInitTest<MockClass>(); } \
 TEST(suiteName, stringEmptyInit) { defaultInitTest<std::string>(); } \
+TEST(suiteName, NoConstructClassEmptyInit) { defaultInitTest<NoConstructClass>(); } \
 
 TESTS_EMPTY_INIT(s21Vector)
 
@@ -103,6 +105,10 @@ TEST(suiteName, doubleSizeInit) { sizeInitTest<double>(); } \
 TEST(suiteName, MockClassSizeInit) { sizeInitTest<MockClass>(); } \
 TEST(suiteName, stringSizeInit) { sizeInitTest<std::string>(); } \
 
+
+// #NOTE: NoConstructClass not compile as expected
+// TEST(suiteName, NoConstructClassSizeInit) { sizeInitTest<NoConstructClass>(); }
+
 TESTS_SIZE_INIT(s21Vector)
 
 // --------------------------------------
@@ -121,6 +127,7 @@ TEST(suiteName, intListInit) { listInitTest<int>(DEF_INT_VALS); } \
 TEST(suiteName, doubleListInit) { listInitTest<double>(DEF_DBL_VALS); } \
 TEST(suiteName, MockClassListInit) { listInitTest<MockClass>(DEF_MOCK_VALS); } \
 TEST(suiteName, stringListInit) { listInitTest<std::string>(DEF_STR_VALS); } \
+TEST(suiteName, NoConstructClassListInit) { listInitTest<NoConstructClass>(DEF_INT_VALS); } \
 
 TESTS_LIST_INIT(s21Vector)
 
@@ -146,6 +153,7 @@ TEST(suiteName, intCopyInit) { copyInitTest<int>(DEF_INT_VALS); } \
 TEST(suiteName, doubleCopyInit) { copyInitTest<double>(DEF_DBL_VALS); } \
 TEST(suiteName, MockClassCopyInit) { copyInitTest<MockClass>(DEF_MOCK_VALS); } \
 TEST(suiteName, stringCopyInit) { copyInitTest<std::string>(DEF_STR_VALS); } \
+TEST(suiteName, NoConstructClassCopyInit) { copyInitTest<NoConstructClass>(DEF_INT_VALS); } \
 
 TESTS_COPY_INIT(s21Vector)
 
@@ -178,6 +186,7 @@ TEST(suiteName, intMoveInit) { moveInitTest<int>(DEF_INT_VALS); } \
 TEST(suiteName, doubleMoveInit) { moveInitTest<double>(DEF_DBL_VALS); } \
 TEST(suiteName, MockClassMoveInit) { moveInitTest<MockClass>(DEF_MOCK_VALS); } \
 TEST(suiteName, stringMoveInit) { moveInitTest<std::string>(DEF_STR_VALS); } \
+TEST(suiteName, NoConstructClassMoveInit) { moveInitTest<NoConstructClass>(DEF_INT_VALS); } \
 
 TESTS_MOVE_INIT(s21Vector)
 
@@ -265,6 +274,7 @@ TEST(suiteName, intClear) { clearTest<int>(DEF_INT_VALS); } \
 TEST(suiteName, doubleClear) { clearTest<double>(DEF_DBL_VALS); } \
 TEST(suiteName, MockClassClear) { clearTest<MockClass>(DEF_MOCK_VALS); } \
 TEST(suiteName, stringClear) { clearTest<std::string>(DEF_STR_VALS); } \
+TEST(suiteName, NoConstructClassClear) { clearTest<NoConstructClass>(DEF_INT_VALS); } \
 
 TESTS_CLEAR(s21Vector)
 
@@ -738,7 +748,9 @@ void reserveTest(const std::initializer_list<T>& items) {
 TEST(suiteName, uShortReserve) { reserveTest<unsigned short>(DEF_INT_VALS); } \
 TEST(suiteName, intReserve) { reserveTest<int>(DEF_INT_VALS); } \
 TEST(suiteName, doubleReserve) { reserveTest<double>(DEF_DBL_VALS); } \
+TEST(suiteName, MockClassReserve) { reserveTest<MockClass>(DEF_MOCK_VALS); } \
 TEST(suiteName, stringReserve) { reserveTest<std::string>(DEF_STR_VALS); } \
+TEST(suiteName, NoConstructClassReserve) { reserveTest<NoConstructClass>(DEF_INT_VALS); } \
 
 TESTS_RESERVE(s21Vector)
 
@@ -794,6 +806,7 @@ TEST(suiteName, intShrinkToFit) { shrinkToFitTest<int>(DEF_INT_VALS); } \
 TEST(suiteName, doubleShrinkToFit) { shrinkToFitTest<double>(DEF_DBL_VALS); } \
 TEST(suiteName, MockClassShrinkToFit) { shrinkToFitTest<MockClass>(DEF_MOCK_VALS); } \
 TEST(suiteName, stringShrinkToFit) { shrinkToFitTest<std::string>(DEF_STR_VALS); } \
+TEST(suiteName, NoConstructClassShrinkToFit) { shrinkToFitTest<NoConstructClass>(DEF_INT_VALS); } \
 
 TESTS_SHRINK_TO_FIT(s21Vector)
 
@@ -822,6 +835,7 @@ TEST(suiteName, intPushBack) { pushBackTest<int>(DEF_INT_VALS); } \
 TEST(suiteName, doublePushBack) { pushBackTest<double>(DEF_DBL_VALS); } \
 TEST(suiteName, MockClassPushBack) { pushBackTest<MockClass>(DEF_MOCK_VALS); } \
 TEST(suiteName, stringPushBack) { pushBackTest<std::string>(DEF_STR_VALS); } \
+TEST(suiteName, NoConstructClassPushBack) { pushBackTest<NoConstructClass>(DEF_INT_VALS); } \
 
 TESTS_PUSH_BACK(s21Vector)
 
@@ -849,6 +863,7 @@ TEST(suiteName, intPushBackEmpty) { pushBackEmptyTest<int>(DEF_INT_VALS); } \
 TEST(suiteName, doublePushBackEmpty) { pushBackEmptyTest<double>(DEF_DBL_VALS); } \
 TEST(suiteName, MockClassPushBackEmpty) { pushBackEmptyTest<MockClass>(DEF_MOCK_VALS); } \
 TEST(suiteName, stringPushBackEmpty) { pushBackEmptyTest<std::string>(DEF_STR_VALS); } \
+TEST(suiteName, NoConstructClassPushBackEmpty) { pushBackEmptyTest<NoConstructClass>(DEF_INT_VALS); } \
 
 TESTS_PUSH_BACK_EMPTY(s21Vector)
 
@@ -916,6 +931,7 @@ TEST(suiteName, intInsert) { insertTest<int>(DEF_INT_VALS); } \
 TEST(suiteName, doubleInsert) { insertTest<double>(DEF_DBL_VALS); } \
 TEST(suiteName, MockClassInsert) { insertTest<MockClass>(DEF_MOCK_VALS); } \
 TEST(suiteName, stringInsert) { insertTest<std::string>(DEF_STR_VALS); } \
+TEST(suiteName, NoConstructClassInsert) { insertTest<NoConstructClass>(DEF_INT_VALS); } \
 
 TESTS_INSERT(s21Vector)
 
@@ -952,6 +968,7 @@ TEST(suiteName, intInsertEmpty) { insertEmptyTest<int>(DEF_INT_VALS); } \
 TEST(suiteName, doubleInsertEmpty) { insertEmptyTest<double>(DEF_DBL_VALS); } \
 TEST(suiteName, MockClassInsertEmpty) { insertEmptyTest<MockClass>(DEF_MOCK_VALS); } \
 TEST(suiteName, stringInsertEmpty) { insertEmptyTest<std::string>(DEF_STR_VALS); } \
+TEST(suiteName, NoConstructClassInsertEmpty) { insertEmptyTest<NoConstructClass>(DEF_INT_VALS); } \
 
 TESTS_INSERT_EMPTY(s21Vector)
 
@@ -976,6 +993,7 @@ TEST(suiteName, intInsertManyBack) { insertManyBackTest<int>(DEF_INT_VALS); } \
 TEST(suiteName, doubleInsertManyBack) { insertManyBackTest<double>(DEF_DBL_VALS); } \
 TEST(suiteName, MockClassInsertManyBack) { insertManyBackTest<MockClass>(DEF_MOCK_VALS); } \
 TEST(suiteName, stringInsertManyBack) { insertManyBackTest<std::string>(DEF_STR_VALS); } \
+TEST(suiteName, NoConstructClassInsertManyBack) { insertManyBackTest<NoConstructClass>(DEF_INT_VALS); } \
 
 TESTS_INSERT_MANY_BACK(s21Vector)
 
@@ -1000,6 +1018,7 @@ TEST(suiteName, intInsertManyBackEmpty) { insertManyBackEmptyTest<int>(DEF_INT_V
 TEST(suiteName, doubleInsertManyBackEmpty) { insertManyBackEmptyTest<double>(DEF_DBL_VALS); } \
 TEST(suiteName, MockClassInsertManyBackEmpty) { insertManyBackEmptyTest<MockClass>(DEF_MOCK_VALS); } \
 TEST(suiteName, stringInsertManyBackEmpty) { insertManyBackEmptyTest<std::string>(DEF_STR_VALS); } \
+TEST(suiteName, NoConstructClassInsertManyBackEmpty) { insertManyBackEmptyTest<NoConstructClass>(DEF_INT_VALS); } \
 
 TESTS_INSERT_MANY_BACK_EMPTY(s21Vector)
 
@@ -1054,6 +1073,7 @@ TEST(suiteName, intInsertMany) { insertManyTest<int>(DEF_INT_VALS); } \
 TEST(suiteName, doubleInsertMany) { insertManyTest<double>(DEF_DBL_VALS); } \
 TEST(suiteName, MockClassInsertMany) { insertManyTest<MockClass>(DEF_MOCK_VALS); } \
 TEST(suiteName, stringInsertMany) { insertManyTest<std::string>(DEF_STR_VALS); } \
+TEST(suiteName, NoConstructClassInsertMany) { insertManyTest<NoConstructClass>(DEF_INT_VALS); } \
 
 TESTS_INSERT_MANY(s21Vector)
 
@@ -1085,6 +1105,7 @@ TEST(suiteName, intInsertManyEmpty) { insertManyEmptyTest<int>(DEF_INT_VALS); } 
 TEST(suiteName, doubleInsertManyEmpty) { insertManyEmptyTest<double>(DEF_DBL_VALS); } \
 TEST(suiteName, MockClassInsertManyEmpty) { insertManyEmptyTest<MockClass>(DEF_MOCK_VALS); } \
 TEST(suiteName, stringInsertManyEmpty) { insertManyEmptyTest<std::string>(DEF_STR_VALS); } \
+TEST(suiteName, NoConstructClassInsertManyEmpty) { insertManyEmptyTest<NoConstructClass>(DEF_INT_VALS); } \
 
 TESTS_INSERT_MANY_EMPTY(s21Vector)
 

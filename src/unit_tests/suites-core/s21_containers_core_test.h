@@ -97,8 +97,26 @@ private:
 };
 
 class NoConstructClass {
+public:
+  NoConstructClass(int val) : val_ { val } {};
+
+  bool operator==(const NoConstructClass& other) const noexcept {
+    return val_ == other.val_;
+  }
+
+  NoConstructClass& operator*(const int mult) noexcept {
+    val_ *= mult;
+    return *this;
+  }
+
+  friend std::ostream& operator<<(std::ostream& os, const NoConstructClass& obj) {
+    os << "Val: " << obj.val_ << std::endl;
+    return os;
+  }
+
+private:
   NoConstructClass() = delete;
-  int inner_value = 5;
+  int val_ = 5;
 };
 
 #endif  // SRC_UNIT_S21_MATRIX_CORE_TEST_H_
