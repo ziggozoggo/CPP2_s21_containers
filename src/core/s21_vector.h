@@ -188,7 +188,7 @@ private:
   void moveValData(size_type indx, value_type&& val);
   void freeValData(size_type indx);
 
-  void makeNewData();
+  void makeData();
   void freeData();
 
   void setCapacity(size_type newCapacity);
@@ -212,7 +212,7 @@ vector<value_type>::vector(size_type n)
   , data_     { nullptr } {
   if (capacity_ > max_size()) throw std::length_error("Cannot create s21::vector larger than max_size()");
 
-  data_ = reinterpret_cast<value_type*>(new std::byte[capacity_ * sizeof(value_type)]);
+  makeData();
 
   for (size_type i = 0; i < size_; i++) {
     new(data_+i) value_type();
@@ -226,7 +226,7 @@ vector<value_type>::vector(std::initializer_list<value_type> const &items)
   , data_     { nullptr } {
   if (capacity_ > max_size()) throw std::length_error("Cannot create s21::vector larger than max_size()");
 
-  data_ = reinterpret_cast<value_type*>(new std::byte[capacity_ * sizeof(value_type)]);
+  makeData();
 
   size_type i = 0;
   for (auto item : items) {
@@ -240,7 +240,7 @@ vector<value_type>::vector(const vector& other)
   : size_     { other.size_ }
   , capacity_ { other.capacity_ }
   , data_     { nullptr } {
-  data_ = reinterpret_cast<value_type*>(new std::byte[capacity_ * sizeof(value_type)]);
+  makeData();
 
   for (size_type i = 0; i < size_; i++) {
     new(data_+i) value_type(other[i]);
@@ -345,11 +345,19 @@ void vector<value_type>::freeValData(size_type indx) {
 }
 
 template<typename value_type>
-void vector<value_type>::makeNewData() {
+void vector<value_type>::makeData() {
   value_type* newData = reinterpret_cast<value_type*>(new std::byte[capacity_ * sizeof(value_type)]);
   if (data_ != nullptr) {
     for (size_type i = 0; i < size_; i++) {
-      new(newData+i) value_type(std::move(data_[i]));
+      try {
+        new(newData+i) value_type(std::move(data_[i]));
+      } catch (...) {
+        for (size_type j = 0; j < i; j++) {
+          (newData+i)->~value_type();
+        }
+        delete[] reinterpret_cast<std::byte*>(newData);
+        throw;
+      }
     }
 
     freeData();
@@ -374,7 +382,7 @@ void vector<value_type>::setCapacity(size_type newCapacity) {
   capacity_ = newCapacity;
   if (capacity_ > max_size()) throw std::length_error("Cannot expand s21::vector larger than max_size()");
 
-  makeNewData();
+  makeData();
 }
 
 template<typename value_type>
