@@ -1,4 +1,4 @@
-#include "s21_containers_core_test.h"
+#include "s21_core_tests.h"
 
 #ifdef DEBUG
 #include <iostream>
