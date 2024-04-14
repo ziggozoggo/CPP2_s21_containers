@@ -1,5 +1,5 @@
-#ifndef SRC_S21_VECTOR_H_
-#define SRC_S21_VECTOR_H_
+#ifndef SRC_CORE_S21_VECTOR_H_
+#define SRC_CORE_S21_VECTOR_H_
 
 #include <limits>
 #include <algorithm>
@@ -553,4 +553,4 @@ typename vector<value_type>::iterator vector<value_type>::insert_many(const_iter
 
 }
 
-#endif  // SRC_S21_VECTOR_H_
+#endif  // SRC_CORE_S21_VECTOR_H_
