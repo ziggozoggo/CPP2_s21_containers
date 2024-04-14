@@ -49,7 +49,6 @@ namespace s21 {
   - operator=(): assignment operators for copying and moving the container.
 */
 
-// #TODO: make common tests for containers
 class IContainer {
 public:
   using size_type = std::size_t;
@@ -58,8 +57,6 @@ public:
 
   virtual size_type size() const noexcept = 0;
   virtual bool empty() const noexcept = 0;
-
-  virtual void clear() = 0;
 };
 
 }

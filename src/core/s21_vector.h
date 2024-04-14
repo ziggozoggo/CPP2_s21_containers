@@ -140,7 +140,7 @@ public:
   size_type capacity() const noexcept;
   virtual size_type size() const noexcept override;
   virtual bool empty() const noexcept override;
-  virtual void clear() override;
+  void clear();
 
   value_type* data() const noexcept;
 
@@ -292,7 +292,7 @@ typename vector<value_type>::size_type vector<value_type>::size() const noexcept
 
 template<typename value_type>
 typename vector<value_type>::size_type vector<value_type>::max_size() {
-  return ((std::numeric_limits<size_type>::max() / sizeof(value_type)) / 4294967296); // #NOvalue_typeE: 2^32
+  return ((std::numeric_limits<size_type>::max() / sizeof(value_type)) / 4294967296); // #NOTE: 4294967296 -> 2^32
 }
 
 template<typename value_type>
