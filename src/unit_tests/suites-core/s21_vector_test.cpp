@@ -119,6 +119,8 @@ void listInitTest(const std::initializer_list<T>& items) {
   std::vector<T> expected(items);
 
   checkBasicField(actual, expected);
+
+  EXPECT_TRUE(std::equal(actual.begin(), actual.end(), expected.begin()));
 }
 
 #define TESTS_LIST_INIT(suiteName) \
