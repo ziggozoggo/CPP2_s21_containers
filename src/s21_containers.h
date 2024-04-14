@@ -2,5 +2,6 @@
 #define SRC_S21_CONTAINERS_H_
 
 #include "core/s21_vector.h"
+#include "core/s21_list.h"
 
 #endif  // !SRC_S21_CONTAINERS_H_
