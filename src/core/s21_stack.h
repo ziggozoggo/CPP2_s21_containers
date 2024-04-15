@@ -13,15 +13,49 @@ namespace s21 {
       using reference = T&;
       using const_reference = const T&;
 
-      stack() noexcept : size_(0), list_node_() {}
-      bool is_empty() {
-        return list_node_.empty();
-      }
+      stack() noexcept;
+
+      bool empty() noexcept;
+      size_type size() noexcept;
+      
+      void push(const_reference value);
+      void pop();
+      const_reference top();
 
     private:
-      size_type size_;
-      list<value_type> list_node_;
+      list<value_type> list_struct_;
   };
+
+  template<typename value_type>
+  stack<value_type>::stack() noexcept : list_struct_ {} {}
+
+  template<typename value_type>
+  bool stack<value_type>::empty() noexcept {
+    return list_struct_.empty();
+  }
+
+  template<typename value_type>
+  typename stack<value_type>::size_type stack<value_type>::size() noexcept {
+    return list_struct_.size();
+  }
+
+  template<typename value_type>
+  void stack<value_type>::push(const_reference value) {
+    list_struct_.push_back(value);
+  }
+
+  template<typename value_type>
+  void stack<value_type>::pop() {
+    if (!this->empty()) {
+      list_struct_.pop_back();
+    }
+  }
+
+  template<typename value_type>
+  typename stack<value_type>::const_reference stack<value_type>::top() {
+    return list_struct_.back();
+  }
 }
+
 
 #endif // SRC_S21_STACK_H_
