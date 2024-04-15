@@ -10,6 +10,11 @@ TEST(s21_stack_suite, init_empty_stack) {
   ASSERT_EQ(std_stack.size(), s21_stack.size());
 }
 
+TEST(s21_stack_suite, empty_stack_pop){
+  s21::stack<int> s21_stack;
+  EXPECT_THROW(s21_stack.pop(), std::out_of_range);
+}
+
 TEST(s21_stack_suite, init_list_stack) {
   s21::stack<int> s21_stack{21, 42, 84};
   int list_data[] = {21, 42, 84};
@@ -67,7 +72,7 @@ TEST(s21_stack_suite, non_empty_swap) {
   ASSERT_EQ(s21_other.top(), 42);
 }
 
-TEST(s21_stack_suite, move_constructor) {
+TEST(s21_stack_suite, move_constructor00) {
   s21::stack<int> s21_this;
   s21::stack<int> s21_other{21, 42, 84};
   s21_this = std::move(s21_other);
@@ -77,6 +82,14 @@ TEST(s21_stack_suite, move_constructor) {
 
   ASSERT_EQ(s21_this.size(), 3);
   ASSERT_EQ(s21_other.size(), 0);
+}
+
+TEST(s21_stack_suite, move_constructor01) {
+  s21::stack<int> s21_this{21, 42, 84};
+  s21_this = std::move(s21_this);
+  
+  ASSERT_EQ(s21_this.empty(), false);
+  ASSERT_EQ(s21_this.size(), 3);
 }
 
 TEST(s21_stack_suite, insert_many_top) {
