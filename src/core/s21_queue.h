@@ -1,9 +1,6 @@
 #ifndef SRC_CORE_S21_QUEUE_H_
 #define SRC_CORE_S21_QUEUE_H_
 
-#include <limits>
-#include <algorithm>
-
 #include "s21_container.h"
 #include "s21_list.h"
 
@@ -70,7 +67,7 @@ typename queue<value_type>::size_type queue<value_type>::size() const noexcept {
 
 template<typename value_type>
 typename queue<value_type>::size_type queue<value_type>::max_size() {
-  return data_.max_size();
+  return list<value_type>::max_size();
 }
 
 template<typename value_type>
