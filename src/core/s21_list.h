@@ -119,7 +119,7 @@ public:
 
   bool empty() const noexcept;
   size_type size() const noexcept;
-  size_type max_size() const noexcept;
+  static size_type max_size() noexcept;
 
   const_reference front() const;
   const_reference back() const;
@@ -611,9 +611,8 @@ typename list<value_type>::size_type list<value_type>::size() const noexcept {
 }
 
 template<typename value_type>
-typename list<value_type>::size_type list<value_type>::max_size() const noexcept {
-  size_type size = (std::numeric_limits<size_type>::max() / sizeof(ListNode<value_type>)) / 2;
-  return size;
+typename list<value_type>::size_type list<value_type>::max_size() noexcept {
+  return (std::numeric_limits<size_type>::max() / sizeof(ListNode<value_type>)) / 2;
 }
 
 template<typename value_type>

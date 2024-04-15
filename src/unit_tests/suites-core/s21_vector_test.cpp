@@ -119,6 +119,8 @@ void listInitTest(const std::initializer_list<T>& items) {
   std::vector<T> expected(items);
 
   checkBasicField(actual, expected);
+
+  EXPECT_TRUE(std::equal(actual.begin(), actual.end(), expected.begin()));
 }
 
 #define TESTS_LIST_INIT(suiteName) \
@@ -277,34 +279,6 @@ TEST(suiteName, stringClear) { clearTest<std::string>(DEF_STR_VALS); } \
 TEST(suiteName, NoConstructClassClear) { clearTest<NoConstructClass>(DEF_INT_VALS); } \
 
 TESTS_CLEAR(s21Vector)
-
-// --------------------------------------
-
-template<typename T>
-void clearAsContTest() {
-  const std::size_t size = 100;
-
-  s21::IContainer* ct = new s21::vector<T>(size);
-
-  EXPECT_EQ(ct->size(), size);
-  EXPECT_FALSE(ct->empty());
-
-  ct->clear();
-
-  EXPECT_EQ(ct->size(), 0);
-  EXPECT_TRUE(ct->empty());
-
-  delete ct;
-}
-
-#define TESTS_CLEAR_AS_CONT(suiteName) \
-TEST(suiteName, uShortClearAsCont) { clearAsContTest<unsigned short>(); } \
-TEST(suiteName, intClearAsContr) { clearAsContTest<int>(); } \
-TEST(suiteName, doubleClearAsCont) { clearAsContTest<double>(); } \
-TEST(suiteName, MockClassClearAsCont) { clearAsContTest<MockClass>(); } \
-TEST(suiteName, stringClearAsCont) { clearAsContTest<std::string>(); } \
-
-TESTS_CLEAR_AS_CONT(s21Vector)
 
 // --------------------------------------
 
