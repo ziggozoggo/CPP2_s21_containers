@@ -13,11 +13,11 @@ class stack {
     using reference = T&;
     using const_reference = const T&;
 
-    stack() noexcept;
+    stack() noexcept {};
     stack(const std::initializer_list<value_type>& values);
     stack(const stack &other);
     stack(stack&& other);
-    ~stack();
+    ~stack() {};
 
     bool empty() noexcept;
     size_type size() noexcept;
@@ -37,23 +37,13 @@ class stack {
 };
 
 template<typename value_type>
-stack<value_type>::stack() noexcept : data_ {} {}
-
-template<typename value_type>
-stack<value_type>::stack(const std::initializer_list<value_type>& values) : stack() {
-  for (const_reference e : values) {
-    this->push(e);
-  }
-}
+stack<value_type>::stack(const std::initializer_list<value_type>& values) : data_ { values } {}
 
 template<typename value_type>
 stack<value_type>::stack(const stack &other) : data_ {other.data_} {}
 
 template<typename value_type>
 stack<value_type>::stack(stack&& other) : data_ { std::move(other.data_) } {}
-
-template<typename value_type>
-stack<value_type>::~stack() {}
 
 template<typename value_type>
 bool stack<value_type>::empty() noexcept {
