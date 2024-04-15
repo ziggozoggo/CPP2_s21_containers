@@ -78,3 +78,12 @@ TEST(s21_stack_suite, move_constructor) {
   ASSERT_EQ(s21_this.size(), 3);
   ASSERT_EQ(s21_other.size(), 0);
 }
+
+TEST(s21_stack_suite, insert_many_top) {
+  s21::stack<int> s21_stack{21, 42, 84};
+  s21_stack.insert_many_front(33, 42, 11);
+
+  ASSERT_EQ(s21_stack.empty(), false);
+  ASSERT_EQ(s21_stack.size(), 6);
+  ASSERT_EQ(s21_stack.top(), 11);
+}

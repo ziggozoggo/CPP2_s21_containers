@@ -29,6 +29,9 @@ namespace s21 {
 
       stack& operator=(stack&& other);
 
+      template<class... Args>
+      void insert_many_front(Args&&... args);
+
     private:
       list<value_type> list_struct_;
   };
@@ -90,6 +93,14 @@ namespace s21 {
   stack<value_type>& stack<value_type>::operator=(stack&& other) {
     this->swap(other);
     return *this;
+  }
+
+  template<typename value_type>
+  template<class... Args>
+  void stack<value_type>::insert_many_front(Args&&... args) {
+    for (auto arg : {args...}) {
+      this->push(arg);
+    }
   }
 }
 
