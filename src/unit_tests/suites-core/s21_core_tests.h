@@ -70,6 +70,10 @@ public:
     return res;
   }
 
+  bool operator!=(const MockClass& other) const noexcept {
+    return !(*this == other);
+  }
+
   MockClass& operator*(const int mult) noexcept {
     subData_ *= mult;
 
@@ -102,6 +106,10 @@ public:
 
   bool operator==(const NoConstructClass& other) const noexcept {
     return val_ == other.val_;
+  }
+
+  bool operator!=(const NoConstructClass& other) const noexcept {
+    return !(*this == other);
   }
 
   NoConstructClass& operator*(const int mult) noexcept {
