@@ -1,5 +1,5 @@
-#ifndef SRC_S21_CONTAINER_H_
-#define SRC_S21_CONTAINER_H_
+#ifndef SRC_CORE_S21_CONTAINER_H_
+#define SRC_CORE_S21_CONTAINER_H_
 
 #include <cstddef>
 
