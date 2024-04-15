@@ -88,7 +88,8 @@ namespace s21 {
 
   template<typename value_type>
   stack<value_type>& stack<value_type>::operator=(stack&& other) {
-    this->list_struct_ = other.list_struct_;
+    this->swap(other);
+    return *this;
   }
 }
 
