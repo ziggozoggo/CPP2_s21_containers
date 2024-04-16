@@ -142,6 +142,7 @@ public:
   void erase(iterator pos);
   void swap(map& other);
   void merge(map& other);
+  bool contains(const key_type& key);
 };
 
 template<typename key_type, typename mapped_type>
@@ -296,6 +297,11 @@ template<typename key_type, typename mapped_type>
 void map<key_type, mapped_type>::merge(map& other) {
   for (auto it : other)
     insert(it);
+}
+
+template<typename key_type, typename mapped_type>
+bool map<key_type, mapped_type>::contains(const key_type& key) {
+  return (btree_.search(key) == nullptr) ? false : true;
 }
 }
 
