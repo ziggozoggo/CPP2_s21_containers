@@ -86,7 +86,7 @@ valgrind_check:
 
 clean_obj:
 	cd $(BUILD_DIR) && rm -rf *.o *.a *.exe *.so
-	rm -rf *.o *.a *.exe *.so 
+	rm -rf *.o *.a *.exe *.so
 
 clean_gcov:
 	rm -rf *.out
@@ -94,5 +94,4 @@ clean_gcov:
 	cd $(BUILD_DIR) && rm -rf report
 
 clean: clean_obj clean_gcov
-	cd $(BUILD_DIR) && rm -rf *.txt
 	rm -rf *.json $(BUILD_DIR)

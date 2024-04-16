@@ -1,6 +1,6 @@
 #include "s21_containers_core_test.h"
 
-#include "core/s21_bst.h"
+#include "core/s21_set.h"
 
 /* NORMAL */
 
@@ -17,8 +17,8 @@ TEST(BST, intIntegral) {
   bst.insert(6);
   bst.insert(8);
 
-  EXPECT_EQ(bst.search(5).value()->value, 5);
-  EXPECT_EQ(bst.search(2).value()->value, 2);
+  EXPECT_EQ(bst.search(5).value()->value_, 5);
+  EXPECT_EQ(bst.search(2).value()->value_, 2);
   EXPECT_TRUE(!bst.search(10).has_value());
 
   bst.remove(3);
@@ -41,8 +41,8 @@ TEST(BST, doubleIntegral) {
   bst.insert(455.45);
   bst.insert(6.34);
 
-  EXPECT_EQ(bst.search(5.54).value()->value, 5.54);
-  EXPECT_EQ(bst.search(3.04).value()->value, 3.04);
+  EXPECT_EQ(bst.search(5.54).value()->value_, 5.54);
+  EXPECT_EQ(bst.search(3.04).value()->value_, 3.04);
   EXPECT_TRUE(!bst.search(10).has_value());
 
   bst.remove(3.03);
@@ -66,8 +66,8 @@ TEST(BST, charIntegral) {
   bst.insert('x');
   bst.insert('x');
 
-  EXPECT_EQ(bst.search('z').value()->value, 'z');
-  EXPECT_EQ(bst.search('n').value()->value, 'n');
+  EXPECT_EQ(bst.search('z').value()->value_, 'z');
+  EXPECT_EQ(bst.search('n').value()->value_, 'n');
   EXPECT_TRUE(!bst.search('o').has_value());
 
   bst.remove('b');
@@ -93,8 +93,8 @@ TEST(BST, stringIntegral) {
   bst.insert("abccca");
   bst.insert("dfed");
 
-  EXPECT_EQ(bst.search("abc").value()->value, "abc");
-  EXPECT_EQ(bst.search("temp2").value()->value, "temp2");
+  EXPECT_EQ(bst.search("abc").value()->value_, "abc");
+  EXPECT_EQ(bst.search("temp2").value()->value_, "temp2");
   EXPECT_TRUE(!bst.search("temp3").has_value());
 
   bst.remove("temp2");
