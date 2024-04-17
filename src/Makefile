@@ -47,7 +47,7 @@ $(BUILD_DIR)/%.o: %.cpp
 debug: clean debug_flags $(TARGET) test_debug
 
 debug_flags:
-	$(eval CFLAGS += -g)
+	$(eval CFLAGS += -g -DDEBUG)
 
 test: $(TARGET)
 	cd $(TEST_DIR) && make
