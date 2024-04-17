@@ -77,6 +77,13 @@ int main() {
 
     std::cout << myMap.contains("Zerka") << ' ' << myMap.contains("Zerkala") << '\n';
 
+    myMap.insert_many(std::make_pair("2gis", '1'), std::make_pair("inlyit", '2'), std::make_pair("arqa", '3'));
+
+    for (auto it4 : myMap)
+        std::cout << it4.first << ' ' << it4.second << "  ";
+    std::cout << '\n';
+    std::cout << myMap.size() << '\n';
+
 
 
 

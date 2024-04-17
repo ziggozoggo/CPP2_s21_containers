@@ -2,7 +2,9 @@
 #define S21_MAP_H_
 
 #include "s21_bst.h"
+#include "s21_vector.h"
 #include <limits>
+#include <type_traits>
 
 namespace s21 {
 template<typename T, typename U>
@@ -143,6 +145,9 @@ public:
   void swap(map& other);
   void merge(map& other);
   bool contains(const key_type& key);
+
+  template<typename... Args>
+  vector<std::pair<iterator, bool>> insert_many(Args&&... args);
 };
 
 template<typename key_type, typename mapped_type>
@@ -226,26 +231,26 @@ mapped_type& map<key_type, mapped_type>::operator[](const key_type& key) {
 }
 
 template<typename key_type, typename mapped_type>
-MapIterator<key_type, mapped_type> map<key_type, mapped_type>::begin() {
-  MapIterator<key_type, mapped_type> it{btree_.getMin()};
+typename map<key_type, mapped_type>::iterator map<key_type, mapped_type>::begin() {
+  map<key_type, mapped_type>::iterator it{btree_.getMin()};
   return it;
 }
 
 template<typename key_type, typename mapped_type>
-MapConstIterator<key_type, mapped_type> map<key_type, mapped_type>::begin() const {
-  MapConstIterator<key_type, mapped_type> it{btree_.getMin()};
+typename map<key_type, mapped_type>::const_iterator map<key_type, mapped_type>::begin() const {
+  map<key_type, mapped_type>::const_iterator it{btree_.getMin()};
   return it;
 }
 
 template<typename key_type, typename mapped_type>
-MapIterator<key_type, mapped_type> map<key_type, mapped_type>::end() {
-  MapIterator<key_type, mapped_type> it{btree_.getMax()};
+typename map<key_type, mapped_type>::iterator map<key_type, mapped_type>::end() {
+  map<key_type, mapped_type>::iterator it{btree_.getMax()};
   return it;
 }
 
 template<typename key_type, typename mapped_type>
-MapConstIterator<key_type, mapped_type> map<key_type, mapped_type>::end() const {
-  MapConstIterator<key_type, mapped_type> it{btree_.getMax()};
+typename map<key_type, mapped_type>::const_iterator map<key_type, mapped_type>::end() const {
+  map<key_type, mapped_type>::const_iterator it{btree_.getMax()};
   return it;
 }
 
@@ -256,29 +261,29 @@ void map<key_type, mapped_type>::clear() {
 }
 
 template<typename key_type, typename mapped_type>
-std::pair<MapIterator<key_type, mapped_type>, bool> map<key_type, mapped_type>::insert(const value_type& value) {
+std::pair<typename map<key_type, mapped_type>::iterator, bool> map<key_type, mapped_type>::insert(const value_type& value) {
   std::pair<typename BST<key_type, mapped_type>::Node*, bool> temp = btree_.insert(value);
   if (temp.second)
     size_++;
-  return std::make_pair(MapIterator<key_type, mapped_type>(temp.first), temp.second);
+  return std::make_pair(map<key_type, mapped_type>::iterator(temp.first), temp.second);
 }
 
 template<typename key_type, typename mapped_type>
-std::pair<MapIterator<key_type, mapped_type>, bool> map<key_type, mapped_type>::insert(const key_type& key, const mapped_type& obj) {
+std::pair<typename map<key_type, mapped_type>::iterator, bool> map<key_type, mapped_type>::insert(const key_type& key, const mapped_type& obj) {
   std::pair<typename BST<key_type, mapped_type>::Node*, bool> temp = btree_.insert(key, obj);
   if (temp.second)
     size_++;
-  return std::make_pair(MapIterator<key_type, mapped_type>(temp.first), temp.second);
+  return std::make_pair(map<key_type, mapped_type>::iterator(temp.first), temp.second);
 }
 
 template<typename key_type, typename mapped_type>
-std::pair<MapIterator<key_type, mapped_type>, bool> map<key_type, mapped_type>::insert_or_assign(const key_type& key, const mapped_type& obj) {
+std::pair<typename map<key_type, mapped_type>::iterator, bool> map<key_type, mapped_type>::insert_or_assign(const key_type& key, const mapped_type& obj) {
   std::pair<typename BST<key_type, mapped_type>::Node*, bool> temp = btree_.insert(key, obj);
   if (temp.second)
     size_++;
   else
     temp.first->pair_.second = obj;
-  return std::make_pair(MapIterator<key_type, mapped_type>(temp.first), temp.second);
+  return std::make_pair(map<key_type, mapped_type>::iterator(temp.first), temp.second);
 }
 
 template<typename key_type, typename mapped_type>
@@ -302,6 +307,15 @@ void map<key_type, mapped_type>::merge(map& other) {
 template<typename key_type, typename mapped_type>
 bool map<key_type, mapped_type>::contains(const key_type& key) {
   return (btree_.search(key) == nullptr) ? false : true;
+}
+
+template<typename key_type, typename mapped_type>
+template<typename... Args>
+vector<std::pair<typename map<key_type, mapped_type>::iterator, bool>> map<key_type, mapped_type>::insert_many(Args&&... args) {
+  vector<std::pair<map<key_type, mapped_type>::iterator, bool>> res;
+  for (auto it : {args...})
+    res.push_back(insert(it));
+  return res;
 }
 }
 
