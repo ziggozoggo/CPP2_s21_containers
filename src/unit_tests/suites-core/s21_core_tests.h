@@ -3,7 +3,7 @@
 
 #include <gtest/gtest.h>
 
-#include "s21_containers.h"
+#include "../../s21_containers.h"
 
 #define LOOP_TESTS_QUANTITY 50
 
@@ -61,17 +61,31 @@ public:
   }
 
   bool operator==(const MockClass& other) const noexcept {
-    bool res = subData_ == other.subData_;
-
+    if (subData_ != other.subData_) return false;
     for (int i = 0; i < size_; i++) {
-      res = (data_[i] == other.data_[i]);
+        if (data_[i] != other.data_[i]) return false;
     }
-
-    return res;
+    return true;
   }
 
   bool operator!=(const MockClass& other) const noexcept {
     return !(*this == other);
+  }
+
+  bool operator<(const MockClass& other) const noexcept {
+    if (subData_ != other.subData_) return subData_ < other.subData_;
+    for (int i = 0; i < size_; i++) {
+        if (data_[i] != other.data_[i]) return data_[i] < other.data_[i];
+    }
+    return false;
+  }
+
+  bool operator>(const MockClass& other) const noexcept {
+    if (subData_ != other.subData_) return subData_ > other.subData_;
+    for (int i = 0; i < size_; i++) {
+        if (data_[i] != other.data_[i]) return data_[i] > other.data_[i];
+    }
+    return false;
   }
 
   MockClass& operator*(const int mult) noexcept {

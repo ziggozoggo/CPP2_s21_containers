@@ -3,6 +3,8 @@
 
 #include "s21_bst.h"
 #include "s21_vector.h"
+#include "s21_container.h"
+
 #include <limits>
 #include <type_traits>
 
@@ -55,6 +57,72 @@ private:
 };
 
 template<typename T, typename U>
+class MapConstIterator : public MapIterator<T, U> {
+public:
+  using value_type = std::pair<const T, U>;
+  using const_reference = const value_type&;
+public:
+  MapConstIterator(MapIterator<T, U> other) : MapIterator<T, U>(other) {}
+  const_reference operator*() {
+    return MapIterator<T, U>::operator*();
+  }
+};
+
+template<typename T, typename U>
+class map : public IContainer {
+public:
+  using key_type = T;
+  using mapped_type = U;
+  using value_type = std::pair<const key_type, mapped_type>;
+  using reference = value_type&;
+  using const_reference = const value_type&;
+  using iterator = MapIterator<key_type, mapped_type>;
+  using const_iterator = MapConstIterator<key_type, mapped_type>;
+  using typename IContainer::size_type;
+private:
+  BST<T, U> btree_;
+  size_type size_;
+public:
+  map();
+  map(std::initializer_list<value_type> const &items);
+  map(const map &other);
+  map(map &&other) noexcept;
+
+  map<key_type, mapped_type>& operator=(const map &other);
+  map<key_type, mapped_type>& operator=(map &&other);
+  mapped_type& at(const key_type& key);
+  mapped_type& at(const key_type& key) const;
+  mapped_type& operator[](const key_type& key);
+
+  bool operator==(const map<key_type, mapped_type>& other) const;
+  bool operator!=(const map<key_type, mapped_type>& other) const;
+
+  iterator begin();
+  const_iterator begin() const;
+  iterator end();
+  const_iterator end() const;
+
+  bool empty() const noexcept override { return btree_.isEmpty(); }
+  size_type size() const noexcept override { return size_; }
+  static size_type max_size();
+
+  void clear();
+  std::pair<iterator, bool> insert(const value_type& value);
+  std::pair<iterator, bool> insert(const key_type& key, const mapped_type& obj);
+  std::pair<iterator, bool> insert_or_assign(const key_type& key, const mapped_type& obj);
+
+  void erase(iterator pos);
+  void swap(map& other);
+  void merge(map& other);
+  bool contains(const key_type& key);
+
+  template<typename... Args>
+  vector<std::pair<iterator, bool>> insert_many(Args&&... args);
+private:
+  void erase(value_type pos);
+};
+
+template<typename T, typename U>
 typename BST<T, U>::Node* MapIterator<T, U>::RBT_increment(typename BST<T, U>::Node *ptr) {
   if (!ptr->right_->isNil()) {
     ptr = ptr->right_;
@@ -90,65 +158,18 @@ typename BST<T, U>::Node* MapIterator<T, U>::RBT_decrement(typename BST<T, U>::N
   return ptr;
 }
 
-template<typename T, typename U>
-class MapConstIterator : public MapIterator<T, U> {
-public:
-  using value_type = std::pair<const T, U>;
-  using const_reference = const value_type&;
-public:
-  MapConstIterator(MapIterator<T, U> other) : MapIterator<T, U>(other) {}
-  const_reference operator*() {
-    return MapIterator<T, U>::operator*();
-  }
-};
+template<typename key_type, typename mapped_type>
+bool map<key_type, mapped_type>::operator==(const map<key_type, mapped_type>& other) const {
+  if (this == &other) return true;
+  if (size() != other.size()) return false;
 
-template<typename T, typename U>
-class map {
-public:
-  using key_type = T;
-  using mapped_type = U;
-  using value_type = std::pair<const key_type, mapped_type>;
-  using reference = value_type&;
-  using const_reference = const value_type&;
-  using iterator = MapIterator<key_type, mapped_type>;
-  using const_iterator = MapConstIterator<key_type, mapped_type>;
-  using size_type = std::size_t;
-private:
-  BST<T, U> btree_;
-  size_type size_;
-public:
-  map();
-  map(std::initializer_list<value_type> const &items);
-  map(const map &other);
-  map(map &&other) noexcept;
+  return (std::equal(begin(), end(), other.begin()));
+}
 
-  map<key_type, mapped_type>& operator=(map &&other);
-  mapped_type& at(const key_type& key);
-  mapped_type& at(const key_type& key) const;
-  mapped_type& operator[](const key_type& key);
-
-  iterator begin();
-  const_iterator begin() const;
-  iterator end();
-  const_iterator end() const;
-
-  bool empty() { return btree_.isEmpty(); }
-  size_type size() { return size_; }
-  static size_type max_size();
-
-  void clear();
-  std::pair<iterator, bool> insert(const value_type& value);
-  std::pair<iterator, bool> insert(const key_type& key, const mapped_type& obj);
-  std::pair<iterator, bool> insert_or_assign(const key_type& key, const mapped_type& obj);
-
-  void erase(iterator pos);
-  void swap(map& other);
-  void merge(map& other);
-  bool contains(const key_type& key);
-
-  template<typename... Args>
-  vector<std::pair<iterator, bool>> insert_many(Args&&... args);
-};
+template<typename key_type, typename mapped_type>
+bool map<key_type, mapped_type>::operator!=(const map<key_type, mapped_type>& other) const {
+  return !(*this == other);
+}
 
 template<typename key_type, typename mapped_type>
 typename map<key_type, mapped_type>::size_type map<key_type, mapped_type>::max_size() {
@@ -175,7 +196,6 @@ template<typename key_type, typename mapped_type>
 map<key_type, mapped_type>::map(const map& other)
   : btree_()
   , size_(other.size_) {
-  //~isEmpty!
   for (auto it : other)
     this->btree_.insert(it);
 }
@@ -191,10 +211,19 @@ map<key_type, mapped_type>::map(map &&other) noexcept
 }
 
 template<typename key_type, typename mapped_type>
+map<key_type, mapped_type>& map<key_type, mapped_type>::operator=(const map &other) {
+  size_ = other.size_;
+  for (auto it : other)
+    this->btree_.insert(it);
+
+  return *this;
+}
+
+template<typename key_type, typename mapped_type>
 map<key_type, mapped_type>& map<key_type, mapped_type>::operator=(map &&other) {
   if (this == &other)
     return *this;
-  map<key_type, mapped_type> temp{std::move(this)};
+  map<key_type, mapped_type> temp = std::move(*this);
   btree_ = other.btree_;
   size_ = other.size_;
 
@@ -293,6 +322,12 @@ void map<key_type, mapped_type>::erase(iterator pos) {
 }
 
 template<typename key_type, typename mapped_type>
+void map<key_type, mapped_type>::erase(value_type pos) {
+  btree_.remove(pos.first);
+  size_--;
+}
+
+template<typename key_type, typename mapped_type>
 void map<key_type, mapped_type>::swap(map& other) {
   btree_.swapTree(other.btree_);
   std::swap(size_, other.size_);
@@ -300,8 +335,16 @@ void map<key_type, mapped_type>::swap(map& other) {
 
 template<typename key_type, typename mapped_type>
 void map<key_type, mapped_type>::merge(map& other) {
-  for (auto it : other)
-    insert(it);
+  map<key_type, mapped_type>::iterator itTemp;
+  vector<std::pair<const key_type, mapped_type>> buff;
+  for (map<key_type, mapped_type>::iterator it = other.begin()
+      ; it != other.end(); ++it) {
+    if (insert(*it).second) {
+      buff.push_back(*it);
+    }
+  }
+  for (auto it : buff)
+    other.erase(it);
 }
 
 template<typename key_type, typename mapped_type>

@@ -13,7 +13,6 @@ private:
     BLACK,
     RED
   };
-
 public:
   struct Node {
     Node* left_;
@@ -27,25 +26,23 @@ public:
 
     bool isNil() { return this == nil_; }
   };
-
 private:
   static Node* nil_;
   Node* root_;
-  
 public:
   BST() : root_(nil_) {}
   BST(std::pair<const T, U> pair) : root_(new Node(pair, nil_)) {}
 
   ~BST() { deleteTree(root_); }
 
-  bool isEmpty() { return root_ == nil_; }
+  bool isEmpty() const { return root_ == nil_; }
 
   std::pair<Node*, bool> insert(const std::pair<const T, U>& pair) {
     return insertNode(pair.first, pair.second);
   }
 
   std::pair<Node*, bool> insert(const T& key) {
-    U defaultValue;
+    U defaultValue = U();
     return insertNode(key, defaultValue);
   }
 
@@ -55,7 +52,7 @@ public:
 
   void remove(const T& key) { removeNode(key); }
 
-  Node* search(const T& key) { return search(root_, key); }
+  Node* search(const T& key) const { return search(root_, key); }
   Node* getMin() const;
   Node* getMax() const;
 
@@ -66,7 +63,6 @@ public:
   void clear();
   void printTree() { printTree(root_); }
   void swapTree(BST& other) { std::swap(root_, other.root_); }
-
 private:
   std::pair<Node*, bool> insertNode(const T& key, const U& obj);
   void balanceInsert(Node* newNode);
@@ -75,7 +71,7 @@ private:
   void rightRotate(Node* node);
   void leftRotate(Node* node);
 
-  Node* search(Node* node, const T& key);
+  Node* search (Node* node, const T& key) const;
   Node* getChildOrMock(Node* node) { return node->left_->isNil() ? node->right_ : node->left_; }
   int getChildrenCount(Node* node);
   void transplateNode(Node* dest, Node* src);
@@ -164,7 +160,7 @@ void BST<T, U>::balanceInsert(Node* newNode) {
 }
 
 template<typename T, typename U>
-typename BST<T, U>::Node* BST<T, U>::search(Node* node, const T& key) {
+typename BST<T, U>::Node* BST<T, U>::search(Node* node, const T& key) const {
   if (node->isNil()) return nullptr;
 
   if (node->pair_.first == key) return node;
@@ -260,6 +256,7 @@ void BST<T, U>::balanceRemove(Node* node) {
           brother->left_->color_ = NodeColor::BLACK;
           brother->color_ = NodeColor::RED;
           rightRotate(brother);
+          node->parent_ = brother->parent_->parent_;
           brother = node->parent_->right_;
         }
         brother->color_ = node->parent_->color_;
@@ -284,6 +281,7 @@ void BST<T, U>::balanceRemove(Node* node) {
           brother->right_->color_ = NodeColor::BLACK;
           brother->color_ = NodeColor::RED;
           leftRotate(brother);
+          node->parent_ = brother->parent_->parent_;
           brother = node->parent_->left_;
         }
         brother->color_ = node->parent_->color_;
@@ -326,9 +324,9 @@ typename BST<T, U>::Node* BST<T, U>::getMax(Node* node) const {
 
 template<typename T, typename U>
 typename BST<T, U>::Node* BST<T, U>::getMax() const {
-  if (root_->isNil() || root_->right_->isNil()) return root_;
+  if (root_->isNil()) return nil_;
 
-  Node* temp = root_->right_;
+  Node* temp = root_;
   while (!temp->right_->isNil())
     temp = temp->right_;
 
