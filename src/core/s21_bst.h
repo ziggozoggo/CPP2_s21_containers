@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include <algorithm>
-#include <optional>
 
 namespace s21 {
 template <typename KeyT, typename ValT>
@@ -21,19 +20,22 @@ public:
     NodeColor color_ = NodeColor::BLACK;
     std::pair<const KeyT, ValT> val_;
 
-    Node() : left_(this), right_(this), parent_(this) {}
+    Node() : left_(nullptr), right_(nullptr), parent_(nullptr) {}
     Node(std::pair<const KeyT, ValT> pair, Node* node) : left_(node), right_(node), parent_(node), color_(NodeColor::RED), val_(pair) {}
-
-    bool isNil() { return this == nil_; }
   };
 private:
-  static Node* nil_;
+  Node* nil_ = new Node();
   Node* root_;
 public:
   RBTree() : root_(nil_) {}
   RBTree(std::pair<const KeyT, ValT> pair) : root_(new Node(pair, nil_)) {}
 
-  ~RBTree() { deleteTree(root_); }
+  ~RBTree() {
+    deleteTree(root_);
+    delete nil_;
+  }
+
+  bool isNil(Node* node) const { return node == nil_; }
 
   bool isEmpty() const { return root_ == nil_; }
 
@@ -59,10 +61,10 @@ public:
   Node* getMin(Node* node) const;
   Node* getMax(Node* node) const;
 
-  void makeNullRoot() { root_ = nil_; }
+  void makeNullRoot() { root_ = nullptr; nil_ = nullptr; }
   void clear();
   void printTree() { printTree(root_); }
-  void swap(RBTree& other) { std::swap(root_, other.root_); }
+  void swapOtherRoot(RBTree& other) { std::swap(root_, other.root_); std::swap(nil_, other.nil_); }
 private:
   std::pair<Node*, bool>insertNode(const KeyT& key, const ValT& obj);
   void balanceInsert(Node* newNode);
@@ -72,7 +74,7 @@ private:
   void leftRotate(Node* node);
 
   Node* search (Node* node, const KeyT& key) const;
-  Node* getChildOrMock(Node* node) { return node->left_->isNil() ? node->right_ : node->left_; }
+  Node* getChildOrMock(Node* node) { return isNil(node->left_) ? node->right_ : node->left_; }
   int getChildrenCount(Node* node);
   void transplateNode(Node* dest, Node* src);
 
@@ -84,9 +86,6 @@ private:
 };
 
 template<typename KeyT, typename ValT>
-typename RBTree<KeyT, ValT>::Node* RBTree<KeyT, ValT>::nil_ = new Node();
-
-template<typename KeyT, typename ValT>
 std::pair<typename RBTree<KeyT, ValT>::Node*, bool> RBTree<KeyT, ValT>::insertNode(const KeyT& key, const ValT& value) {
   Node* checkNode = search(key);
   if (checkNode != nullptr)
@@ -94,7 +93,7 @@ std::pair<typename RBTree<KeyT, ValT>::Node*, bool> RBTree<KeyT, ValT>::insertNo
 
   Node* currentNode = root_;
   Node* parent = nil_;
-  while (!currentNode->isNil()) {
+  while (!isNil(currentNode)) {
     parent = currentNode;
     (key < currentNode->val_.first) ? currentNode = currentNode->left_
     : currentNode = currentNode->right_;
@@ -161,7 +160,7 @@ void RBTree<KeyT, ValT>::balanceInsert(Node* newNode) {
 
 template<typename KeyT, typename ValT>
 typename RBTree<KeyT, ValT>::Node* RBTree<KeyT, ValT>::search(Node* node, const KeyT& key) const {
-  if (node->isNil()) return nullptr;
+  if (isNil(node)) return nullptr;
 
   if (node->val_.first == key) return node;
   return (key < node->val_.first) ? search(node->left_, key) : search(node->right_, key);
@@ -169,7 +168,7 @@ typename RBTree<KeyT, ValT>::Node* RBTree<KeyT, ValT>::search(Node* node, const 
 
 template<typename KeyT, typename ValT>
 void RBTree<KeyT, ValT>::printTree(Node* node) {
-  if (node->isNil()) return;
+  if (isNil(node)) return;
 
   printTree(node->left_);
   std::cout << node->val_.first << ' ';
@@ -179,8 +178,8 @@ void RBTree<KeyT, ValT>::printTree(Node* node) {
 template<typename KeyT, typename ValT>
 int RBTree<KeyT, ValT>::getChildrenCount(Node* node) {
   int count = 0;
-  if (!node->left_->isNil()) count++;
-  if (!node->right_->isNil()) count++;
+  if (!isNil(node->left_)) count++;
+  if (!isNil(node->right_)) count++;
   return count;
 }
 
@@ -297,18 +296,18 @@ void RBTree<KeyT, ValT>::balanceRemove(Node* node) {
 
 template<typename KeyT, typename ValT>
 typename RBTree<KeyT, ValT>::Node* RBTree<KeyT, ValT>::getMin(Node* node) const {
-  if (node->isNil()) return nullptr;
+  if (isNil(node)) return nullptr;
 
-  if (node->left_->isNil()) return node;
+  if (isNil(node->left_)) return node;
   return getMin(node->left_);
 }
 
 template<typename KeyT, typename ValT>
 typename RBTree<KeyT, ValT>::Node* RBTree<KeyT, ValT>::getMin() const {
-  if (root_->isNil() || root_->left_->isNil()) return root_;
+  if (isNil(root_) || isNil(root_->left_)) return root_;
 
   Node* temp = root_->left_;
-  while (!temp->left_->isNil())
+  while (!isNil(temp->left_))
     temp = temp->left_;
 
   return temp;
@@ -316,18 +315,18 @@ typename RBTree<KeyT, ValT>::Node* RBTree<KeyT, ValT>::getMin() const {
 
 template<typename KeyT, typename ValT>
 typename RBTree<KeyT, ValT>::Node* RBTree<KeyT, ValT>::getMax(Node* node) const {
-  if (node->isNil()) return nullptr;
+  if (isNil(node)) return nullptr;
 
-  if (node->right_->isNil()) return node;
+  if (isNil(node->right_)) return node;
   return getMax(node->right_);
 }
 
 template<typename KeyT, typename ValT>
 typename RBTree<KeyT, ValT>::Node* RBTree<KeyT, ValT>::getMax() const {
-  if (root_->isNil()) return nil_;
+  if (isNil(root_)) return nil_;
 
   Node* temp = root_;
-  while (!temp->right_->isNil())
+  while (!isNil(temp->right_))
     temp = temp->right_;
 
   return temp->right_;
@@ -335,7 +334,7 @@ typename RBTree<KeyT, ValT>::Node* RBTree<KeyT, ValT>::getMax() const {
 
 template<typename KeyT, typename ValT>
 void RBTree<KeyT, ValT>::deleteTree(Node* node) {
-  if (node->isNil()) return;
+  if (isNil(node)) return;
 
   deleteTree(node->left_);
   deleteTree(node->right_);
@@ -353,7 +352,7 @@ void RBTree<KeyT, ValT>::swap(Node* a, Node* b) {
     b->left_ = a;
     a->left_ = bLeft;
 
-    if (!a->parent_->isNil()){
+    if (!isNil(a->parent_)){
       if (a == a->parent_->left_)
         a->parent_->left_ = b;
       else
@@ -363,13 +362,13 @@ void RBTree<KeyT, ValT>::swap(Node* a, Node* b) {
       b->parent_ = nil_;
     a->parent_ = b;
 
-    if (!b->right_->isNil())
+    if (!isNil(b->right_))
       b->right_->parent_ = b;
 
-    if (!a->right_->isNil())
+    if (!isNil(a->right_))
       a->right_->parent_ = a;
 
-    if (!a->left_->isNil())
+    if (!isNil(a->left_))
       a->left_->parent_ = a;
   } else {
     Node* aLeft = a->left_;
@@ -380,7 +379,7 @@ void RBTree<KeyT, ValT>::swap(Node* a, Node* b) {
     b->right_ = a;
     a->right_ = bRight;
 
-    if (!a->parent_->isNil()){
+    if (!isNil(a->parent_)){
       if (a == a->parent_->left_)
         a->parent_->left_ = b;
       else
@@ -390,13 +389,13 @@ void RBTree<KeyT, ValT>::swap(Node* a, Node* b) {
       b->parent_ = nil_;
     a->parent_ = b;
 
-    if (!b->left_->isNil())
+    if (!isNil(b->left_))
       b->left_->parent_ = b;
 
-    if (!a->left_->isNil())
+    if (!isNil(a->left_))
       a->left_->parent_ = a;
 
-    if (!a->right_->isNil())
+    if (!isNil(a->right_))
       a->right_->parent_ = a;
   }
 
@@ -414,7 +413,7 @@ void RBTree<KeyT, ValT>::rightRotate(Node* node) {
   node->parent_->right_->right_ = temp;
   
   node->parent_->left_->parent_ = node->parent_;
-  if (!node->parent_->right_->right_->parent_->isNil())
+  if (!isNil(node->parent_->right_->right_->parent_))
     node->parent_->right_->right_->parent_ = node->parent_->right_;
 }
 
@@ -428,7 +427,7 @@ void RBTree<KeyT, ValT>::leftRotate(Node* node) {
   node->parent_->left_->left_ = temp;
   
   node->parent_->right_->parent_ = node->parent_;
-  if (!node->parent_->left_->left_->parent_->isNil())
+  if (!isNil(node->parent_->left_->left_->parent_))
     node->parent_->left_->left_->parent_ = node->parent_->left_;
 }
 
