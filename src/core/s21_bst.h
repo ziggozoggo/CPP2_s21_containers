@@ -6,8 +6,8 @@
 #include <optional>
 
 namespace s21 {
-template <typename T, typename U>
-class BST {
+template <typename KeyT, typename ValT>
+class RBTree {
 private:
   enum class NodeColor {
     BLACK,
@@ -19,10 +19,10 @@ public:
     Node* right_;
     Node* parent_;
     NodeColor color_ = NodeColor::BLACK;
-    std::pair<const T, U> pair_;
+    std::pair<const KeyT, ValT> val_;
 
-    Node() : left_(nil_), right_(nil_), parent_(nil_) {}
-    Node(std::pair<const T, U> pair, Node* nil) : left_(nil), right_(nil), parent_(nil), color_(NodeColor::RED), pair_(pair) {}
+    Node() : left_(this), right_(this), parent_(this) {}
+    Node(std::pair<const KeyT, ValT> pair, Node* node) : left_(node), right_(node), parent_(node), color_(NodeColor::RED), val_(pair) {}
 
     bool isNil() { return this == nil_; }
   };
@@ -30,48 +30,48 @@ private:
   static Node* nil_;
   Node* root_;
 public:
-  BST() : root_(nil_) {}
-  BST(std::pair<const T, U> pair) : root_(new Node(pair, nil_)) {}
+  RBTree() : root_(nil_) {}
+  RBTree(std::pair<const KeyT, ValT> pair) : root_(new Node(pair, nil_)) {}
 
-  ~BST() { deleteTree(root_); }
+  ~RBTree() { deleteTree(root_); }
 
   bool isEmpty() const { return root_ == nil_; }
 
-  std::pair<Node*, bool> insert(const std::pair<const T, U>& pair) {
+  std::pair<Node*, bool> insert(const std::pair<const KeyT, ValT>& pair) {
     return insertNode(pair.first, pair.second);
   }
 
-  std::pair<Node*, bool> insert(const T& key) {
-    U defaultValue = U();
+  std::pair<Node*, bool> insert(const KeyT& key) {
+    ValT defaultValue = ValT();
     return insertNode(key, defaultValue);
   }
 
-  std::pair<Node*, bool> insert(const T& key, const U& obj) {
+  std::pair<Node*, bool> insert(const KeyT& key, const ValT& obj) {
     return insertNode(key, obj);
   }
 
-  void remove(const T& key) { removeNode(key); }
+  void remove(const KeyT& key) { removeNode(key); }
 
-  Node* search(const T& key) const { return search(root_, key); }
+  Node* search(const KeyT& key) const { return search(root_, key); }
   Node* getMin() const;
   Node* getMax() const;
 
   Node* getMin(Node* node) const;
   Node* getMax(Node* node) const;
 
-  void moveClear() { root_ = nil_; }
+  void makeNullRoot() { root_ = nil_; }
   void clear();
   void printTree() { printTree(root_); }
-  void swapTree(BST& other) { std::swap(root_, other.root_); }
+  void swap(RBTree& other) { std::swap(root_, other.root_); }
 private:
-  std::pair<Node*, bool> insertNode(const T& key, const U& obj);
+  std::pair<Node*, bool>insertNode(const KeyT& key, const ValT& obj);
   void balanceInsert(Node* newNode);
-  void removeNode(const T& key);
+  void removeNode(const KeyT& key);
   void balanceRemove(Node* node);
   void rightRotate(Node* node);
   void leftRotate(Node* node);
 
-  Node* search (Node* node, const T& key) const;
+  Node* search (Node* node, const KeyT& key) const;
   Node* getChildOrMock(Node* node) { return node->left_->isNil() ? node->right_ : node->left_; }
   int getChildrenCount(Node* node);
   void transplateNode(Node* dest, Node* src);
@@ -83,33 +83,33 @@ private:
   void deleteTree(Node* node);
 };
 
-template<typename T, typename U>
-typename BST<T, U>::Node* BST<T, U>::nil_ = new Node();
+template<typename KeyT, typename ValT>
+typename RBTree<KeyT, ValT>::Node* RBTree<KeyT, ValT>::nil_ = new Node();
 
-template<typename T, typename U>
-std::pair<typename BST<T, U>::Node*, bool> BST<T, U>::insertNode(const T& key, const U& value) {
+template<typename KeyT, typename ValT>
+std::pair<typename RBTree<KeyT, ValT>::Node*, bool> RBTree<KeyT, ValT>::insertNode(const KeyT& key, const ValT& value) {
   Node* checkNode = search(key);
   if (checkNode != nullptr)
     return std::make_pair(checkNode, false);
 
   Node* currentNode = root_;
-  Node* parent_ = nil_;
+  Node* parent = nil_;
   while (!currentNode->isNil()) {
-    parent_ = currentNode;
-    (key < currentNode->pair_.first) ? currentNode = currentNode->left_
+    parent = currentNode;
+    (key < currentNode->val_.first) ? currentNode = currentNode->left_
     : currentNode = currentNode->right_;
   }
   Node* newNode = new Node(std::make_pair(key, value), nil_);
-  newNode->parent_ = parent_;
-  if (parent_ == nil_) root_ = newNode;
-  else if (key < parent_->pair_.first) parent_->left_ = newNode;
-  else parent_->right_ = newNode;
+  newNode->parent_ = parent;
+  if (parent == nil_) root_ = newNode;
+  else if (key < parent->val_.first) parent->left_ = newNode;
+  else parent->right_ = newNode;
   balanceInsert(newNode);
   return std::make_pair(newNode, true);
 }
 
-template<typename T, typename U>
-void BST<T, U>::balanceInsert(Node* newNode) {
+template<typename KeyT, typename ValT>
+void RBTree<KeyT, ValT>::balanceInsert(Node* newNode) {
   Node* uncle;
   while (newNode->parent_->color_ == NodeColor::RED) {
     if (newNode->parent_ == newNode->parent_->parent_->left_) {
@@ -159,33 +159,33 @@ void BST<T, U>::balanceInsert(Node* newNode) {
   root_->color_ = NodeColor::BLACK;
 }
 
-template<typename T, typename U>
-typename BST<T, U>::Node* BST<T, U>::search(Node* node, const T& key) const {
+template<typename KeyT, typename ValT>
+typename RBTree<KeyT, ValT>::Node* RBTree<KeyT, ValT>::search(Node* node, const KeyT& key) const {
   if (node->isNil()) return nullptr;
 
-  if (node->pair_.first == key) return node;
-  return (key < node->pair_.first) ? search(node->left_, key) : search(node->right_, key);
+  if (node->val_.first == key) return node;
+  return (key < node->val_.first) ? search(node->left_, key) : search(node->right_, key);
 }
 
-template<typename T, typename U>
-void BST<T, U>::printTree(Node* node) {
+template<typename KeyT, typename ValT>
+void RBTree<KeyT, ValT>::printTree(Node* node) {
   if (node->isNil()) return;
 
   printTree(node->left_);
-  std::cout << node->pair_.first << ' ';
+  std::cout << node->val_.first << ' ';
   printTree(node->right_);
 }
 
-template<typename T, typename U>
-int BST<T, U>::getChildrenCount(Node* node) {
+template<typename KeyT, typename ValT>
+int RBTree<KeyT, ValT>::getChildrenCount(Node* node) {
   int count = 0;
   if (!node->left_->isNil()) count++;
   if (!node->right_->isNil()) count++;
   return count;
 }
 
-template<typename T, typename U>
-void BST<T, U>::transplateNode(Node* dest, Node* src) {
+template<typename KeyT, typename ValT>
+void RBTree<KeyT, ValT>::transplateNode(Node* dest, Node* src) {
   if (dest == root_) root_ = src;
   else if (dest == dest->parent_->left_) dest->parent_->left_ = src;
   else dest->parent_->right_ = src;
@@ -193,9 +193,9 @@ void BST<T, U>::transplateNode(Node* dest, Node* src) {
   delete dest;
 }
 
-template<typename T, typename U>
-void BST<T, U>::swapValue(Node* dest, Node* src) {
-  Node* temp = new Node(src->pair_, nil_);
+template<typename KeyT, typename ValT>
+void RBTree<KeyT, ValT>::swapValue(Node* dest, Node* src) {
+  Node* temp = new Node(src->val_, nil_);
   temp->color_ = dest->color_;
   
   temp->left_ = dest->left_;
@@ -215,8 +215,8 @@ void BST<T, U>::swapValue(Node* dest, Node* src) {
   delete dest;
 }
 
-template<typename T, typename U>
-void BST<T, U>::removeNode(const T& key) {
+template<typename KeyT, typename ValT>
+void RBTree<KeyT, ValT>::removeNode(const KeyT& key) {
   Node* nodeToDelete = search(key);
   if (nodeToDelete == nullptr) return;
 
@@ -236,8 +236,8 @@ void BST<T, U>::removeNode(const T& key) {
   if (removedNodeColor == NodeColor::BLACK) balanceRemove(child);
 }
 
-template<typename T, typename U>
-void BST<T, U>::balanceRemove(Node* node) {
+template<typename KeyT, typename ValT>
+void RBTree<KeyT, ValT>::balanceRemove(Node* node) {
   while (node != root_ && node->color_ == NodeColor::BLACK) {
     Node* brother;
     if (node == node->parent_->left_) {
@@ -295,16 +295,16 @@ void BST<T, U>::balanceRemove(Node* node) {
   node->color_ = NodeColor::BLACK;
 }
 
-template<typename T, typename U>
-typename BST<T, U>::Node* BST<T, U>::getMin(Node* node) const {
+template<typename KeyT, typename ValT>
+typename RBTree<KeyT, ValT>::Node* RBTree<KeyT, ValT>::getMin(Node* node) const {
   if (node->isNil()) return nullptr;
 
   if (node->left_->isNil()) return node;
   return getMin(node->left_);
 }
 
-template<typename T, typename U>
-typename BST<T, U>::Node* BST<T, U>::getMin() const {
+template<typename KeyT, typename ValT>
+typename RBTree<KeyT, ValT>::Node* RBTree<KeyT, ValT>::getMin() const {
   if (root_->isNil() || root_->left_->isNil()) return root_;
 
   Node* temp = root_->left_;
@@ -314,16 +314,16 @@ typename BST<T, U>::Node* BST<T, U>::getMin() const {
   return temp;
 }
 
-template<typename T, typename U>
-typename BST<T, U>::Node* BST<T, U>::getMax(Node* node) const {
+template<typename KeyT, typename ValT>
+typename RBTree<KeyT, ValT>::Node* RBTree<KeyT, ValT>::getMax(Node* node) const {
   if (node->isNil()) return nullptr;
 
   if (node->right_->isNil()) return node;
   return getMax(node->right_);
 }
 
-template<typename T, typename U>
-typename BST<T, U>::Node* BST<T, U>::getMax() const {
+template<typename KeyT, typename ValT>
+typename RBTree<KeyT, ValT>::Node* RBTree<KeyT, ValT>::getMax() const {
   if (root_->isNil()) return nil_;
 
   Node* temp = root_;
@@ -333,8 +333,8 @@ typename BST<T, U>::Node* BST<T, U>::getMax() const {
   return temp->right_;
 }
 
-template<typename T, typename U>
-void BST<T, U>::deleteTree(Node* node) {
+template<typename KeyT, typename ValT>
+void RBTree<KeyT, ValT>::deleteTree(Node* node) {
   if (node->isNil()) return;
 
   deleteTree(node->left_);
@@ -342,8 +342,8 @@ void BST<T, U>::deleteTree(Node* node) {
   delete node;
 }
 
-template<typename T, typename U>
-void BST<T, U>::swap(Node* a, Node* b) {
+template<typename KeyT, typename ValT>
+void RBTree<KeyT, ValT>::swap(Node* a, Node* b) {
   if (b == a->left_) {
     Node* aRight = a->right_;
     Node* bLeft = b->left_;
@@ -404,8 +404,8 @@ void BST<T, U>::swap(Node* a, Node* b) {
     root_ = b;
 }
 
-template<typename T, typename U>
-void BST<T, U>::rightRotate(Node* node) {
+template<typename KeyT, typename ValT>
+void RBTree<KeyT, ValT>::rightRotate(Node* node) {
   swap(node, node->left_);
   Node* temp = node->parent_->right_;
   node->parent_->right_ = node->parent_->left_;
@@ -418,8 +418,8 @@ void BST<T, U>::rightRotate(Node* node) {
     node->parent_->right_->right_->parent_ = node->parent_->right_;
 }
 
-template<typename T, typename U>
-void BST<T, U>::leftRotate(Node* node) {
+template<typename KeyT, typename ValT>
+void RBTree<KeyT, ValT>::leftRotate(Node* node) {
   swap(node, node->right_);
   Node* temp = node->parent_->left_;
   node->parent_->left_ = node->parent_->right_;
@@ -432,8 +432,8 @@ void BST<T, U>::leftRotate(Node* node) {
     node->parent_->left_->left_->parent_ = node->parent_->left_;
 }
 
-template<typename T, typename U>
-void BST<T, U>::clear() {
+template<typename KeyT, typename ValT>
+void RBTree<KeyT, ValT>::clear() {
   deleteTree(root_);
   root_ = nil_;
 }

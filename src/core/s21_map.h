@@ -9,17 +9,17 @@
 #include <type_traits>
 
 namespace s21 {
-template<typename T, typename U>
+template<typename KeyT, typename ValT>
 class MapIterator {
 public:
   using iterator_category = std::bidirectional_iterator_tag;
-  using value_type = std::pair<const T, U>;
+  using value_type = std::pair<const KeyT, ValT>;
   using difference_type = std::ptrdiff_t;
   using pointer = value_type*;
   using reference = value_type&;
 public:
   MapIterator() = default;
-  MapIterator(typename BST<T, U>::Node *ptr) : ptr_(ptr) {}
+  MapIterator(typename RBTree<KeyT, ValT>::Node *ptr) : ptr_(ptr) {}
 
   bool operator==(const MapIterator& other) { return ptr_ == other.ptr_; }
   bool operator!=(const MapIterator& other) { return !(*this == other); }
@@ -47,32 +47,32 @@ public:
   }
 
   reference operator*() {
-    return ptr_->pair_;
+    return ptr_->val_;
   }
 
 private:
-  typename BST<T, U>::Node *ptr_ = nullptr;
-  typename BST<T, U>::Node* RBT_increment(typename BST<T, U>::Node *ptr);
-  typename BST<T, U>::Node* RBT_decrement(typename BST<T, U>::Node *ptr);
+  typename RBTree<KeyT, ValT>::Node *ptr_ = nullptr;
+  typename RBTree<KeyT, ValT>::Node* RBT_increment(typename RBTree<KeyT, ValT>::Node *ptr);
+  typename RBTree<KeyT, ValT>::Node* RBT_decrement(typename RBTree<KeyT, ValT>::Node *ptr);
 };
 
-template<typename T, typename U>
-class MapConstIterator : public MapIterator<T, U> {
+template<typename KeyT, typename ValT>
+class MapConstIterator : public MapIterator<KeyT, ValT> {
 public:
-  using value_type = std::pair<const T, U>;
+  using value_type = std::pair<const KeyT, ValT>;
   using const_reference = const value_type&;
 public:
-  MapConstIterator(MapIterator<T, U> other) : MapIterator<T, U>(other) {}
+  MapConstIterator(MapIterator<KeyT, ValT> other) : MapIterator<KeyT, ValT>(other) {}
   const_reference operator*() {
-    return MapIterator<T, U>::operator*();
+    return MapIterator<KeyT, ValT>::operator*();
   }
 };
 
-template<typename T, typename U>
+template<typename KeyT, typename ValT>
 class map : public IContainer {
 public:
-  using key_type = T;
-  using mapped_type = U;
+  using key_type = KeyT;
+  using mapped_type = ValT;
   using value_type = std::pair<const key_type, mapped_type>;
   using reference = value_type&;
   using const_reference = const value_type&;
@@ -80,13 +80,14 @@ public:
   using const_iterator = MapConstIterator<key_type, mapped_type>;
   using typename IContainer::size_type;
 private:
-  BST<T, U> btree_;
+  RBTree<KeyT, ValT> btree_;
   size_type size_;
 public:
   map();
   map(std::initializer_list<value_type> const &items);
   map(const map &other);
   map(map &&other) noexcept;
+  ~map() {};
 
   map<key_type, mapped_type>& operator=(const map &other);
   map<key_type, mapped_type>& operator=(map &&other);
@@ -122,14 +123,14 @@ private:
   void erase(value_type pos);
 };
 
-template<typename T, typename U>
-typename BST<T, U>::Node* MapIterator<T, U>::RBT_increment(typename BST<T, U>::Node *ptr) {
+template<typename KeyT, typename ValT>
+typename RBTree<KeyT, ValT>::Node* MapIterator<KeyT, ValT>::RBT_increment(typename RBTree<KeyT, ValT>::Node *ptr) {
   if (!ptr->right_->isNil()) {
     ptr = ptr->right_;
     while (!ptr->left_->isNil())
       ptr = ptr->left_;
   } else {
-    typename BST<T, U>::Node* parent = ptr->parent_;
+    typename RBTree<KeyT, ValT>::Node* parent = ptr->parent_;
     while (ptr == parent->right_) {
       ptr = parent;
       parent = parent->parent_;
@@ -140,14 +141,14 @@ typename BST<T, U>::Node* MapIterator<T, U>::RBT_increment(typename BST<T, U>::N
   return ptr;
 }
 
-template<typename T, typename U>
-typename BST<T, U>::Node* MapIterator<T, U>::RBT_decrement(typename BST<T, U>::Node *ptr) {
+template<typename KeyT, typename ValT>
+typename RBTree<KeyT, ValT>::Node* MapIterator<KeyT, ValT>::RBT_decrement(typename RBTree<KeyT, ValT>::Node *ptr) {
   if (!ptr->left_->isNil()) {
     ptr = ptr->left_;
     while (!ptr->right_->isNil())
       ptr = ptr->right_;
   } else {
-    typename BST<T, U>::Node* parent = ptr->parent_;
+    typename RBTree<KeyT, ValT>::Node* parent = ptr->parent_;
     while (ptr == parent->left_) {
       ptr = parent;
       parent = parent->parent_;
@@ -174,7 +175,7 @@ bool map<key_type, mapped_type>::operator!=(const map<key_type, mapped_type>& ot
 template<typename key_type, typename mapped_type>
 typename map<key_type, mapped_type>::size_type map<key_type, mapped_type>::max_size() {
   return std::numeric_limits<size_type>::max()
-  / sizeof(typename BST<key_type, mapped_type>::Node)
+  / sizeof(typename RBTree<key_type, mapped_type>::Node)
   / 4294967296;
 }
 
@@ -205,7 +206,7 @@ map<key_type, mapped_type>::map(map &&other) noexcept
   : btree_(other.btree_)
   , size_(other.size_) {
   if (this != &other) {
-    other.btree_.moveClear();
+    other.btree_.makeNullRoot();
     other.size_ = 0;
   }
 }
@@ -227,7 +228,7 @@ map<key_type, mapped_type>& map<key_type, mapped_type>::operator=(map &&other) {
   btree_ = other.btree_;
   size_ = other.size_;
 
-  other.btree_.moveClear();
+  other.btree_.makeNullRoot();
   other.size_ = 0;
 
   return *this;
@@ -235,28 +236,28 @@ map<key_type, mapped_type>& map<key_type, mapped_type>::operator=(map &&other) {
 
 template<typename key_type, typename mapped_type>
 mapped_type& map<key_type, mapped_type>::at(const key_type& key) {
-  typename BST<key_type, mapped_type>::Node* temp = btree_.search(key);
+  typename RBTree<key_type, mapped_type>::Node* temp = btree_.search(key);
   if (temp == nullptr)
     throw std::out_of_range("Element with the current key was not found!");
   else
-    return temp->pair_.second;
+    return temp->val_.second;
 }
 
 template<typename key_type, typename mapped_type>
 mapped_type& map<key_type, mapped_type>::at(const key_type& key) const {
-  typename BST<key_type, mapped_type>::Node* temp = btree_.search(key);
+  typename RBTree<key_type, mapped_type>::Node* temp = btree_.search(key);
   if (temp == nullptr)
     throw std::out_of_range("Element with the current key was not found!");
   else
-    return temp->pair_.second;
+    return temp->val_.second;
 }
 
 template<typename key_type, typename mapped_type>
 mapped_type& map<key_type, mapped_type>::operator[](const key_type& key) {
-  std::pair<typename BST<key_type, mapped_type>::Node*, bool> temp = btree_.insert(key);
+  std::pair<typename RBTree<key_type, mapped_type>::Node*, bool> temp = btree_.insert(key);
   if (temp.second)
     size_++;
-  return temp.first->pair_.second;
+  return temp.first->val_.second;
 }
 
 template<typename key_type, typename mapped_type>
@@ -291,7 +292,7 @@ void map<key_type, mapped_type>::clear() {
 
 template<typename key_type, typename mapped_type>
 std::pair<typename map<key_type, mapped_type>::iterator, bool> map<key_type, mapped_type>::insert(const value_type& value) {
-  std::pair<typename BST<key_type, mapped_type>::Node*, bool> temp = btree_.insert(value);
+  std::pair<typename RBTree<key_type, mapped_type>::Node*, bool> temp = btree_.insert(value);
   if (temp.second)
     size_++;
   return std::make_pair(map<key_type, mapped_type>::iterator(temp.first), temp.second);
@@ -299,7 +300,7 @@ std::pair<typename map<key_type, mapped_type>::iterator, bool> map<key_type, map
 
 template<typename key_type, typename mapped_type>
 std::pair<typename map<key_type, mapped_type>::iterator, bool> map<key_type, mapped_type>::insert(const key_type& key, const mapped_type& obj) {
-  std::pair<typename BST<key_type, mapped_type>::Node*, bool> temp = btree_.insert(key, obj);
+  std::pair<typename RBTree<key_type, mapped_type>::Node*, bool> temp = btree_.insert(key, obj);
   if (temp.second)
     size_++;
   return std::make_pair(map<key_type, mapped_type>::iterator(temp.first), temp.second);
@@ -307,11 +308,11 @@ std::pair<typename map<key_type, mapped_type>::iterator, bool> map<key_type, map
 
 template<typename key_type, typename mapped_type>
 std::pair<typename map<key_type, mapped_type>::iterator, bool> map<key_type, mapped_type>::insert_or_assign(const key_type& key, const mapped_type& obj) {
-  std::pair<typename BST<key_type, mapped_type>::Node*, bool> temp = btree_.insert(key, obj);
+  std::pair<typename RBTree<key_type, mapped_type>::Node*, bool> temp = btree_.insert(key, obj);
   if (temp.second)
     size_++;
   else
-    temp.first->pair_.second = obj;
+    temp.first->val_.second = obj;
   return std::make_pair(map<key_type, mapped_type>::iterator(temp.first), temp.second);
 }
 
@@ -329,7 +330,7 @@ void map<key_type, mapped_type>::erase(value_type pos) {
 
 template<typename key_type, typename mapped_type>
 void map<key_type, mapped_type>::swap(map& other) {
-  btree_.swapTree(other.btree_);
+  btree_.swap(other.btree_);
   std::swap(size_, other.size_);
 }
 
