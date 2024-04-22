@@ -132,14 +132,14 @@ class map : public IContainer {
   void erase(value_type pos);
 };
 
-template <typename KeyT, typename ValT>
-typename RBTree<KeyT, ValT>::Node* MapIterator<KeyT, ValT>::RBT_increment(
-    typename RBTree<KeyT, ValT>::Node* ptr) {
+template <typename key_type, typename mapped_type>
+typename RBTree<key_type, mapped_type>::Node* MapIterator<key_type, mapped_type>::RBT_increment(
+    typename RBTree<key_type, mapped_type>::Node* ptr) {
   if (!it_btree_->isNil(ptr->right_)) {
     ptr = ptr->right_;
     while (!it_btree_->isNil(ptr->left_)) ptr = ptr->left_;
   } else {
-    typename RBTree<KeyT, ValT>::Node* parent = ptr->parent_;
+    typename RBTree<key_type, mapped_type>::Node* parent = ptr->parent_;
     while (ptr == parent->right_) {
       ptr = parent;
       parent = parent->parent_;
@@ -149,14 +149,14 @@ typename RBTree<KeyT, ValT>::Node* MapIterator<KeyT, ValT>::RBT_increment(
   return ptr;
 }
 
-template <typename KeyT, typename ValT>
-typename RBTree<KeyT, ValT>::Node* MapIterator<KeyT, ValT>::RBT_decrement(
-    typename RBTree<KeyT, ValT>::Node* ptr) {
+template <typename key_type, typename mapped_type>
+typename RBTree<key_type, mapped_type>::Node* MapIterator<key_type, mapped_type>::RBT_decrement(
+    typename RBTree<key_type, mapped_type>::Node* ptr) {
   if (!it_btree_->isNil(ptr->left_)) {
     ptr = ptr->left_;
     while (!it_btree_->isNil(ptr->right_)) ptr = ptr->right_;
   } else {
-    typename RBTree<KeyT, ValT>::Node* parent = ptr->parent_;
+    typename RBTree<key_type, mapped_type>::Node* parent = ptr->parent_;
     while (ptr == parent->left_) {
       ptr = parent;
       parent = parent->parent_;
