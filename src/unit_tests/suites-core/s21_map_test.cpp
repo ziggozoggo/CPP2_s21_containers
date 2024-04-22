@@ -979,3 +979,27 @@ TEST(suiteName, mockClassMethodContains) { methodContains<MockClass, int>(DEF_MO
 TEST(suiteName, stringMethodContains) { methodContains<std::string, int>(DEF_STR_KEYS, STR_KEY, STR_KEY_DUPLICATE); } \
 
 TESTS_CONTAINS(s21Map)
+
+// -------------------------------------------------
+
+template<typename key_type, typename mapped_type>
+void methodInsertMany(const std::initializer_list<std::pair<const key_type, mapped_type>>& items
+    , const std::initializer_list<std::pair<const key_type, mapped_type>>& insert_items) {
+  s21::map<key_type, mapped_type> s21_map(items);
+  std::map<key_type, mapped_type> std_map(items);
+
+  s21_map.insert_many(*insert_items.begin(), *(insert_items.begin() + 1), *(insert_items.begin() + 2));
+  std_map.insert(*insert_items.begin());
+  std_map.insert(*(insert_items.begin() + 1));
+  std_map.insert(*(insert_items.begin() + 2));
+
+  checkFields(s21_map, std_map);
+}
+
+#define TESTS_INSERT_MANY(suiteName) \
+TEST(suiteName, intMethodInsertMany) { methodInsertMany<int, int>(DEF_INT_KEYS, DEF_INT_KEYS_NO_DUBLICATE); } \
+TEST(suiteName, doubleMethodInsertMany) { methodInsertMany<double, int>(DEF_DBL_KEYS, DEF_DBL_KEYS_NO_DUBLICATE); } \
+TEST(suiteName, mockClassMethodInsertMany) { methodInsertMany<MockClass, int>(DEF_MOCK_KEYS, DEF_MOCK_KEYS_NO_DUBLICATE); } \
+TEST(suiteName, stringMethodInsertMany) { methodInsertMany<std::string, int>(DEF_STR_KEYS, DEF_STR_KEYS_NO_DUBLICATE); } \
+
+TESTS_INSERT_MANY(s21Map)
