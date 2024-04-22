@@ -44,8 +44,8 @@
 #define STR_OBJ 69
 
 template<typename key_type, typename mapped_type>
-void checkFields(const s21::map<key_type, mapped_type> s21_map
-    , const std::map<key_type, mapped_type> std_map) {
+void checkFields(const s21::map<key_type, mapped_type>& s21_map
+    , const std::map<key_type, mapped_type>& std_map) {
   auto std_it = std_map.begin();
   for (auto s21_it : s21_map) {
     EXPECT_EQ(s21_it.first, (*std_it).first);
@@ -57,8 +57,8 @@ void checkFields(const s21::map<key_type, mapped_type> s21_map
 }
 
 template<typename key_type, typename mapped_type>
-void checkFieldsEmpty(const s21::map<key_type, mapped_type> s21_map
-    , const std::map<key_type, mapped_type> std_map) {
+void checkFieldsEmpty(const s21::map<key_type, mapped_type>& s21_map
+    , const std::map<key_type, mapped_type>& std_map) {
   auto std_it = std_map.begin();
   for (auto s21_it : s21_map) {
     EXPECT_EQ(s21_it.first, (*std_it).first);
