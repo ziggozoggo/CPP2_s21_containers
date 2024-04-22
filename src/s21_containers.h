@@ -5,5 +5,6 @@
 #include "core/s21_list.h"
 #include "core/s21_stack.h"
 #include "core/s21_queue.h"
+#include "core/s21_map.h"
 
 #endif  // !SRC_S21_CONTAINERS_H_
