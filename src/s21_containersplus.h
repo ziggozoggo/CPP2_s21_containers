@@ -1,6 +1,6 @@
-#ifndef SRC_S21_CONTAINERS_H_
-#define SRC_S21_CONTAINERS_H_
+#ifndef SRC_S21_CONTAINERSPLUS_H_
+#define SRC_S21_CONTAINERSPLUS_H_
 
 #include "core/s21_multiset.h"
 
-#endif  // !SRC_S21_CONTAINERS_H_
+#endif  // !SRC_S21_CONTAINERSPLUS_H_

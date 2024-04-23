@@ -28,11 +28,6 @@
 #define MOCK_KEY_DUPLICATE 1
 #define STR_KEY_DUPLICATE "!"
 
-#define INT_OBJ 69
-#define DBL_OBJ 69
-#define MOCK_OBJ 69
-#define STR_OBJ 69
-
 template<typename key_type>
 void checkFields(const s21::multiset<key_type>& s21_multiset
     , const std::multiset<key_type>& std_multiset) {
