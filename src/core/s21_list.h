@@ -23,71 +23,17 @@ struct ListNode : ListBaseNode {
 };
 
 template<typename T>
-class ListIterator {
-  // BidirectionalIterator
-  // ++iter; iter++
-  // --iter; iter--
-  // *iter
-  public:
-    ListIterator() : ptr_(nullptr) {}
-    ListIterator(ListBaseNode *ptr) : ptr_(ptr) {}
-
-    ListBaseNode* get_ptr() { return ptr_;}
-
-    ListIterator& operator++() {
-      this->ptr_ = ptr_->next_;
-      return *this;
-    }
-
-    ListIterator& operator++(int) {
-      this->ptr_ = ptr_->next_;
-      return *this;
-    }
-
-    ListIterator& operator--() {
-      this->ptr_ = ptr_->prev_;
-      return *this;
-    }
-
-    ListIterator& operator--(int) {
-      this->ptr_ = ptr_->prev_;
-      return *this;
-    }
-
-    bool operator==(const ListIterator& other) {
-      return this->ptr_ == other.ptr_;
-    }
-
-    bool operator!=(const ListIterator& other) {
-      return !(*this == other);
-    }
-
-    T& operator*() {
-      return static_cast<ListNode<T>*>(ptr_)->value_;
-    }
-
-  private:
-    ListBaseNode *ptr_ = nullptr;
-};
-
-template<typename T>
-class ListConstIterator : public ListIterator<T> {
-  public:
-    ListConstIterator(ListIterator<T> other) : ListIterator<T>(other) {}
-    const T& operator*() {
-      return ListIterator<T>::operator*();
-    }
-};
-
-template<typename T>
 class list {
 public:
+  class ListIterator;
+  class ListConstIterator;
+
   using size_type = std::size_t;
   using value_type = T;
   using reference = T&;
   using const_reference = const T&;
-  using iterator = ListIterator<value_type>;
-  using const_iterator = ListConstIterator<value_type>;
+  using iterator = list<T>::ListIterator;
+  using const_iterator = list<T>::ListConstIterator;
 
   list();
   list(size_type count);
@@ -150,6 +96,63 @@ private:
 
   void merge_data(const_iterator& this_iterator, const_iterator& other_iterator);
   void merge_tail(list& other, const_iterator& other_iterator);
+};
+
+template <typename T>
+class list<T>::ListIterator {
+  // BidirectionalIterator
+  // ++iter; iter++
+  // --iter; iter--
+  // *iter
+  public:
+    ListIterator() : ptr_(nullptr) {}
+    ListIterator(ListBaseNode *ptr) : ptr_(ptr) {}
+
+    ListBaseNode* get_ptr() { return ptr_;}
+
+    ListIterator& operator++() {
+      this->ptr_ = ptr_->next_;
+      return *this;
+    }
+
+    ListIterator& operator++(int) {
+      this->ptr_ = ptr_->next_;
+      return *this;
+    }
+
+    ListIterator& operator--() {
+      this->ptr_ = ptr_->prev_;
+      return *this;
+    }
+
+    ListIterator& operator--(int) {
+      this->ptr_ = ptr_->prev_;
+      return *this;
+    }
+
+    bool operator==(const ListIterator& other) {
+      return this->ptr_ == other.ptr_;
+    }
+
+    bool operator!=(const ListIterator& other) {
+      return !(*this == other);
+    }
+
+    T& operator*() {
+      return static_cast<ListNode<T>*>(ptr_)->value_;
+    }
+
+  private:
+    ListBaseNode *ptr_ = nullptr;
+};
+
+template <typename T>
+class list<T>::ListConstIterator : public list<T>::ListIterator {
+  public:
+    ListConstIterator(ListIterator other) : ListIterator(other) {}
+    const T& operator*() {
+      return ListIterator::operator*();
+    }
 };
 
 /* LIST*/
@@ -549,13 +552,11 @@ typename list<value_type>::iterator list<value_type>::insert(iterator pos, const
   return iterator(new_node);
 }
 
-
 /**
  * @brief Удаления значения, на которое указывает итератор
  * @param pos Итератор
  * @return Итератор следующего элемента; если очищается последний - итератор на end();
  */
-
 template<typename value_type>
 typename list<value_type>::iterator list<value_type>::erase(iterator pos) {
 
@@ -709,18 +710,6 @@ void list<value_type>::print_reverse_list() {
   }
   std::cout << std::endl;
 }
-
-/* ITERATORS */
-
-// template<typename value_type>
-// bool list<value_type>::ListIterator::operator==(const list<value_type>::ListIterator& other) {
-//   return this->ptr_ == other.ptr_;
-// }
-
-// template<typename value_type>
-// bool list<value_type>::ListIterator::operator!=(const list<value_type>::ListIterator& other) {
-//   return !(*this == other);
-// }
 
 }
 

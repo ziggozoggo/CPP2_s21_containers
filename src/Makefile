@@ -85,7 +85,6 @@ clean_obj:
 
 clean_gcov:
 	cd $(BUILD_DIR) && rm -rf *.gcda *.gcno *.info *.out
-	rm -rf $(BUILD_DIR)
 	cd $(TEST_DIR) && make clean
 
 clean: clean_obj clean_gcov

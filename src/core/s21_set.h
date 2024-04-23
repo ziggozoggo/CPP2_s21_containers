@@ -1,10 +1,10 @@
-#ifndef S21_MAP_H_
-#define S21_MAP_H_
+#ifndef SRC_CORE_S21_SET_H_
+#define SRC_CORE_S21_SET_H_
 
 #include <limits>
 #include <type_traits>
 
-#include "s21_bst.h"
+#include "s21_rbtree.h"
 #include "s21_container.h"
 #include "s21_vector.h"
 
@@ -17,6 +17,8 @@ class SetIterator {
   using difference_type = std::ptrdiff_t;
   using pointer = value_type*;
   using reference = value_type&;
+
+  using Node = typename RBTree<KeyT, KeyT>::Node;
 
  public:
   SetIterator() = default;
@@ -52,13 +54,11 @@ class SetIterator {
   reference operator*() { return ptr_->val_.second; }
 
  private:
-  typename RBTree<KeyT, KeyT>::Node* ptr_ = nullptr;
+  Node* ptr_ = nullptr;
   RBTree<KeyT, KeyT>* it_btree_ = nullptr;
 
-  typename RBTree<KeyT, KeyT>::Node* RBT_increment(
-      typename RBTree<KeyT, KeyT>::Node* ptr);
-  typename RBTree<KeyT, KeyT>::Node* RBT_decrement(
-      typename RBTree<KeyT, KeyT>::Node* ptr);
+  Node* RBT_increment(Node* ptr);
+  Node* RBT_decrement(Node* ptr);
 };
 
 template <typename KeyT>
@@ -327,4 +327,4 @@ set<key_type>::insert_many(Args&&... args) {
 }
 }  // namespace s21
 
-#endif  // S21_MAP_H_
+#endif  // SRC_CORE_S21_SET_H_
