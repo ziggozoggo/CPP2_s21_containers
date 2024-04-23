@@ -94,4 +94,5 @@ clean_gcov:
 	cd $(BUILD_DIR) && rm -rf report
 
 clean: clean_obj clean_gcov
-	rm -rf *.json $(BUILD_DIR)
+	cd $(BUILD_DIR) && rm -rf *.txt
+	rm -rf *.json
