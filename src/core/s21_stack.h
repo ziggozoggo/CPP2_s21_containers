@@ -1,5 +1,5 @@
-#ifndef SRC_S21_STACK_H_
-#define SRC_S21_STACK_H_
+#ifndef SRC_CORE_S21_STACK_H_
+#define SRC_CORE_S21_STACK_H_
 
 #include "s21_container.h"
 #include "s21_list.h"
@@ -21,7 +21,7 @@ class stack {
 
     bool empty() noexcept;
     size_type size() noexcept;
-    
+
     void push(const_reference value);
     void pop();
     const_reference top();
@@ -94,4 +94,4 @@ void stack<value_type>::insert_many_front(Args&&... args) {
 }
 
 
-#endif // SRC_S21_STACK_H_
+#endif // SRC_CORE_S21_STACK_H_
