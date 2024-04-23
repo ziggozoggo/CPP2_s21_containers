@@ -9,119 +9,19 @@
 namespace s21 {
 
 template <typename T>
-class VectorIterator {
-
-// Types
-public:
-  using iterator_category = std::random_access_iterator_tag;
-  using difference_type = std::ptrdiff_t;
-  using value_type = T;
-  using pointer = T*;
-  using reference = T&;
-  using const_reference = const T&;
-
-// Public Methods
-public:
-  VectorIterator(value_type* ptr) : ptr_(ptr) {}
-  VectorIterator(VectorIterator& other) : ptr_(other.ptr_) {}
-
-  VectorIterator<value_type>& operator++() {
-    ++ptr_;
-    return *this;
-  }
-
-  VectorIterator<value_type> operator++(int) {
-    VectorIterator<value_type> temp = *this;
-    ++ptr_;
-    return temp;
-  }
-
-  VectorIterator<value_type> operator+(int shift) {
-    VectorIterator<value_type> temp = *this;
-    temp.ptr_ += shift;
-    return temp;
-  }
-
-  VectorIterator<value_type> operator+(const VectorIterator<value_type>& shift) {
-    VectorIterator<value_type> temp = *this;
-    temp.ptr_ += shift.ptr_;
-    return temp;
-  }
-
-  VectorIterator<value_type>& operator--() {
-    --ptr_;
-    return *this;
-  }
-
-  VectorIterator<value_type> operator--(int) {
-    VectorIterator<value_type> temp = *this;
-    --ptr_;
-    return temp;
-  }
-
-  VectorIterator<value_type> operator-(int shift) {
-    VectorIterator<value_type> temp = *this;
-    temp.ptr_ -= shift;
-    return temp;
-  }
-
-  VectorIterator<value_type> operator-(const VectorIterator<value_type>& shift) {
-    VectorIterator<value_type> temp = *this;
-    temp.ptr_ -= shift.ptr_;
-    return temp;
-  }
-
-  bool operator==(const VectorIterator<value_type>& other) const {
-    return (ptr_ == other.ptr_);
-  }
-
-  bool operator!=(const VectorIterator<value_type>& other) const {
-    return !(*this == other);
-  }
-
-  reference operator*() const {
-    return *ptr_;
-  }
-
-  static difference_type distance(const VectorIterator<value_type>& first, const VectorIterator<value_type>& second) {
-    return std::distance(first.ptr_, second.ptr_);
-  }
-
-// Data
-private:
-  value_type* ptr_;
-};
-
-template<typename T>
-class VectorConstIterator : public VectorIterator<T> {
-
-// Types
-public:
-  using iterator_category = std::random_access_iterator_tag;
-  using difference_type = std::ptrdiff_t;
-  using value_type = T;
-  using pointer = T*;
-  using reference = T&;
-  using const_reference = const T&;
-
-public:
-  VectorConstIterator(VectorIterator<value_type> other) : VectorIterator<value_type>(other) {}
-  const_reference operator*() {
-    return VectorIterator<value_type>::operator*();
-  }
-};
-
-template <typename T>
 class vector : public IContainer {
 
 // Types
 public:
+  class VectorIterator;
+  class VectorConstIterator;
+
   using typename IContainer::size_type;
   using value_type = T;
   using reference = T&;
   using const_reference = const T&;
-  using iterator = VectorIterator<value_type>;
-  using const_iterator = VectorConstIterator<value_type>;
+  using iterator = vector<value_type>::VectorIterator;
+  using const_iterator = vector<value_type>::VectorConstIterator;
 
 // Public Methods
 public:
@@ -198,6 +98,110 @@ private:
 
   iterator insertImpl(iterator pos, const_reference value);
 };
+
+template <typename T>
+class vector<T>::VectorIterator {
+
+// Types
+public:
+  using iterator_category = std::random_access_iterator_tag;
+  using difference_type = std::ptrdiff_t;
+  using value_type = T;
+  using pointer = T*;
+  using reference = T&;
+  using const_reference = const T&;
+
+// Public Methods
+public:
+  VectorIterator(value_type* ptr) : ptr_(ptr) {}
+  VectorIterator(VectorIterator& other) : ptr_(other.ptr_) {}
+
+  VectorIterator& operator++() {
+    ++ptr_;
+    return *this;
+  }
+
+  VectorIterator operator++(int) {
+    VectorIterator temp = *this;
+    ++ptr_;
+    return temp;
+  }
+
+  VectorIterator operator+(int shift) {
+    VectorIterator temp = *this;
+    temp.ptr_ += shift;
+    return temp;
+  }
+
+  VectorIterator operator+(const VectorIterator& shift) {
+    VectorIterator temp = *this;
+    temp.ptr_ += shift.ptr_;
+    return temp;
+  }
+
+  VectorIterator& operator--() {
+    --ptr_;
+    return *this;
+  }
+
+  VectorIterator operator--(int) {
+    VectorIterator temp = *this;
+    --ptr_;
+    return temp;
+  }
+
+  VectorIterator operator-(int shift) {
+    VectorIterator temp = *this;
+    temp.ptr_ -= shift;
+    return temp;
+  }
+
+  VectorIterator operator-(const VectorIterator& shift) {
+    VectorIterator temp = *this;
+    temp.ptr_ -= shift.ptr_;
+    return temp;
+  }
+
+  bool operator==(const VectorIterator& other) const {
+    return (ptr_ == other.ptr_);
+  }
+
+  bool operator!=(const VectorIterator& other) const {
+    return !(*this == other);
+  }
+
+  reference operator*() const {
+    return *ptr_;
+  }
+
+  static difference_type distance(const VectorIterator& first, const VectorIterator& second) {
+    return std::distance(first.ptr_, second.ptr_);
+  }
+
+// Data
+private:
+  value_type* ptr_;
+};
+
+template<typename T>
+class vector<T>::VectorConstIterator : public vector<T>::VectorIterator {
+
+// Types
+public:
+  using iterator_category = std::random_access_iterator_tag;
+  using difference_type = std::ptrdiff_t;
+  using value_type = T;
+  using pointer = T*;
+  using reference = T&;
+  using const_reference = const T&;
+
+public:
+  VectorConstIterator(VectorIterator other) : VectorIterator(other) {}
+  const_reference operator*() {
+    return VectorIterator::operator*();
+  }
+};
+
 
 template<typename value_type>
 vector<value_type>::vector() noexcept
@@ -489,7 +493,7 @@ void vector<value_type>::pop_back() {
 
 template<typename value_type>
 void vector<value_type>::erase(iterator pos) {
-  const auto index = (size_type)VectorIterator<value_type>::distance(begin(), pos);
+  const auto index = (size_type)VectorIterator::distance(begin(), pos);
   if (index >= size_) return;
 
   freeValData(index);
@@ -503,7 +507,7 @@ void vector<value_type>::erase(iterator pos) {
 
 template<typename value_type>
 typename vector<value_type>::iterator vector<value_type>::insertImpl(iterator pos, const_reference value) {
-  const auto index = (size_type)VectorIterator<value_type>::distance(begin(), pos);
+  const auto index = (size_type)VectorIterator::distance(begin(), pos);
   if (size_ >= capacity_) growCapacity();
 
   for (size_type i = size_; i > index; i--) {
@@ -520,7 +524,7 @@ typename vector<value_type>::iterator vector<value_type>::insertImpl(iterator po
 
 template<typename value_type>
 void vector<value_type>::checkRange(const_iterator begin, const_iterator pos) const {
-  const auto index = (size_type)VectorIterator<value_type>::distance(begin, pos);
+  const auto index = (size_type)VectorIterator::distance(begin, pos);
   if ((index >= size_) && (index != 0)) throw std::out_of_range("Selected position is out of range of the vector");
 }
 
