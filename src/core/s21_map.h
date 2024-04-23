@@ -65,7 +65,7 @@ class map : public IContainer {
   vector<std::pair<iterator, bool>> insert_many(Args&&... args);
 
  private:
-  RBTree<KeyT, ValT> btree_;
+  RBTree<KeyT, ValT, false> btree_;
   size_type size_;
 
  private:
@@ -81,12 +81,12 @@ class map<KeyT, ValT>::MapIterator {
   using pointer = value_type*;
   using reference = value_type&;
 
-  using Node = typename RBTree<KeyT, ValT>::Node;
+  using Node = typename RBTree<KeyT, ValT, false>::Node;
 
  public:
   MapIterator() = default;
-  MapIterator(typename RBTree<KeyT, ValT>::Node* ptr,
-              RBTree<KeyT, ValT>* it_btree)
+  MapIterator(typename RBTree<KeyT, ValT, false>::Node* ptr,
+              RBTree<KeyT, ValT, false>* it_btree)
       : ptr_(ptr), it_btree_(it_btree) {}
 
   bool operator==(const MapIterator& other) { return ptr_ == other.ptr_; }
@@ -117,8 +117,8 @@ class map<KeyT, ValT>::MapIterator {
   reference operator*() { return ptr_->val_; }
 
  private:
-  typename RBTree<KeyT, ValT>::Node* ptr_ = nullptr;
-  RBTree<KeyT, ValT>* it_btree_ = nullptr;
+  typename RBTree<KeyT, ValT, false>::Node* ptr_ = nullptr;
+  RBTree<KeyT, ValT, false>* it_btree_ = nullptr;
 
   Node* RBT_increment(Node* ptr);
   Node* RBT_decrement(Node* ptr);
@@ -136,13 +136,13 @@ class map<KeyT, ValT>::MapConstIterator : public map<KeyT, ValT>::MapIterator {
 };
 
 template <typename key_type, typename mapped_type>
-typename RBTree<key_type, mapped_type>::Node* map<key_type, mapped_type>::MapIterator::RBT_increment(
-    typename RBTree<key_type, mapped_type>::Node* ptr) {
+typename RBTree<key_type, mapped_type, false>::Node* map<key_type, mapped_type>::MapIterator::RBT_increment(
+    typename RBTree<key_type, mapped_type, false>::Node* ptr) {
   if (!it_btree_->isNil(ptr->right_)) {
     ptr = ptr->right_;
     while (!it_btree_->isNil(ptr->left_)) ptr = ptr->left_;
   } else {
-    typename RBTree<key_type, mapped_type>::Node* parent = ptr->parent_;
+    typename RBTree<key_type, mapped_type, false>::Node* parent = ptr->parent_;
     while (ptr == parent->right_) {
       ptr = parent;
       parent = parent->parent_;
@@ -153,13 +153,13 @@ typename RBTree<key_type, mapped_type>::Node* map<key_type, mapped_type>::MapIte
 }
 
 template <typename key_type, typename mapped_type>
-typename RBTree<key_type, mapped_type>::Node* map<key_type, mapped_type>::MapIterator::RBT_decrement(
-    typename RBTree<key_type, mapped_type>::Node* ptr) {
+typename RBTree<key_type, mapped_type, false>::Node* map<key_type, mapped_type>::MapIterator::RBT_decrement(
+    typename RBTree<key_type, mapped_type, false>::Node* ptr) {
   if (!it_btree_->isNil(ptr->left_)) {
     ptr = ptr->left_;
     while (!it_btree_->isNil(ptr->right_)) ptr = ptr->right_;
   } else {
-    typename RBTree<key_type, mapped_type>::Node* parent = ptr->parent_;
+    typename RBTree<key_type, mapped_type, false>::Node* parent = ptr->parent_;
     while (ptr == parent->left_) {
       ptr = parent;
       parent = parent->parent_;
@@ -188,7 +188,7 @@ template <typename key_type, typename mapped_type>
 typename map<key_type, mapped_type>::size_type
 map<key_type, mapped_type>::max_size() {
   return std::numeric_limits<size_type>::max() /
-         sizeof(typename RBTree<key_type, mapped_type>::Node) / 4294967296;
+         sizeof(typename RBTree<key_type, mapped_type, false>::Node) / 4294967296;
 }
 
 template <typename key_type, typename mapped_type>
@@ -240,7 +240,7 @@ map<key_type, mapped_type>& map<key_type, mapped_type>::operator=(map&& other) {
 
 template <typename key_type, typename mapped_type>
 mapped_type& map<key_type, mapped_type>::at(const key_type& key) {
-  typename RBTree<key_type, mapped_type>::Node* temp = btree_.search(key);
+  typename RBTree<key_type, mapped_type, false>::Node* temp = btree_.search(key);
   if (temp == nullptr)
     throw std::out_of_range("Element with the current key was not found!");
   else
@@ -249,7 +249,7 @@ mapped_type& map<key_type, mapped_type>::at(const key_type& key) {
 
 template <typename key_type, typename mapped_type>
 mapped_type& map<key_type, mapped_type>::at(const key_type& key) const {
-  typename RBTree<key_type, mapped_type>::Node* temp = btree_.search(key);
+  typename RBTree<key_type, mapped_type, false>::Node* temp = btree_.search(key);
   if (temp == nullptr)
     throw std::out_of_range("Element with the current key was not found!");
   else
@@ -258,7 +258,7 @@ mapped_type& map<key_type, mapped_type>::at(const key_type& key) const {
 
 template <typename key_type, typename mapped_type>
 mapped_type& map<key_type, mapped_type>::operator[](const key_type& key) {
-  std::pair<typename RBTree<key_type, mapped_type>::Node*, bool> temp =
+  std::pair<typename RBTree<key_type, mapped_type, false>::Node*, bool> temp =
       btree_.insert(key);
   if (temp.second) size_++;
   return temp.first->val_.second;
@@ -275,7 +275,7 @@ template <typename key_type, typename mapped_type>
 typename map<key_type, mapped_type>::const_iterator
 map<key_type, mapped_type>::begin() const {
   MapIterator it(
-      btree_.getMin(), const_cast<RBTree<key_type, mapped_type>*>(&btree_));
+      btree_.getMin(), const_cast<RBTree<key_type, mapped_type, false>*>(&btree_));
   return MapConstIterator(it);
 }
 
@@ -290,7 +290,7 @@ template <typename key_type, typename mapped_type>
 typename map<key_type, mapped_type>::const_iterator
 map<key_type, mapped_type>::end() const {
   MapIterator it(
-      btree_.getMax(), const_cast<RBTree<key_type, mapped_type>*>(&btree_));
+      btree_.getMax(), const_cast<RBTree<key_type, mapped_type, false>*>(&btree_));
   return MapConstIterator(it);
 }
 
@@ -303,7 +303,7 @@ void map<key_type, mapped_type>::clear() {
 template <typename key_type, typename mapped_type>
 std::pair<typename map<key_type, mapped_type>::iterator, bool>
 map<key_type, mapped_type>::insert(const value_type& value) {
-  std::pair<typename RBTree<key_type, mapped_type>::Node*, bool> temp =
+  std::pair<typename RBTree<key_type, mapped_type, false>::Node*, bool> temp =
       btree_.insert(value);
   if (temp.second) size_++;
   return std::make_pair(
@@ -314,7 +314,7 @@ template <typename key_type, typename mapped_type>
 std::pair<typename map<key_type, mapped_type>::iterator, bool>
 map<key_type, mapped_type>::insert(const key_type& key,
                                    const mapped_type& obj) {
-  std::pair<typename RBTree<key_type, mapped_type>::Node*, bool> temp =
+  std::pair<typename RBTree<key_type, mapped_type, false>::Node*, bool> temp =
       btree_.insert(key, obj);
   if (temp.second) size_++;
   return std::make_pair(
@@ -325,7 +325,7 @@ template <typename key_type, typename mapped_type>
 std::pair<typename map<key_type, mapped_type>::iterator, bool>
 map<key_type, mapped_type>::insert_or_assign(const key_type& key,
                                              const mapped_type& obj) {
-  std::pair<typename RBTree<key_type, mapped_type>::Node*, bool> temp =
+  std::pair<typename RBTree<key_type, mapped_type, false>::Node*, bool> temp =
       btree_.insert(key, obj);
   if (temp.second)
     size_++;

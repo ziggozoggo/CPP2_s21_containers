@@ -4,6 +4,7 @@
 #include <gtest/gtest.h>
 
 #include "../../s21_containers.h"
+#include "../../s21_containersplus.h"
 
 #define LOOP_TESTS_QUANTITY 50
 
@@ -86,6 +87,14 @@ public:
         if (data_[i] != other.data_[i]) return data_[i] > other.data_[i];
     }
     return false;
+  }
+
+  bool operator>=(const MockClass& other) const noexcept {
+    return !(*this < other);
+  }
+
+  bool operator<=(const MockClass& other) const noexcept {
+    return !(*this > other);
   }
 
   MockClass& operator*(const int mult) noexcept {

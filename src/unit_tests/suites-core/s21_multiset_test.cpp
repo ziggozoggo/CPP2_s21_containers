@@ -1,12 +1,12 @@
 #include "s21_core_tests.h"
-#include "core/s21_set.h"
+#include "core/s21_multiset.h"
 
 #include <set>
 
-#define DEF_INT_KEYS {1, 2, 3, 4, 8}
-#define DEF_DBL_KEYS {4.35, 2.977, 873.23, 6.875, 9.6534}
-#define DEF_MOCK_KEYS {1, 4, 44, 45, 88}
-#define DEF_STR_KEYS {"hello", "world", "!", "mock", "set"}
+#define DEF_INT_KEYS {1, 2, 3, 4, 8, 3, 4, 4}
+#define DEF_DBL_KEYS {4.35, 2.977, 873.23, 6.875, 9.6534, 6.875, 2.977, 2.977}
+#define DEF_MOCK_KEYS {1, 4, 44, 45, 88, 44, 1, 1}
+#define DEF_STR_KEYS {"hello", "world", "!", "mock", "multiset", "!", "!", "world"}
 
 #define DEF_INT_KEYS_DUBLICATE {6, 2, 3, 8, 10}
 #define DEF_DBL_KEYS_DUBLICATE {5.41, 2.977, 873.23, 6.875, 123.123}
@@ -23,9 +23,9 @@
 #define MOCK_KEY 69
 #define STR_KEY "69"
 
-#define INT_KEY_DUPLICATE 3
-#define DBL_KEY_DUPLICATE 6.875
-#define MOCK_KEY_DUPLICATE 44
+#define INT_KEY_DUPLICATE 4
+#define DBL_KEY_DUPLICATE 2.977
+#define MOCK_KEY_DUPLICATE 1
 #define STR_KEY_DUPLICATE "!"
 
 #define INT_OBJ 69
@@ -34,28 +34,28 @@
 #define STR_OBJ 69
 
 template<typename key_type>
-void checkFields(const s21::set<key_type>& s21_set
-    , const std::set<key_type>& std_set) {
-  auto std_it = std_set.begin();
-  for (auto s21_it : s21_set) {
+void checkFields(const s21::multiset<key_type>& s21_multiset
+    , const std::multiset<key_type>& std_multiset) {
+  auto std_it = std_multiset.begin();
+  for (auto s21_it : s21_multiset) {
     EXPECT_EQ(s21_it, *std_it);
 
     ++std_it;
   }
-  EXPECT_EQ(s21_set.size(), std_set.size());
+  EXPECT_EQ(s21_multiset.size(), std_multiset.size());
 }
 
 template<typename key_type>
-void checkFieldsEmpty(const s21::set<key_type>& s21_set
-    , const std::set<key_type>& std_set) {
-  auto std_it = std_set.begin();
-  for (auto s21_it : s21_set) {
+void checkFieldsEmpty(const s21::multiset<key_type>& s21_multiset
+    , const std::multiset<key_type>& std_multiset) {
+  auto std_it = std_multiset.begin();
+  for (auto s21_it : s21_multiset) {
     EXPECT_EQ(s21_it, *std_it);
 
     ++std_it;
   }
-  EXPECT_EQ(s21_set.size(), std_set.size());
-  EXPECT_EQ(s21_set.empty(), std_set.empty());
+  EXPECT_EQ(s21_multiset.size(), std_multiset.size());
+  EXPECT_EQ(s21_multiset.empty(), std_multiset.empty());
 }
 
 // -------------------------------------------------
@@ -64,7 +64,7 @@ void checkFieldsEmpty(const s21::set<key_type>& s21_set
 
 template<typename key_type>
 void constructorDefaultAsCont() {
-  s21::IContainer* ct = new s21::set<key_type>();
+  s21::IContainer* ct = new s21::multiset<key_type>();
 
   EXPECT_EQ(ct->size(), 0);
   EXPECT_TRUE(ct->empty());
@@ -78,16 +78,16 @@ TEST(suiteName, doubleInitAsCont) { constructorDefaultAsCont<double>(); } \
 TEST(suiteName, mockClassInitAsCont) { constructorDefaultAsCont<MockClass>(); } \
 TEST(suiteName, stringInitAsCont) { constructorDefaultAsCont<std::string>(); } \
 
-TESTS_CONSTRUCTOR_INIT_AS_CONT(s21Set)
+TESTS_CONSTRUCTOR_INIT_AS_CONT(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
 void constructorDefault() {
-  s21::set<key_type> s21_set;
-  std::set<key_type> std_set;
+  s21::multiset<key_type> s21_multiset;
+  std::multiset<key_type> std_multiset;
 
-  checkFieldsEmpty(s21_set, std_set);
+  checkFieldsEmpty(s21_multiset, std_multiset);
 }
 
 #define TESTS_DEFAULT_CONSTRUCTOR_INIT(suiteName) \
@@ -96,16 +96,16 @@ TEST(suiteName, doubleDefInit) { constructorDefault<double>(); } \
 TEST(suiteName, mockClassDefInit) { constructorDefault<MockClass>(); } \
 TEST(suiteName, stringDefInit) { constructorDefault<std::string>(); } \
 
-TESTS_DEFAULT_CONSTRUCTOR_INIT(s21Set)
+TESTS_DEFAULT_CONSTRUCTOR_INIT(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
 void constructorInitList(const std::initializer_list<key_type>& items) {
-  s21::set<key_type> s21_set(items);
-  std::set<key_type> std_set(items);
+  s21::multiset<key_type> s21_multiset(items);
+  std::multiset<key_type> std_multiset(items);
 
-  checkFields(s21_set, std_set);
+  checkFields(s21_multiset, std_multiset);
 }
 
 #define TESTS_CONSTRUCTOR_INIT_LIST(suiteName) \
@@ -114,17 +114,17 @@ TEST(suiteName, doubleInitList) { constructorInitList<double>(DEF_DBL_KEYS); } \
 TEST(suiteName, mockClassInitList) { constructorInitList<MockClass>(DEF_MOCK_KEYS); } \
 TEST(suiteName, stringInitList) { constructorInitList<std::string>(DEF_STR_KEYS); } \
 
-TESTS_CONSTRUCTOR_INIT_LIST(s21Set)
+TESTS_CONSTRUCTOR_INIT_LIST(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
 void constructorCopyEmpty() {
-  s21::set<key_type> s21_set;
-  std::set<key_type> std_set;
+  s21::multiset<key_type> s21_multiset;
+  std::multiset<key_type> std_multiset;
 
-  s21::set<key_type> s21_map_copy(s21_set);
-  std::set<key_type> std_map_copy(std_set);
+  s21::multiset<key_type> s21_map_copy(s21_multiset);
+  std::multiset<key_type> std_map_copy(std_multiset);
 
   checkFields(s21_map_copy, std_map_copy);
 }
@@ -135,17 +135,17 @@ TEST(suiteName, doubleCopyEmpty) { constructorCopyEmpty<double>(); } \
 TEST(suiteName, mockClassCopyEmpty) { constructorCopyEmpty<MockClass>(); } \
 TEST(suiteName, stringCopyEmpty) { constructorCopyEmpty<std::string>(); } \
 
-TESTS_CONSTRUCTOR_COPY_EMPTY(s21Set)
+TESTS_CONSTRUCTOR_COPY_EMPTY(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
 void constructorCopy(const std::initializer_list<key_type>& items) {
-  s21::set<key_type> s21_set(items);
-  std::set<key_type> std_set(items);
+  s21::multiset<key_type> s21_multiset(items);
+  std::multiset<key_type> std_multiset(items);
 
-  s21::set<key_type> s21_map_copy(s21_set);
-  std::set<key_type> std_map_copy(std_set);
+  s21::multiset<key_type> s21_map_copy(s21_multiset);
+  std::multiset<key_type> std_map_copy(std_multiset);
 
   checkFields(s21_map_copy, std_map_copy);
 }
@@ -156,17 +156,17 @@ TEST(suiteName, doubleCopy) { constructorCopy<double>(DEF_DBL_KEYS); } \
 TEST(suiteName, mockClassCopy) { constructorCopy<MockClass>(DEF_MOCK_KEYS); } \
 TEST(suiteName, stringCopy) { constructorCopy<std::string>(DEF_STR_KEYS); } \
 
-TESTS_CONSTRUCTOR_COPY(s21Set)
+TESTS_CONSTRUCTOR_COPY(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
 void constructorMoveEmpty() {
-  s21::set<key_type> s21_set;
-  std::set<key_type> std_set;
+  s21::multiset<key_type> s21_multiset;
+  std::multiset<key_type> std_multiset;
 
-  s21::set<key_type> s21_map_move(std::move(s21_set));
-  std::set<key_type> std_map_move(std::move(std_set));
+  s21::multiset<key_type> s21_map_move(std::move(s21_multiset));
+  std::multiset<key_type> std_map_move(std::move(std_multiset));
 
   checkFields(s21_map_move, std_map_move);
 }
@@ -177,17 +177,17 @@ TEST(suiteName, doubleMoveEmpty) { constructorMoveEmpty<double>(); } \
 TEST(suiteName, mockClassMoveEmpty) { constructorMoveEmpty<MockClass>(); } \
 TEST(suiteName, stringMoveEmpty) { constructorMoveEmpty<std::string>(); } \
 
-TESTS_CONSTRUCTOR_MOVE_EMPTY(s21Set)
+TESTS_CONSTRUCTOR_MOVE_EMPTY(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
 void constructorMove(const std::initializer_list<key_type>& items) {
-  s21::set<key_type> s21_set(items);
-  std::set<key_type> std_set(items);
+  s21::multiset<key_type> s21_multiset(items);
+  std::multiset<key_type> std_multiset(items);
 
-  s21::set<key_type> s21_map_move(std::move(s21_set));
-  std::set<key_type> std_map_move(std::move(std_set));
+  s21::multiset<key_type> s21_map_move(std::move(s21_multiset));
+  std::multiset<key_type> std_map_move(std::move(std_multiset));
 
   checkFields(s21_map_move, std_map_move);
 }
@@ -198,17 +198,17 @@ TEST(suiteName, doubleMove) { constructorMove<double>(DEF_DBL_KEYS); } \
 TEST(suiteName, mockClassMove) { constructorMove<MockClass>(DEF_MOCK_KEYS); } \
 TEST(suiteName, stringMove) { constructorMove<std::string>(DEF_STR_KEYS); } \
 
-TESTS_CONSTRUCTOR_MOVE(s21Set)
+TESTS_CONSTRUCTOR_MOVE(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
 void operatorCopyEmpty() {
-  s21::set<key_type> s21_set;
-  std::set<key_type> std_set;
+  s21::multiset<key_type> s21_multiset;
+  std::multiset<key_type> std_multiset;
 
-  s21::set<key_type> s21_map_copy = s21_set;
-  std::set<key_type> std_map_copy = std_set;
+  s21::multiset<key_type> s21_map_copy = s21_multiset;
+  std::multiset<key_type> std_map_copy = std_multiset;
 
   checkFields(s21_map_copy, std_map_copy);
 }
@@ -219,17 +219,17 @@ TEST(suiteName, doubleOperatorCopyEmpty) { operatorCopyEmpty<double>(); } \
 TEST(suiteName, mockClassOperatorCopyEmpty) { operatorCopyEmpty<MockClass>(); } \
 TEST(suiteName, stringOperatorCopyEmpty) { operatorCopyEmpty<std::string>(); } \
 
-TESTS_OPERATOR_COPY_EMPTY(s21Set)
+TESTS_OPERATOR_COPY_EMPTY(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
 void operatorCopy(const std::initializer_list<key_type>& items) {
-  s21::set<key_type> s21_set(items);
-  std::set<key_type> std_set(items);
+  s21::multiset<key_type> s21_multiset(items);
+  std::multiset<key_type> std_multiset(items);
 
-  s21::set<key_type> s21_map_copy = s21_set;
-  std::set<key_type> std_map_copy = std_set;
+  s21::multiset<key_type> s21_map_copy = s21_multiset;
+  std::multiset<key_type> std_map_copy = std_multiset;
 
   checkFields(s21_map_copy, std_map_copy);
 }
@@ -240,17 +240,17 @@ TEST(suiteName, doubleOperatorCopy) { operatorCopy<double>(DEF_DBL_KEYS); } \
 TEST(suiteName, mockClassOperatorCopy) { operatorCopy<MockClass>(DEF_MOCK_KEYS); } \
 TEST(suiteName, stringOperatorCopy) { operatorCopy<std::string>(DEF_STR_KEYS); } \
 
-TESTS_OPERATOR_COPY(s21Set)
+TESTS_OPERATOR_COPY(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
 void operatorMoveEmpty() {
-  s21::set<key_type> s21_set;
-  std::set<key_type> std_set;
+  s21::multiset<key_type> s21_multiset;
+  std::multiset<key_type> std_multiset;
 
-  s21::set<key_type> s21_map_move = std::move(s21_set);
-  std::set<key_type> std_map_move = std::move(std_set);
+  s21::multiset<key_type> s21_map_move = std::move(s21_multiset);
+  std::multiset<key_type> std_map_move = std::move(std_multiset);
 
   checkFields(s21_map_move, std_map_move);
 }
@@ -261,17 +261,17 @@ TEST(suiteName, doubleOperatorMoveEmpty) { operatorMoveEmpty<double>(); } \
 TEST(suiteName, mockClassOperatorMoveEmpty) { operatorMoveEmpty<MockClass>(); } \
 TEST(suiteName, stringOperatorMoveEmptye) { operatorMoveEmpty<std::string>(); } \
 
-TESTS_OPERATOR_MOVE_EMPTY(s21Set)
+TESTS_OPERATOR_MOVE_EMPTY(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
 void operatorMove(const std::initializer_list<key_type>& items) {
-  s21::set<key_type> s21_set(items);
-  std::set<key_type> std_set(items);
+  s21::multiset<key_type> s21_multiset(items);
+  std::multiset<key_type> std_multiset(items);
 
-  s21::set<key_type> s21_map_move = std::move(s21_set);
-  std::set<key_type> std_map_move = std::move(std_set);
+  s21::multiset<key_type> s21_map_move = std::move(s21_multiset);
+  std::multiset<key_type> std_map_move = std::move(std_multiset);
 
   checkFields(s21_map_move, std_map_move);
 }
@@ -282,19 +282,19 @@ TEST(suiteName, doubleOperatorMove) { operatorMove<double>(DEF_DBL_KEYS); } \
 TEST(suiteName, mockClassOperatorMove) { operatorMove<MockClass>(DEF_MOCK_KEYS); } \
 TEST(suiteName, stringOperatorMove) { operatorMove<std::string>(DEF_STR_KEYS); } \
 
-TESTS_OPERATOR_MOVE(s21Set)
+TESTS_OPERATOR_MOVE(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
 void methodEmpty(const std::initializer_list<key_type>& items) {
-  s21::set<key_type> s21_set(items);
-  std::set<key_type> std_set(items);
+  s21::multiset<key_type> s21_multiset(items);
+  std::multiset<key_type> std_multiset(items);
 
-  s21::set<key_type> s21_map_empty;
-  std::set<key_type> std_map_empty;
+  s21::multiset<key_type> s21_map_empty;
+  std::multiset<key_type> std_map_empty;
 
-  EXPECT_EQ(s21_set.empty(), std_set.empty());
+  EXPECT_EQ(s21_multiset.empty(), std_multiset.empty());
   EXPECT_EQ(s21_map_empty.empty(), std_map_empty.empty());
 }
 
@@ -304,19 +304,19 @@ TEST(suiteName, doubleEmpty) { methodEmpty<double>(DEF_DBL_KEYS); } \
 TEST(suiteName, mockClassEmpty) { methodEmpty<MockClass>(DEF_MOCK_KEYS); } \
 TEST(suiteName, stringEmpty) { methodEmpty<std::string>(DEF_STR_KEYS); } \
 
-TESTS_EMPTY(s21Set)
+TESTS_EMPTY(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
 void methodSize(const std::initializer_list<key_type>& items) {
-  s21::set<key_type> s21_set(items);
-  std::set<key_type> std_set(items);
+  s21::multiset<key_type> s21_multiset(items);
+  std::multiset<key_type> std_multiset(items);
 
-  s21::set<key_type> s21_map_empty;
-  std::set<key_type> std_map_empty;
+  s21::multiset<key_type> s21_map_empty;
+  std::multiset<key_type> std_map_empty;
 
-  EXPECT_EQ(s21_set.size(), std_set.size());
+  EXPECT_EQ(s21_multiset.size(), std_multiset.size());
   EXPECT_EQ(s21_map_empty.size(), std_map_empty.size());
 }
 
@@ -326,20 +326,20 @@ TEST(suiteName, doubleSize) { methodEmpty<double>(DEF_DBL_KEYS); } \
 TEST(suiteName, mockClassSize) { methodEmpty<MockClass>(DEF_MOCK_KEYS); } \
 TEST(suiteName, stringSize) { methodEmpty<std::string>(DEF_STR_KEYS); } \
 
-TESTS_SIZE(s21Set)
+TESTS_SIZE(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
 void methodSwap(const std::initializer_list<key_type>& items) {
-  s21::set<key_type> s21_set(items);
-  s21::set<key_type> s21_map_empty;
+  s21::multiset<key_type> s21_multiset(items);
+  s21::multiset<key_type> s21_map_empty;
 
-  std::set<key_type> std_set(items);
+  std::multiset<key_type> std_multiset(items);
 
-  checkFields(s21_set, std_set);
-  s21_map_empty.swap(s21_set);
-  checkFields(s21_map_empty, std_set);
+  checkFields(s21_multiset, std_multiset);
+  s21_map_empty.swap(s21_multiset);
+  checkFields(s21_map_empty, std_multiset);
 }
 
 #define TESTS_SWAP(suiteName) \
@@ -348,26 +348,26 @@ TEST(suiteName, doubleSwap) { methodSwap<double>(DEF_DBL_KEYS); } \
 TEST(suiteName, mockClassSwap) { methodSwap<MockClass>(DEF_MOCK_KEYS); } \
 TEST(suiteName, stringSwap) { methodSwap<std::string>(DEF_STR_KEYS); } \
 
-TESTS_SWAP(s21Set)
+TESTS_SWAP(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
 void methodMergeWithDublicates(const std::initializer_list<key_type>& items
     , const std::initializer_list<key_type>& itemsDublicates) {
-  s21::set<key_type> s21_set(items);
-  std::set<key_type> std_set(items);
+  s21::multiset<key_type> s21_multiset(items);
+  std::multiset<key_type> std_multiset(items);
 
-  s21::set<key_type> s21_map_dublicate(itemsDublicates);
-  std::set<key_type> std_map_dublicate(itemsDublicates);
+  s21::multiset<key_type> s21_map_dublicate(itemsDublicates);
+  std::multiset<key_type> std_map_dublicate(itemsDublicates);
 
-  checkFields(s21_set, std_set);
+  checkFields(s21_multiset, std_multiset);
   checkFields(s21_map_dublicate, std_map_dublicate);
 
-  s21_set.merge(s21_map_dublicate);
-  std_set.merge(std_map_dublicate);
+  s21_multiset.merge(s21_map_dublicate);
+  std_multiset.merge(std_map_dublicate);
 
-  checkFields(s21_set, std_set);
+  checkFields(s21_multiset, std_multiset);
 }
 
 #define TESTS_MERGE_WITH_DUBLICATES(suiteName) \
@@ -376,26 +376,26 @@ TEST(suiteName, doubleMergeWithDublicates) { methodMergeWithDublicates<double>(D
 TEST(suiteName, mockClassMergeWithDublicates) { methodMergeWithDublicates<MockClass>(DEF_MOCK_KEYS, DEF_MOCK_KEYS_DUBLICATE); } \
 TEST(suiteName, stringMergeWithDublicates) { methodMergeWithDublicates<std::string>(DEF_STR_KEYS, DEF_STR_KEYS_DUBLICATE); } \
 
-TESTS_MERGE_WITH_DUBLICATES(s21Set)
+TESTS_MERGE_WITH_DUBLICATES(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
 void methodMergeWithNoDublicates(const std::initializer_list<key_type>& items
     , const std::initializer_list<key_type>& itemsNoDublicates) {
-  s21::set<key_type> s21_set(items);
-  std::set<key_type> std_set(items);
+  s21::multiset<key_type> s21_multiset(items);
+  std::multiset<key_type> std_multiset(items);
 
-  s21::set<key_type> s21_map_no_dublicate(itemsNoDublicates);
-  std::set<key_type> std_map_no_dublicate(itemsNoDublicates);
+  s21::multiset<key_type> s21_map_no_dublicate(itemsNoDublicates);
+  std::multiset<key_type> std_map_no_dublicate(itemsNoDublicates);
 
-  checkFields(s21_set, std_set);
+  checkFields(s21_multiset, std_multiset);
   checkFields(s21_map_no_dublicate, std_map_no_dublicate);
 
-  s21_set.merge(s21_map_no_dublicate);
-  std_set.merge(std_map_no_dublicate);
+  s21_multiset.merge(s21_map_no_dublicate);
+  std_multiset.merge(std_map_no_dublicate);
 
-  checkFields(s21_set, std_set);
+  checkFields(s21_multiset, std_multiset);
 }
 
 #define TESTS_MERGE_WITH_NO_DUBLICATES(suiteName) \
@@ -404,25 +404,25 @@ TEST(suiteName, doubleMergeWithNoDublicates) { methodMergeWithNoDublicates<doubl
 TEST(suiteName, mockClassMergeWithNoDublicates) { methodMergeWithNoDublicates<MockClass>(DEF_MOCK_KEYS, DEF_MOCK_KEYS_NO_DUBLICATE); } \
 TEST(suiteName, stringMergeWithNoDublicates) { methodMergeWithNoDublicates<std::string>(DEF_STR_KEYS, DEF_STR_KEYS_NO_DUBLICATE); } \
 
-TESTS_MERGE_WITH_NO_DUBLICATES(s21Set)
+TESTS_MERGE_WITH_NO_DUBLICATES(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
 void methodClear(const std::initializer_list<key_type>& items) {
-  s21::set<key_type> s21_set(items);
-  std::set<key_type> std_set(items);
+  s21::multiset<key_type> s21_multiset(items);
+  std::multiset<key_type> std_multiset(items);
 
-  s21::set<key_type> s21_map_empty;
-  std::set<key_type> std_map_empty;
+  s21::multiset<key_type> s21_map_empty;
+  std::multiset<key_type> std_map_empty;
 
-  s21_set.clear();
-  std_set.clear();
+  s21_multiset.clear();
+  std_multiset.clear();
 
   s21_map_empty.clear();
   std_map_empty.clear();
 
-  checkFields(s21_set, std_set);
+  checkFields(s21_multiset, std_multiset);
   checkFields(s21_map_empty, std_map_empty);
 }
 
@@ -432,29 +432,29 @@ TEST(suiteName, doubleClear) { methodClear<double>(DEF_DBL_KEYS); } \
 TEST(suiteName, mockClassClear) { methodClear<MockClass>(DEF_MOCK_KEYS); } \
 TEST(suiteName, stringClear) { methodClear<std::string>(DEF_STR_KEYS); } \
 
-TESTS_CLEAR(s21Set)
+TESTS_CLEAR(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
 void methodBegin(const std::initializer_list<key_type>& items) {
-  s21::set<key_type> s21_set(items);
-  std::set<key_type> std_set(items);
+  s21::multiset<key_type> s21_multiset(items);
+  std::multiset<key_type> std_multiset(items);
 
-  s21::set<key_type> s21_map_empty;
-  std::set<key_type> std_map_empty;
+  s21::multiset<key_type> s21_map_empty;
+  std::multiset<key_type> std_map_empty;
 
-  typename s21::set<key_type>::iterator it1 = s21_map_empty.begin();
-  typename std::set<key_type>::iterator it2 = std_map_empty.begin();
+  typename s21::multiset<key_type>::iterator it1 = s21_map_empty.begin();
+  typename std::multiset<key_type>::iterator it2 = std_map_empty.begin();
 
   EXPECT_EQ(it1 == s21_map_empty.end()
       , it2 == std_map_empty.end());
 
-  typename s21::set<key_type>::iterator it3 = s21_set.begin();
-  typename std::set<key_type>::iterator it4 = std_set.begin();
+  typename s21::multiset<key_type>::iterator it3 = s21_multiset.begin();
+  typename std::multiset<key_type>::iterator it4 = std_multiset.begin();
 
-  EXPECT_EQ(it3 != s21_set.end()
-      , it4 != std_set.end());
+  EXPECT_EQ(it3 != s21_multiset.end()
+      , it4 != std_multiset.end());
   EXPECT_EQ(*it3, *it4);
 }
 
@@ -464,29 +464,29 @@ TEST(suiteName, doubleBegin) { methodBegin<double>(DEF_DBL_KEYS); } \
 TEST(suiteName, mockClassBegin) { methodBegin<MockClass>(DEF_MOCK_KEYS); } \
 TEST(suiteName, stringBegin) { methodBegin<std::string>(DEF_STR_KEYS); } \
 
-TESTS_BEGIN(s21Set)
+TESTS_BEGIN(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
 void methodBeginConst(const std::initializer_list<key_type>& items) {
-  s21::set<key_type> s21_set(items);
-  std::set<key_type> std_set(items);
+  s21::multiset<key_type> s21_multiset(items);
+  std::multiset<key_type> std_multiset(items);
 
-  s21::set<key_type> s21_map_empty;
-  std::set<key_type> std_map_empty;
+  s21::multiset<key_type> s21_map_empty;
+  std::multiset<key_type> std_map_empty;
 
-  typename s21::set<key_type>::const_iterator it1 = s21_map_empty.begin();
-  typename std::set<key_type>::const_iterator it2 = std_map_empty.begin();
+  typename s21::multiset<key_type>::const_iterator it1 = s21_map_empty.begin();
+  typename std::multiset<key_type>::const_iterator it2 = std_map_empty.begin();
 
   EXPECT_EQ(it1 == s21_map_empty.end()
       , it2 == std_map_empty.end());
 
-  typename s21::set<key_type>::const_iterator it3 = s21_set.begin();
-  typename std::set<key_type>::const_iterator it4 = std_set.begin();
+  typename s21::multiset<key_type>::const_iterator it3 = s21_multiset.begin();
+  typename std::multiset<key_type>::const_iterator it4 = std_multiset.begin();
 
-  EXPECT_EQ(it3 != s21_set.end()
-      , it4 != std_set.end());
+  EXPECT_EQ(it3 != s21_multiset.end()
+      , it4 != std_multiset.end());
   EXPECT_EQ(*it3, *it4);
 }
 
@@ -496,17 +496,17 @@ TEST(suiteName, doubleBeginConst) { methodBeginConst<double>(DEF_DBL_KEYS); } \
 TEST(suiteName, mockClassBeginConst) { methodBeginConst<MockClass>(DEF_MOCK_KEYS); } \
 TEST(suiteName, stringBeginConst) { methodBeginConst<std::string>(DEF_STR_KEYS); } \
 
-TESTS_BEGIN_CONST(s21Set)
+TESTS_BEGIN_CONST(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
 void methodIteratorPlus(const std::initializer_list<key_type>& items) {
-  s21::set<key_type> s21_set(items);
-  std::set<key_type> std_set(items);
+  s21::multiset<key_type> s21_multiset(items);
+  std::multiset<key_type> std_multiset(items);
 
-  typename s21::set<key_type>::iterator it1 = s21_set.begin();
-  typename std::set<key_type>::iterator it2 = std_set.begin();
+  typename s21::multiset<key_type>::iterator it1 = s21_multiset.begin();
+  typename std::multiset<key_type>::iterator it2 = std_multiset.begin();
 
   ++it1;
   ++it2;
@@ -525,17 +525,17 @@ TEST(suiteName, doubleIteratorPlus) { methodIteratorPlus<double>(DEF_DBL_KEYS); 
 TEST(suiteName, mockClassIteratorPlus) { methodIteratorPlus<MockClass>(DEF_MOCK_KEYS); } \
 TEST(suiteName, stringIteratorPlus) { methodIteratorPlus<std::string>(DEF_STR_KEYS); } \
 
-TESTS_ITERATOR_PLUS(s21Set)
+TESTS_ITERATOR_PLUS(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
 void methodIteratorMinus(const std::initializer_list<key_type>& items) {
-  s21::set<key_type> s21_set(items);
-  std::set<key_type> std_set(items);
+  s21::multiset<key_type> s21_multiset(items);
+  std::multiset<key_type> std_multiset(items);
 
-  typename s21::set<key_type>::iterator it1 = s21_set.begin();
-  typename std::set<key_type>::iterator it2 = std_set.begin();
+  typename s21::multiset<key_type>::iterator it1 = s21_multiset.begin();
+  typename std::multiset<key_type>::iterator it2 = std_multiset.begin();
 
   ++it1;
   ++it2;
@@ -554,20 +554,20 @@ TEST(suiteName, doubleIteratorMinus) { methodIteratorMinus<double>(DEF_DBL_KEYS)
 TEST(suiteName, mockClassIteratorMinus) { methodIteratorMinus<MockClass>(DEF_MOCK_KEYS); } \
 TEST(suiteName, stringIteratorMinus) { methodIteratorMinus<std::string>(DEF_STR_KEYS); } \
 
-TESTS_ITERATOR_MINUS(s21Set)
+TESTS_ITERATOR_MINUS(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
 void methodIteratorAssignment(const std::initializer_list<key_type>& items) {
-  s21::set<key_type> s21_set(items);
-  std::set<key_type> std_set(items);
+  s21::multiset<key_type> s21_multiset(items);
+  std::multiset<key_type> std_multiset(items);
 
-  typename s21::set<key_type>::iterator it1 = s21_set.begin();
-  typename std::set<key_type>::iterator it2 = std_set.begin();
+  typename s21::multiset<key_type>::iterator it1 = s21_multiset.begin();
+  typename std::multiset<key_type>::iterator it2 = std_multiset.begin();
 
-  typename s21::set<key_type>::iterator it3 = it1;
-  typename std::set<key_type>::iterator it4 = it2;
+  typename s21::multiset<key_type>::iterator it3 = it1;
+  typename std::multiset<key_type>::iterator it4 = it2;
 
   EXPECT_EQ(*it1, *it3);
   EXPECT_EQ(*it2, *it4);
@@ -579,20 +579,20 @@ TEST(suiteName, doubleIteratorAssignment) { methodIteratorAssignment<double>(DEF
 TEST(suiteName, mockClassIteratorAssignment) { methodIteratorAssignment<MockClass>(DEF_MOCK_KEYS); } \
 TEST(suiteName, stringIteratorAssignment) { methodIteratorAssignment<std::string>(DEF_STR_KEYS); } \
 
-TESTS_ITERATOR_ASSIGNMENT(s21Set)
+TESTS_ITERATOR_ASSIGNMENT(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
 void methodIteratorEqual(const std::initializer_list<key_type>& items) {
-  s21::set<key_type> s21_set(items);
-  std::set<key_type> std_set(items);
+  s21::multiset<key_type> s21_multiset(items);
+  std::multiset<key_type> std_multiset(items);
 
-  typename s21::set<key_type>::iterator it1 = s21_set.begin();
-  typename std::set<key_type>::iterator it2 = std_set.begin();
+  typename s21::multiset<key_type>::iterator it1 = s21_multiset.begin();
+  typename std::multiset<key_type>::iterator it2 = std_multiset.begin();
 
-  typename s21::set<key_type>::iterator it3 = s21_set.begin();
-  typename std::set<key_type>::iterator it4 = std_set.begin();
+  typename s21::multiset<key_type>::iterator it3 = s21_multiset.begin();
+  typename std::multiset<key_type>::iterator it4 = std_multiset.begin();
 
   EXPECT_EQ(it1 == it3, it2 == it4);
 }
@@ -603,19 +603,19 @@ TEST(suiteName, doubleIteratorEqual) { methodIteratorEqual<double>(DEF_DBL_KEYS)
 TEST(suiteName, mockClassIteratorEqual) { methodIteratorEqual<MockClass>(DEF_MOCK_KEYS); } \
 TEST(suiteName, stringIteratorEqual) { methodIteratorEqual<std::string>(DEF_STR_KEYS); } \
 
-TESTS_ITERATOR_EQUAL(s21Set)
+TESTS_ITERATOR_EQUAL(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
 void methodIteratorNotEqual(const std::initializer_list<key_type>& items) {
-  s21::set<key_type> s21_set(items);
-  std::set<key_type> std_set(items);
+  s21::multiset<key_type> s21_multiset(items);
+  std::multiset<key_type> std_multiset(items);
 
-  typename s21::set<key_type>::iterator it1 = s21_set.begin();
-  typename std::set<key_type>::iterator it2 = std_set.begin();
+  typename s21::multiset<key_type>::iterator it1 = s21_multiset.begin();
+  typename std::multiset<key_type>::iterator it2 = std_multiset.begin();
 
-  EXPECT_EQ(it1 != s21_set.end(), it2 != std_set.end());
+  EXPECT_EQ(it1 != s21_multiset.end(), it2 != std_multiset.end());
 }
 
 #define TESTS_ITERATOR_NOT_EQUAL(suiteName) \
@@ -624,17 +624,17 @@ TEST(suiteName, doubleIteratorNotEqual) { methodIteratorNotEqual<double>(DEF_DBL
 TEST(suiteName, mockClassIteratorNotEqual) { methodIteratorNotEqual<MockClass>(DEF_MOCK_KEYS); } \
 TEST(suiteName, stringIteratorNotEqual) { methodIteratorNotEqual<std::string>(DEF_STR_KEYS); } \
 
-TESTS_ITERATOR_NOT_EQUAL(s21Set)
+TESTS_ITERATOR_NOT_EQUAL(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
 void methodIteratorPlusConst(const std::initializer_list<key_type>& items) {
-  s21::set<key_type> s21_set(items);
-  std::set<key_type> std_set(items);
+  s21::multiset<key_type> s21_multiset(items);
+  std::multiset<key_type> std_multiset(items);
 
-  typename s21::set<key_type>::const_iterator it1 = s21_set.begin();
-  typename std::set<key_type>::const_iterator it2 = std_set.begin();
+  typename s21::multiset<key_type>::const_iterator it1 = s21_multiset.begin();
+  typename std::multiset<key_type>::const_iterator it2 = std_multiset.begin();
 
   ++it1;
   ++it2;
@@ -653,17 +653,17 @@ TEST(suiteName, doubleIteratorPlusConst) { methodIteratorPlusConst<double>(DEF_D
 TEST(suiteName, mockClassIteratorPlusConst) { methodIteratorPlusConst<MockClass>(DEF_MOCK_KEYS); } \
 TEST(suiteName, stringIteratorPlusConst) { methodIteratorPlusConst<std::string>(DEF_STR_KEYS); } \
 
-TESTS_ITERATOR_PLUS_CONST(s21Set)
+TESTS_ITERATOR_PLUS_CONST(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
 void methodIteratorMinusConst(const std::initializer_list<key_type>& items) {
-  s21::set<key_type> s21_set(items);
-  std::set<key_type> std_set(items);
+  s21::multiset<key_type> s21_multiset(items);
+  std::multiset<key_type> std_multiset(items);
 
-  typename s21::set<key_type>::const_iterator it1 = s21_set.begin();
-  typename std::set<key_type>::const_iterator it2 = std_set.begin();
+  typename s21::multiset<key_type>::const_iterator it1 = s21_multiset.begin();
+  typename std::multiset<key_type>::const_iterator it2 = std_multiset.begin();
 
   ++it1;
   ++it2;
@@ -682,20 +682,20 @@ TEST(suiteName, doubleIteratorMinusConst) { methodIteratorMinusConst<double>(DEF
 TEST(suiteName, mockClassIteratorMinusConst) { methodIteratorMinusConst<MockClass>(DEF_MOCK_KEYS); } \
 TEST(suiteName, stringIteratorMinusConst) { methodIteratorMinusConst<std::string>(DEF_STR_KEYS); } \
 
-TESTS_ITERATOR_MINUS_CONST(s21Set)
+TESTS_ITERATOR_MINUS_CONST(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
 void methodIteratorAssignmentConst(const std::initializer_list<key_type>& items) {
-  s21::set<key_type> s21_set(items);
-  std::set<key_type> std_set(items);
+  s21::multiset<key_type> s21_multiset(items);
+  std::multiset<key_type> std_multiset(items);
 
-  typename s21::set<key_type>::const_iterator it1 = s21_set.begin();
-  typename std::set<key_type>::const_iterator it2 = std_set.begin();
+  typename s21::multiset<key_type>::const_iterator it1 = s21_multiset.begin();
+  typename std::multiset<key_type>::const_iterator it2 = std_multiset.begin();
 
-  typename s21::set<key_type>::const_iterator it3 = it1;
-  typename std::set<key_type>::const_iterator it4 = it2;
+  typename s21::multiset<key_type>::const_iterator it3 = it1;
+  typename std::multiset<key_type>::const_iterator it4 = it2;
 
   EXPECT_EQ(*it1, *it3);
   EXPECT_EQ(*it2, *it4);
@@ -707,20 +707,20 @@ TEST(suiteName, doubleIteratorAssignmentConst) { methodIteratorAssignmentConst<d
 TEST(suiteName, mockClassIteratorAssignmentConst) { methodIteratorAssignmentConst<MockClass>(DEF_MOCK_KEYS); } \
 TEST(suiteName, stringIteratorAssignmentConst) { methodIteratorAssignmentConst<std::string>(DEF_STR_KEYS); } \
 
-TESTS_ITERATOR_ASSIGNMENT_CONST(s21Set)
+TESTS_ITERATOR_ASSIGNMENT_CONST(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
 void methodIteratorEqualConst(const std::initializer_list<key_type>& items) {
-  s21::set<key_type> s21_set(items);
-  std::set<key_type> std_set(items);
+  s21::multiset<key_type> s21_multiset(items);
+  std::multiset<key_type> std_multiset(items);
 
-  typename s21::set<key_type>::const_iterator it1 = s21_set.begin();
-  typename std::set<key_type>::const_iterator it2 = std_set.begin();
+  typename s21::multiset<key_type>::const_iterator it1 = s21_multiset.begin();
+  typename std::multiset<key_type>::const_iterator it2 = std_multiset.begin();
 
-  typename s21::set<key_type>::const_iterator it3 = s21_set.begin();
-  typename std::set<key_type>::const_iterator it4 = std_set.begin();
+  typename s21::multiset<key_type>::const_iterator it3 = s21_multiset.begin();
+  typename std::multiset<key_type>::const_iterator it4 = std_multiset.begin();
 
   EXPECT_EQ(it1 == it3, it2 == it4);
 }
@@ -731,19 +731,19 @@ TEST(suiteName, doubleIteratorEqualConst) { methodIteratorEqualConst<double>(DEF
 TEST(suiteName, mockClassIteratorEqualConst) { methodIteratorEqualConst<MockClass>(DEF_MOCK_KEYS); } \
 TEST(suiteName, stringIteratorEqualConst) { methodIteratorEqualConst<std::string>(DEF_STR_KEYS); } \
 
-TESTS_ITERATOR_EQUAL_CONST(s21Set)
+TESTS_ITERATOR_EQUAL_CONST(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
 void methodIteratorNotEqualConst(const std::initializer_list<key_type>& items) {
-  s21::set<key_type> s21_set(items);
-  std::set<key_type> std_set(items);
+  s21::multiset<key_type> s21_multiset(items);
+  std::multiset<key_type> std_multiset(items);
 
-  typename s21::set<key_type>::const_iterator it1 = s21_set.begin();
-  typename std::set<key_type>::const_iterator it2 = std_set.begin();
+  typename s21::multiset<key_type>::const_iterator it1 = s21_multiset.begin();
+  typename std::multiset<key_type>::const_iterator it2 = std_multiset.begin();
 
-  EXPECT_EQ(it1 != s21_set.end(), it2 != std_set.end());
+  EXPECT_EQ(it1 != s21_multiset.end(), it2 != std_multiset.end());
 }
 
 #define TESTS_ITERATOR_NOT_EQUAL_CONST(suiteName) \
@@ -752,23 +752,22 @@ TEST(suiteName, doubleIteratorNotEqualConst) { methodIteratorNotEqualConst<doubl
 TEST(suiteName, mockClassIteratorNotEqualConst) { methodIteratorNotEqualConst<MockClass>(DEF_MOCK_KEYS); } \
 TEST(suiteName, stringIteratorNotEqualConst) { methodIteratorNotEqualConst<std::string>(DEF_STR_KEYS); } \
 
-TESTS_ITERATOR_NOT_EQUAL_CONST(s21Set)
+TESTS_ITERATOR_NOT_EQUAL_CONST(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
 void methodInsertNoDuplicate(const std::initializer_list<key_type>& items
     , const key_type& key) {
-  s21::set<key_type> s21_set(items);
-  std::set<key_type> std_set(items);
+  s21::multiset<key_type> s21_multiset(items);
+  std::multiset<key_type> std_multiset(items);
 
-  std::pair<typename s21::set<key_type>::iterator, bool> it1 = s21_set.insert(key);
-  std::pair<typename std::set<key_type>::iterator, bool> it2 = std_set.insert(key);
+  typename s21::multiset<key_type>::iterator it1 = s21_multiset.insert(key);
+  typename std::multiset<key_type>::iterator it2 = std_multiset.insert(key);
 
-  checkFields(s21_set, std_set);
+  checkFields(s21_multiset, std_multiset);
 
-  EXPECT_EQ(it1.second, it2.second);
-  EXPECT_EQ(*(it1.first), *(it2.first));
+  EXPECT_EQ(*it1, *it2);
 }
 
 #define TESTS_INSERT_NO_DUPLICATE(suiteName) \
@@ -777,23 +776,22 @@ TEST(suiteName, doubleInsertNoDuplicate) { methodInsertNoDuplicate<double>(DEF_D
 TEST(suiteName, mockClassInsertNoDuplicate) { methodInsertNoDuplicate<MockClass>(DEF_MOCK_KEYS, MOCK_KEY); } \
 TEST(suiteName, stringInsertNoDuplicate) { methodInsertNoDuplicate<std::string>(DEF_STR_KEYS, STR_KEY); } \
 
-TESTS_INSERT_NO_DUPLICATE(s21Set)
+TESTS_INSERT_NO_DUPLICATE(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
 void methodInsertDuplicate(const std::initializer_list<key_type>& items
     , const key_type& key) {
-  s21::set<key_type> s21_set(items);
-  std::set<key_type> std_set(items);
+  s21::multiset<key_type> s21_multiset(items);
+  std::multiset<key_type> std_multiset(items);
 
-  std::pair<typename s21::set<key_type>::iterator, bool> it1 = s21_set.insert(key);
-  std::pair<typename std::set<key_type>::iterator, bool> it2 = std_set.insert(key);
+  typename s21::multiset<key_type>::iterator it1 = s21_multiset.insert(key);
+  typename std::multiset<key_type>::iterator it2 = std_multiset.insert(key);
 
-  checkFields(s21_set, std_set);
+  checkFields(s21_multiset, std_multiset);
 
-  EXPECT_EQ(it1.second, it2.second);
-  EXPECT_EQ(*(it1.first), *(it2.first));
+  EXPECT_EQ(*it1, *it2);
 }
 
 #define TESTS_INSERT_DUPLICATE(suiteName) \
@@ -802,24 +800,24 @@ TEST(suiteName, doubleInsertDuplicate) { methodInsertDuplicate<double>(DEF_DBL_K
 TEST(suiteName, mockClassInsertDuplicate) { methodInsertDuplicate<MockClass>(DEF_MOCK_KEYS, MOCK_KEY_DUPLICATE); } \
 TEST(suiteName, stringInsertDuplicate) { methodInsertDuplicate<std::string>(DEF_STR_KEYS, STR_KEY_DUPLICATE); } \
 
-TESTS_INSERT_DUPLICATE(s21Set)
+TESTS_INSERT_DUPLICATE(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
 void methodErase(const std::initializer_list<key_type>& items) {
-  s21::set<key_type> s21_set(items);
-  std::set<key_type> std_set(items);
+  s21::multiset<key_type> s21_multiset(items);
+  std::multiset<key_type> std_multiset(items);
 
-  s21_set.erase(s21_set.begin());
-  std_set.erase(std_set.begin());
+  s21_multiset.erase(s21_multiset.begin());
+  std_multiset.erase(std_multiset.begin());
 
-  checkFields(s21_set, std_set);
+  checkFields(s21_multiset, std_multiset);
 
-  s21_set.erase(s21_set.begin());
-  std_set.erase(std_set.begin());
+  s21_multiset.erase(s21_multiset.begin());
+  std_multiset.erase(std_multiset.begin());
 
-  checkFields(s21_set, std_set);
+  checkFields(s21_multiset, std_multiset);
 }
 
 #define TESTS_ERASE(suiteName) \
@@ -828,17 +826,17 @@ TEST(suiteName, doubleMethodErase) { methodErase<double>(DEF_DBL_KEYS); } \
 TEST(suiteName, mockClassMethodErase) { methodErase<MockClass>(DEF_MOCK_KEYS); } \
 TEST(suiteName, stringMethodErase) { methodErase<std::string>(DEF_STR_KEYS); } \
 
-TESTS_ERASE(s21Set)
+TESTS_ERASE(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
 void methodContains(const std::initializer_list<key_type>& items
     , const key_type& key, const key_type& key_duplicate) {
-  s21::set<key_type> s21_set(items);
+  s21::multiset<key_type> s21_multiset(items);
 
-  ASSERT_FALSE(s21_set.contains(key));
-  ASSERT_TRUE(s21_set.contains(key_duplicate));
+  ASSERT_FALSE(s21_multiset.contains(key));
+  ASSERT_TRUE(s21_multiset.contains(key_duplicate));
 }
 
 #define TESTS_CONTAINS(suiteName) \
@@ -847,22 +845,22 @@ TEST(suiteName, doubleMethodContains) { methodContains<double>(DEF_DBL_KEYS, DBL
 TEST(suiteName, mockClassMethodContains) { methodContains<MockClass>(DEF_MOCK_KEYS, MOCK_KEY, MOCK_KEY_DUPLICATE); } \
 TEST(suiteName, stringMethodContains) { methodContains<std::string>(DEF_STR_KEYS, STR_KEY, STR_KEY_DUPLICATE); } \
 
-TESTS_CONTAINS(s21Set)
+TESTS_CONTAINS(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
 void methodInsertMany(const std::initializer_list<key_type>& items
     , const std::initializer_list<key_type>& insert_items) {
-  s21::set<key_type> s21_set(items);
-  std::set<key_type> std_set(items);
+  s21::multiset<key_type> s21_multiset(items);
+  std::multiset<key_type> std_multiset(items);
 
-  s21_set.insert_many(*insert_items.begin(), *(insert_items.begin() + 1), *(insert_items.begin() + 2));
-  std_set.insert(*insert_items.begin());
-  std_set.insert(*(insert_items.begin() + 1));
-  std_set.insert(*(insert_items.begin() + 2));
+  s21_multiset.insert_many(*insert_items.begin(), *(insert_items.begin() + 1), *(insert_items.begin() + 2));
+  std_multiset.insert(*insert_items.begin());
+  std_multiset.insert(*(insert_items.begin() + 1));
+  std_multiset.insert(*(insert_items.begin() + 2));
 
-  checkFields(s21_set, std_set);
+  checkFields(s21_multiset, std_multiset);
 }
 
 #define TESTS_INSERT_MANY(suiteName) \
@@ -871,19 +869,19 @@ TEST(suiteName, doubleMethodInsertMany) { methodInsertMany<double>(DEF_DBL_KEYS,
 TEST(suiteName, mockClassMethodInsertMany) { methodInsertMany<MockClass>(DEF_MOCK_KEYS, DEF_MOCK_KEYS_NO_DUBLICATE); } \
 TEST(suiteName, stringMethodInsertMany) { methodInsertMany<std::string>(DEF_STR_KEYS, DEF_STR_KEYS_NO_DUBLICATE); } \
 
-TESTS_INSERT_MANY(s21Set)
+TESTS_INSERT_MANY(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
 void methodFind(const std::initializer_list<key_type>& items
     , const key_type& key, const key_type& key_duplicate) {
-  s21::set<key_type> s21_set(items);
-  std::set<key_type> std_set(items);
+  s21::multiset<key_type> s21_multiset(items);
+  std::multiset<key_type> std_multiset(items);
 
-  EXPECT_EQ(s21_set.find(key) == s21_set.end(), std_set.find(key) == std_set.end());
+  EXPECT_EQ(s21_multiset.find(key) == s21_multiset.end(), std_multiset.find(key) == std_multiset.end());
 
-  EXPECT_EQ(*(s21_set.find(key_duplicate)), *(std_set.find(key_duplicate)));
+  EXPECT_EQ(*(s21_multiset.find(key_duplicate)), *(std_multiset.find(key_duplicate)));
 }
 
 #define TESTS_FIND(suiteName) \
@@ -892,14 +890,101 @@ TEST(suiteName, doubleMethodFind) { methodFind<double>(DEF_DBL_KEYS, DBL_KEY, DB
 TEST(suiteName, mockClassMethodFind) { methodFind<MockClass>(DEF_MOCK_KEYS, MOCK_KEY, MOCK_KEY_DUPLICATE); } \
 TEST(suiteName, stringMethodFind) { methodFind<std::string>(DEF_STR_KEYS, STR_KEY, STR_KEY_DUPLICATE); } \
 
-TESTS_FIND(s21Set)
+TESTS_FIND(s21Multiset)
+
+// -------------------------------------------------
+
+template<typename key_type>
+void methodCount(const std::initializer_list<key_type>& items
+    , const key_type& key, const key_type& key_duplicate) {
+  s21::multiset<key_type> s21_multiset(items);
+  std::multiset<key_type> std_multiset(items);
+
+  EXPECT_EQ(s21_multiset.count(key) == 0, std_multiset.count(key) == 0);
+
+  EXPECT_EQ(s21_multiset.count(key_duplicate), std_multiset.count(key_duplicate));
+}
+
+#define TESTS_COUNT(suiteName) \
+TEST(suiteName, intMethodCount) { methodCount<int>(DEF_INT_KEYS, INT_KEY, INT_KEY_DUPLICATE); } \
+TEST(suiteName, doubleMethodCount) { methodCount<double>(DEF_DBL_KEYS, DBL_KEY, DBL_KEY_DUPLICATE); } \
+TEST(suiteName, mockClassMethodCount) { methodCount<MockClass>(DEF_MOCK_KEYS, MOCK_KEY, MOCK_KEY_DUPLICATE); } \
+TEST(suiteName, stringMethodCount) { methodCount<std::string>(DEF_STR_KEYS, STR_KEY, STR_KEY_DUPLICATE); } \
+
+TESTS_COUNT(s21Multiset)
+
+// -------------------------------------------------
+
+template<typename key_type>
+void methodLowerBound(const std::initializer_list<key_type>& items
+    , const key_type& key, const key_type& key_duplicate) {
+  s21::multiset<key_type> s21_multiset(items);
+  std::multiset<key_type> std_multiset(items);
+
+  EXPECT_EQ(s21_multiset.lower_bound(key) == s21_multiset.end(), std_multiset.lower_bound(key) == std_multiset.end());
+
+  EXPECT_EQ(*(s21_multiset.lower_bound(key_duplicate)--), *(std_multiset.lower_bound(key_duplicate)--));
+}
+
+#define TESTS_LOWER_BOUND(suiteName) \
+TEST(suiteName, intMethodLowerBound) { methodLowerBound<int>(DEF_INT_KEYS, INT_KEY, INT_KEY_DUPLICATE); } \
+TEST(suiteName, doubleMethodLowerBound) { methodLowerBound<double>(DEF_DBL_KEYS, DBL_KEY, DBL_KEY_DUPLICATE); } \
+TEST(suiteName, mockClassMethodLowerBound) { methodLowerBound<MockClass>(DEF_MOCK_KEYS, MOCK_KEY, MOCK_KEY_DUPLICATE); } \
+TEST(suiteName, stringMethodLowerBound) { methodLowerBound<std::string>(DEF_STR_KEYS, STR_KEY, STR_KEY_DUPLICATE); } \
+
+TESTS_LOWER_BOUND(s21Multiset)
+
+// -------------------------------------------------
+
+template<typename key_type>
+void methodUpperBound(const std::initializer_list<key_type>& items
+    , const key_type& key, const key_type& key_duplicate) {
+  s21::multiset<key_type> s21_multiset(items);
+  std::multiset<key_type> std_multiset(items);
+
+  EXPECT_EQ(s21_multiset.upper_bound(key) == s21_multiset.end(), std_multiset.upper_bound(key) == std_multiset.end());
+
+  EXPECT_EQ(*(s21_multiset.upper_bound(key_duplicate)++), *(std_multiset.upper_bound(key_duplicate)++));
+}
+
+#define TESTS_UPPER_BOUND(suiteName) \
+TEST(suiteName, intMethodUpperBound) { methodUpperBound<int>(DEF_INT_KEYS, INT_KEY, INT_KEY_DUPLICATE); } \
+TEST(suiteName, doubleMethodUpperBound) { methodUpperBound<double>(DEF_DBL_KEYS, DBL_KEY, DBL_KEY_DUPLICATE); } \
+TEST(suiteName, mockClassMethodUpperBound) { methodUpperBound<MockClass>(DEF_MOCK_KEYS, MOCK_KEY, MOCK_KEY_DUPLICATE); } \
+TEST(suiteName, stringMethodUpperBound) { methodUpperBound<std::string>(DEF_STR_KEYS, STR_KEY, STR_KEY_DUPLICATE); } \
+
+TESTS_UPPER_BOUND(s21Multiset)
+
+// -------------------------------------------------
+
+template<typename key_type>
+void methodEqualRange(const std::initializer_list<key_type>& items
+    , const key_type& key, const key_type& key_duplicate) {
+  s21::multiset<key_type> s21_multiset(items);
+
+  EXPECT_TRUE(s21_multiset.equal_range(key).first == s21_multiset.lower_bound(key));
+  EXPECT_TRUE(s21_multiset.equal_range(key).second == s21_multiset.upper_bound(key));
+
+  EXPECT_TRUE(s21_multiset.equal_range(key_duplicate).first == s21_multiset.lower_bound(key_duplicate));
+  EXPECT_TRUE(s21_multiset.equal_range(key_duplicate).second == s21_multiset.upper_bound(key_duplicate));
+}
+
+#define TESTS_EQUAL_RANGE(suiteName) \
+TEST(suiteName, intMethodEqualRange) { methodEqualRange<int>(DEF_INT_KEYS, INT_KEY, INT_KEY_DUPLICATE); } \
+TEST(suiteName, doubleMethodEqualRange) { methodEqualRange<double>(DEF_DBL_KEYS, DBL_KEY, DBL_KEY_DUPLICATE); } \
+TEST(suiteName, mockClassMethodEqualRange) { methodEqualRange<MockClass>(DEF_MOCK_KEYS, MOCK_KEY, MOCK_KEY_DUPLICATE); } \
+TEST(suiteName, stringMethodEqualRange) { methodEqualRange<std::string>(DEF_STR_KEYS, STR_KEY, STR_KEY_DUPLICATE); } \
+
+TESTS_EQUAL_RANGE(s21Multiset)
+
+// -------------------------------------------------
 
 #define TEST_ROUNDS 3000
 
 template<typename key_type>
 void bigLineTree(int rounds) {
-  s21::set<key_type> actual;
-  std::set<key_type> expected;
+  s21::multiset<key_type> actual;
+  std::multiset<key_type> expected;
 
   srand(static_cast<int>((std::size_t)&actual));
 
@@ -914,22 +999,24 @@ void bigLineTree(int rounds) {
 #define TESTS_BIG_LINE_TREE(suiteName) \
 TEST(suiteName, intBigLineTree) { bigLineTree<int>(TEST_ROUNDS); } \
 
-TESTS_BIG_LINE_TREE(s21Set)
+TESTS_BIG_LINE_TREE(s21Multiset)
 
-double GetRandSet(double min, double max) {
+// -------------------------------------------------
+
+double GetRandMultiset(double min, double max) {
   double val = (double)rand() / RAND_MAX;
   return min + val * (max - min);
 }
 
 template<typename key_type>
 void bigRandomTree(int rMin, int rMax, int rounds) {
-  s21::set<key_type> actual;
-  std::set<key_type> expected;
+  s21::multiset<key_type> actual;
+  std::multiset<key_type> expected;
 
   srand(static_cast<int>((std::size_t)&actual));
 
   for (int i = 0; i < rounds; i++) {
-    auto val = GetRandSet(rMin, rMax);
+    auto val = GetRandMultiset(rMin, rMax);
     actual.insert(val);
     expected.insert(val);
   }
@@ -945,4 +1032,4 @@ void bigRandomTree(int rMin, int rMax, int rounds) {
 TEST(suiteName, intBigRandomTree) { bigRandomTree<int>(TEST_RAND_MIN, TEST_RAND_MAX, TEST_RAND_ROUNDS); } \
 TEST(suiteName, doubleBigRandomTree) { bigRandomTree<double>(TEST_RAND_MIN, TEST_RAND_MAX, TEST_RAND_ROUNDS); } \
 
-TESTS_BIG_RANDOM_TREE(s21Set)
+TESTS_BIG_RANDOM_TREE(s21Multiset)
