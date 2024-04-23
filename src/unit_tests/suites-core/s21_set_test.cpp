@@ -893,3 +893,56 @@ TEST(suiteName, mockClassMethodFind) { methodFind<MockClass>(DEF_MOCK_KEYS, MOCK
 TEST(suiteName, stringMethodFind) { methodFind<std::string>(DEF_STR_KEYS, STR_KEY, STR_KEY_DUPLICATE); } \
 
 TESTS_FIND(s21Set)
+
+#define TEST_ROUNDS 3000
+
+template<typename key_type>
+void bigLineTree(int rounds) {
+  s21::set<key_type> actual;
+  std::set<key_type> expected;
+
+  srand(static_cast<int>((std::size_t)&actual));
+
+  for (int i = 0; i < rounds; i++) {
+    actual.insert(i);
+    expected.insert(i);
+  }
+
+  checkFields(actual, expected);
+}
+
+#define TESTS_BIG_LINE_TREE(suiteName) \
+TEST(suiteName, intBigLineTree) { bigLineTree<int>(TEST_ROUNDS); } \
+
+TESTS_BIG_LINE_TREE(s21Set)
+
+double GetRand(double min, double max) {
+  double val = (double)rand() / RAND_MAX;
+  return min + val * (max - min);
+}
+
+template<typename key_type>
+void bigRandomTree(int rMin, int rMax, int rounds) {
+  s21::set<key_type> actual;
+  std::set<key_type> expected;
+
+  srand(static_cast<int>((std::size_t)&actual));
+
+  for (int i = 0; i < rounds; i++) {
+    auto val = GetRand(rMin, rMax);
+    actual.insert(val);
+    expected.insert(val);
+  }
+
+  checkFields(actual, expected);
+}
+
+#define TEST_RAND_MIN -10000
+#define TEST_RAND_MAX 10000
+#define TEST_RAND_ROUNDS 1000
+
+#define TESTS_BIG_RANDOM_TREE(suiteName) \
+TEST(suiteName, intBigRandomTree) { bigRandomTree<int>(TEST_RAND_MIN, TEST_RAND_MAX, TEST_RAND_ROUNDS); } \
+TEST(suiteName, doubleBigRandomTree) { bigRandomTree<double>(TEST_RAND_MIN, TEST_RAND_MAX, TEST_RAND_ROUNDS); } \
+
+TESTS_BIG_RANDOM_TREE(s21Set)
