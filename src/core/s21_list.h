@@ -32,8 +32,8 @@ public:
   using value_type = T;
   using reference = T&;
   using const_reference = const T&;
-  using iterator = list<T>::ListIterator;
-  using const_iterator = list<T>::ListConstIterator;
+  using iterator = list<value_type>::ListIterator;
+  using const_iterator = list<value_type>::ListConstIterator;
 
   list();
   list(size_type count);

@@ -20,8 +20,8 @@ public:
   using value_type = T;
   using reference = T&;
   using const_reference = const T&;
-  using iterator = vector<T>::VectorIterator;
-  using const_iterator = vector<T>::VectorConstIterator;
+  using iterator = vector<value_type>::VectorIterator;
+  using const_iterator = vector<value_type>::VectorConstIterator;
 
 // Public Methods
 public:
