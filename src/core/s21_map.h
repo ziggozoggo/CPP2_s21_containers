@@ -25,10 +25,6 @@ class map : public IContainer {
   using const_iterator = map<key_type, mapped_type>::MapConstIterator;
   using typename IContainer::size_type;
 
- private:
-  RBTree<KeyT, ValT> btree_;
-  size_type size_;
-
  public:
   map();
   map(std::initializer_list<value_type> const& items);
@@ -67,6 +63,10 @@ class map : public IContainer {
 
   template <typename... Args>
   vector<std::pair<iterator, bool>> insert_many(Args&&... args);
+
+ private:
+  RBTree<KeyT, ValT> btree_;
+  size_type size_;
 
  private:
   void erase(value_type pos);

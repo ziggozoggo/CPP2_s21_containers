@@ -24,10 +24,6 @@ class set : public IContainer {
   using const_iterator = set<key_type>::SetConstIterator;
   using typename IContainer::size_type;
 
- private:
-  RBTree<KeyT, KeyT> btree_;
-  size_type size_;
-
  public:
   set();
   set(std::initializer_list<value_type> const& items);
@@ -61,6 +57,10 @@ class set : public IContainer {
 
   template <typename... Args>
   vector<std::pair<iterator, bool>> insert_many(Args&&... args);
+
+ private:
+  RBTree<KeyT, KeyT> btree_;
+  size_type size_;
 
  private:
   void erase(value_type pos);
