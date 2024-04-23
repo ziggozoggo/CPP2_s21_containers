@@ -1,5 +1,5 @@
-#ifndef S21_MAP_H_
-#define S21_MAP_H_
+#ifndef SRC_CORE_S21_MAP_H_
+#define SRC_CORE_S21_MAP_H_
 
 #include <limits>
 #include <type_traits>
@@ -378,4 +378,4 @@ map<key_type, mapped_type>::insert_many(Args&&... args) {
 }
 }  // namespace s21
 
-#endif  // S21_MAP_H_
+#endif  // SRC_CORE_S21_MAP_H_

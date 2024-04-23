@@ -1,5 +1,5 @@
-#ifndef S21_BST_H_
-#define S21_BST_H_
+#ifndef SRC_CORE_S21_RBTREE_H_
+#define SRC_CORE_S21_RBTREE_H_
 
 #include <algorithm>
 #include <iostream>
@@ -475,4 +475,4 @@ void RBTree<KeyT, ValT>::clear() {
 }
 }  // namespace s21
 
-#endif  // S21_BST_H_
+#endif  // SRC_CORE_S21_RBTREE_H_
