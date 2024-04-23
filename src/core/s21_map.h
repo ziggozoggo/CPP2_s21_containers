@@ -9,85 +9,21 @@
 #include "s21_vector.h"
 
 namespace s21 {
-template <typename KeyT, typename ValT>
-class MapIterator {
- public:
-  using iterator_category = std::bidirectional_iterator_tag;
-  using value_type = std::pair<const KeyT, ValT>;
-  using difference_type = std::ptrdiff_t;
-  using pointer = value_type*;
-  using reference = value_type&;
-
- public:
-  MapIterator() = default;
-  MapIterator(typename RBTree<KeyT, ValT>::Node* ptr,
-              RBTree<KeyT, ValT>* it_btree)
-      : ptr_(ptr), it_btree_(it_btree) {}
-
-  bool operator==(const MapIterator& other) { return ptr_ == other.ptr_; }
-  bool operator!=(const MapIterator& other) { return !(*this == other); }
-
-  MapIterator& operator++() {
-    ptr_ = RBT_increment(ptr_);
-    return *this;
-  }
-
-  MapIterator operator++(int) {
-    MapIterator temp = *this;
-    ++*this;
-    return temp;
-  }
-
-  MapIterator& operator--() {
-    ptr_ = RBT_decrement(ptr_);
-    return *this;
-  }
-
-  MapIterator operator--(int) {
-    MapIterator temp = *this;
-    --*this;
-    return temp;
-  }
-
-  reference operator*() { return ptr_->val_; }
-
- private:
-  typename RBTree<KeyT, ValT>::Node* ptr_ = nullptr;
-  RBTree<KeyT, ValT>* it_btree_ = nullptr;
-
-  typename RBTree<KeyT, ValT>::Node* RBT_increment(
-      typename RBTree<KeyT, ValT>::Node* ptr);
-  typename RBTree<KeyT, ValT>::Node* RBT_decrement(
-      typename RBTree<KeyT, ValT>::Node* ptr);
-};
-
-template <typename KeyT, typename ValT>
-class MapConstIterator : public MapIterator<KeyT, ValT> {
- public:
-  using value_type = std::pair<const KeyT, ValT>;
-  using const_reference = const value_type&;
-
- public:
-  MapConstIterator(MapIterator<KeyT, ValT> other)
-      : MapIterator<KeyT, ValT>(other) {}
-  const_reference operator*() { return MapIterator<KeyT, ValT>::operator*(); }
-};
 
 template <typename KeyT, typename ValT>
 class map : public IContainer {
  public:
+  class MapIterator;
+  class MapConstIterator;
+
   using key_type = KeyT;
   using mapped_type = ValT;
   using value_type = std::pair<const key_type, mapped_type>;
   using reference = value_type&;
   using const_reference = const value_type&;
-  using iterator = MapIterator<key_type, mapped_type>;
-  using const_iterator = MapConstIterator<key_type, mapped_type>;
+  using iterator = map<key_type, mapped_type>::MapIterator;
+  using const_iterator = map<key_type, mapped_type>::MapConstIterator;
   using typename IContainer::size_type;
-
- private:
-  RBTree<KeyT, ValT> btree_;
-  size_type size_;
 
  public:
   map();
@@ -129,11 +65,78 @@ class map : public IContainer {
   vector<std::pair<iterator, bool>> insert_many(Args&&... args);
 
  private:
+  RBTree<KeyT, ValT> btree_;
+  size_type size_;
+
+ private:
   void erase(value_type pos);
 };
 
+template <typename KeyT, typename ValT>
+class map<KeyT, ValT>::MapIterator {
+ public:
+  using iterator_category = std::bidirectional_iterator_tag;
+  using value_type = std::pair<const KeyT, ValT>;
+  using difference_type = std::ptrdiff_t;
+  using pointer = value_type*;
+  using reference = value_type&;
+
+  using Node = typename RBTree<KeyT, ValT>::Node;
+
+ public:
+  MapIterator() = default;
+  MapIterator(typename RBTree<KeyT, ValT>::Node* ptr,
+              RBTree<KeyT, ValT>* it_btree)
+      : ptr_(ptr), it_btree_(it_btree) {}
+
+  bool operator==(const MapIterator& other) { return ptr_ == other.ptr_; }
+  bool operator!=(const MapIterator& other) { return !(*this == other); }
+
+  MapIterator& operator++() {
+    ptr_ = RBT_increment(ptr_);
+    return *this;
+  }
+
+  MapIterator operator++(int) {
+    MapIterator temp = *this;
+    ++*this;
+    return temp;
+  }
+
+  MapIterator& operator--() {
+    ptr_ = RBT_decrement(ptr_);
+    return *this;
+  }
+
+  MapIterator operator--(int) {
+    MapIterator temp = *this;
+    --*this;
+    return temp;
+  }
+
+  reference operator*() { return ptr_->val_; }
+
+ private:
+  typename RBTree<KeyT, ValT>::Node* ptr_ = nullptr;
+  RBTree<KeyT, ValT>* it_btree_ = nullptr;
+
+  Node* RBT_increment(Node* ptr);
+  Node* RBT_decrement(Node* ptr);
+};
+
+template <typename KeyT, typename ValT>
+class map<KeyT, ValT>::MapConstIterator : public map<KeyT, ValT>::MapIterator {
+ public:
+  using value_type = std::pair<const KeyT, ValT>;
+  using const_reference = const value_type&;
+
+ public:
+  MapConstIterator(MapIterator other) : MapIterator(other) {}
+  const_reference operator*() { return MapIterator::operator*(); }
+};
+
 template <typename key_type, typename mapped_type>
-typename RBTree<key_type, mapped_type>::Node* MapIterator<key_type, mapped_type>::RBT_increment(
+typename RBTree<key_type, mapped_type>::Node* map<key_type, mapped_type>::MapIterator::RBT_increment(
     typename RBTree<key_type, mapped_type>::Node* ptr) {
   if (!it_btree_->isNil(ptr->right_)) {
     ptr = ptr->right_;
@@ -150,7 +153,7 @@ typename RBTree<key_type, mapped_type>::Node* MapIterator<key_type, mapped_type>
 }
 
 template <typename key_type, typename mapped_type>
-typename RBTree<key_type, mapped_type>::Node* MapIterator<key_type, mapped_type>::RBT_decrement(
+typename RBTree<key_type, mapped_type>::Node* map<key_type, mapped_type>::MapIterator::RBT_decrement(
     typename RBTree<key_type, mapped_type>::Node* ptr) {
   if (!it_btree_->isNil(ptr->left_)) {
     ptr = ptr->left_;
@@ -271,9 +274,9 @@ map<key_type, mapped_type>::begin() {
 template <typename key_type, typename mapped_type>
 typename map<key_type, mapped_type>::const_iterator
 map<key_type, mapped_type>::begin() const {
-  MapIterator<key_type, mapped_type> it(
+  MapIterator it(
       btree_.getMin(), const_cast<RBTree<key_type, mapped_type>*>(&btree_));
-  return MapConstIterator<key_type, mapped_type>(it);
+  return MapConstIterator(it);
 }
 
 template <typename key_type, typename mapped_type>
@@ -286,9 +289,9 @@ map<key_type, mapped_type>::end() {
 template <typename key_type, typename mapped_type>
 typename map<key_type, mapped_type>::const_iterator
 map<key_type, mapped_type>::end() const {
-  MapIterator<key_type, mapped_type> it(
+  MapIterator it(
       btree_.getMax(), const_cast<RBTree<key_type, mapped_type>*>(&btree_));
-  return MapConstIterator<key_type, mapped_type>(it);
+  return MapConstIterator(it);
 }
 
 template <typename key_type, typename mapped_type>
