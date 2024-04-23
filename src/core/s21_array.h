@@ -33,29 +33,29 @@ class array : IContainer {
   array& operator=(const array& other);
   array& operator=(array&& other) noexcept;
 
-  iterator begin() { return data_; }
-  const_iterator begin() const { return data_; }
-  iterator end() { return data_ + N; }
-  const_iterator end() const { return data_ + N; }
+  iterator begin() noexcept { return data_; }
+  const_iterator begin() const noexcept { return data_; }
+  iterator end() noexcept { return data_ + N; }
+  const_iterator end() const noexcept { return data_ + N; }
 
-  const_reference front() const { return data_[0] };
-  const_reference back()  const { return data_[(N == 0) ? 0 : N - 1]};
+  const_reference front() const noexcept { return data_[0]; }
+  const_reference back()  const noexcept { return data_[(N == 0) ? 0 : N - 1]; }
 
   reference at(size_type pos);
   const_reference at(size_type pos) const;
 
-  reference operator[](size_type pos) { return data_[pos]; }
-  const_reference operator[](size_type pos) const { return data_[pos]; }
+  reference operator[](size_type pos) noexcept { return data_[pos]; }
+  const_reference operator[](size_type pos) const noexcept { return data_[pos]; }
 
-  iterator data() { return data_; }
-  const_iterator data() const { return data_; }
+  iterator data() noexcept { return data_; }
+  const_iterator data() const noexcept { return data_; }
 
-  static size_type max_size();
-  size_type size() const override { return N; }
-  bool empty() const override { return (N == 0); }
+  static size_type max_size() noexcept;
+  virtual size_type size() const noexcept override { return N; }
+  virtual bool empty() const noexcept override { return (N == 0); }
 
   void swap(array& other) noexcept { std::swap(data_, other.data_); }
-  void fill(const_reference value) { std::fill(begin(), end(), value); };
+  void fill(const_reference value) { std::fill(begin(), end(), value); }
 
  // Data
  private:
@@ -99,7 +99,7 @@ array<value_type, N>& array<value_type, N>::operator=(array &&other) noexcept {
 }
 
 template<typename value_type, std::size_t N>
-typename array<value_type, N>::size_type array<value_type, N>::max_size() {
+typename array<value_type, N>::size_type array<value_type, N>::max_size() noexcept {
   return ((std::numeric_limits<size_type>::max() / sizeof(value_type)) / 4294967296); // #NOTE: 4294967296 -> 2^32
 }
 
