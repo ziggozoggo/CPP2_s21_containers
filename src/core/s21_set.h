@@ -9,79 +9,19 @@
 #include "s21_vector.h"
 
 namespace s21 {
-template <typename KeyT>
-class SetIterator {
- public:
-  using iterator_category = std::bidirectional_iterator_tag;
-  using value_type = KeyT;
-  using difference_type = std::ptrdiff_t;
-  using pointer = value_type*;
-  using reference = value_type&;
-
-  using Node = typename RBTree<KeyT, KeyT>::Node;
-
- public:
-  SetIterator() = default;
-  SetIterator(typename RBTree<KeyT, KeyT>::Node* ptr,
-              RBTree<KeyT, KeyT>* it_btree)
-      : ptr_(ptr), it_btree_(it_btree) {}
-
-  bool operator==(const SetIterator& other) { return ptr_ == other.ptr_; }
-  bool operator!=(const SetIterator& other) { return !(*this == other); }
-
-  SetIterator& operator++() {
-    ptr_ = RBT_increment(ptr_);
-    return *this;
-  }
-
-  SetIterator operator++(int) {
-    SetIterator temp = *this;
-    ++*this;
-    return temp;
-  }
-
-  SetIterator& operator--() {
-    ptr_ = RBT_decrement(ptr_);
-    return *this;
-  }
-
-  SetIterator operator--(int) {
-    SetIterator temp = *this;
-    --*this;
-    return temp;
-  }
-
-  reference operator*() { return ptr_->val_.second; }
-
- private:
-  Node* ptr_ = nullptr;
-  RBTree<KeyT, KeyT>* it_btree_ = nullptr;
-
-  Node* RBT_increment(Node* ptr);
-  Node* RBT_decrement(Node* ptr);
-};
-
-template <typename KeyT>
-class SetConstIterator : public SetIterator<KeyT> {
- public:
-  using value_type = KeyT;
-  using const_reference = const value_type&;
-
- public:
-  SetConstIterator(SetIterator<KeyT> other)
-      : SetIterator<KeyT>(other) {}
-  const_reference operator*() { return SetIterator<KeyT>::operator*(); }
-};
 
 template <typename KeyT>
 class set : public IContainer {
  public:
+  class SetIterator;
+  class SetConstIterator;
+
   using key_type = KeyT;
   using value_type = KeyT;
   using reference = value_type&;
   using const_reference = const value_type&;
-  using iterator = SetIterator<key_type>;
-  using const_iterator = SetConstIterator<key_type>;
+  using iterator = set<key_type>::SetIterator;
+  using const_iterator = set<key_type>::SetConstIterator;
   using typename IContainer::size_type;
 
  private:
@@ -126,6 +66,70 @@ class set : public IContainer {
   void erase(value_type pos);
 };
 
+template <typename KeyT>
+class set<KeyT>::SetIterator {
+ public:
+  using iterator_category = std::bidirectional_iterator_tag;
+  using value_type = KeyT;
+  using difference_type = std::ptrdiff_t;
+  using pointer = value_type*;
+  using reference = value_type&;
+
+  using Node = typename RBTree<KeyT, KeyT>::Node;
+
+ public:
+  SetIterator() = default;
+  SetIterator(Node* ptr, RBTree<KeyT, KeyT>* it_btree)
+      : ptr_(ptr), it_btree_(it_btree) {}
+
+  bool operator==(const SetIterator& other) { return ptr_ == other.ptr_; }
+  bool operator!=(const SetIterator& other) { return !(*this == other); }
+
+  SetIterator& operator++() {
+    ptr_ = RBT_increment(ptr_);
+    return *this;
+  }
+
+  SetIterator operator++(int) {
+    SetIterator temp = *this;
+    ++*this;
+    return temp;
+  }
+
+  SetIterator& operator--() {
+    ptr_ = RBT_decrement(ptr_);
+    return *this;
+  }
+
+  SetIterator operator--(int) {
+    SetIterator temp = *this;
+    --*this;
+    return temp;
+  }
+
+  reference operator*() { return ptr_->val_.second; }
+
+ private:
+  Node* ptr_ = nullptr;
+  RBTree<KeyT, KeyT>* it_btree_ = nullptr;
+
+  Node* RBT_increment(Node* ptr);
+  Node* RBT_decrement(Node* ptr);
+};
+
+template <typename KeyT>
+class set<KeyT>::SetConstIterator : public set<KeyT>::SetIterator {
+ public:
+  using value_type = KeyT;
+  using const_reference = const value_type&;
+
+ public:
+  SetConstIterator(SetIterator other)
+      : SetIterator(other) {}
+  const_reference operator*() { return SetIterator::operator*(); }
+};
+
+
 template <typename key_type>
 typename set<key_type>::iterator set<key_type>::find(const key_type& key) {
   typename RBTree<key_type, key_type>::Node* temp = btree_.search(key);
@@ -133,7 +137,7 @@ typename set<key_type>::iterator set<key_type>::find(const key_type& key) {
 }
 
 template <typename key_type>
-typename RBTree<key_type, key_type>::Node* SetIterator<key_type>::RBT_increment(
+typename RBTree<key_type, key_type>::Node* set<key_type>::SetIterator::RBT_increment(
     typename RBTree<key_type, key_type>::Node* ptr) {
   if (!it_btree_->isNil(ptr->right_)) {
     ptr = ptr->right_;
@@ -150,7 +154,7 @@ typename RBTree<key_type, key_type>::Node* SetIterator<key_type>::RBT_increment(
 }
 
 template <typename key_type>
-typename RBTree<key_type, key_type>::Node* SetIterator<key_type>::RBT_decrement(
+typename RBTree<key_type, key_type>::Node* set<key_type>::SetIterator::RBT_decrement(
     typename RBTree<key_type, key_type>::Node* ptr) {
   if (!it_btree_->isNil(ptr->left_)) {
     ptr = ptr->left_;
@@ -245,9 +249,9 @@ set<key_type>::begin() {
 template <typename key_type>
 typename set<key_type>::const_iterator
 set<key_type>::begin() const {
-  SetIterator<key_type> it(
+  SetIterator it(
       btree_.getMin(), const_cast<RBTree<key_type, key_type>*>(&btree_));
-  return SetConstIterator<key_type>(it);
+  return SetConstIterator(it);
 }
 
 template <typename key_type>
@@ -260,9 +264,9 @@ set<key_type>::end() {
 template <typename key_type>
 typename set<key_type>::const_iterator
 set<key_type>::end() const {
-  SetIterator<key_type> it(
+  SetIterator it(
       btree_.getMax(), const_cast<RBTree<key_type, key_type>*>(&btree_));
-  return SetConstIterator<key_type>(it);
+  return SetConstIterator(it);
 }
 
 template <typename key_type>
