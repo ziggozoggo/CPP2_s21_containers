@@ -93,10 +93,10 @@ clean: clean_obj clean_gcov
 
 clang_check:
 	cp ../materials/linters/.clang-format ./
-	find . -type f \( -name "*.c" -o -name "*.h" \) -exec clang-format -n {} \;
+	find . -type f \( -name "*.cpp" -o -name "*.h" \) -exec clang-format -n {} \;
 	rm .clang-format
 
 clang:
 	cp ../materials/linters/.clang-format ./
-	find . -type f \( -name "*.c" -o -name "*.h" \) -exec clang-format -i {} \;
+	find . -type f \( -name "*.cpp" -o -name "*.h" \) -exec clang-format -i {} \;
 	rm .clang-format
