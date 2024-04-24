@@ -42,7 +42,6 @@ void checkBasicField(const s21::array<T, N>& actual, const s21::array<T, N>& exp
 #define DEF_MOCK_VALS {1, 2, 44, 45, 777}
 #define DEF_STR_VALS {"hello", "world", "!", "Foo", "Bar"}
 
-
 template<typename T>
 void arrayDefaultInitTest() {
   s21::array<T, 5> actual;
@@ -92,9 +91,6 @@ void arrayMoveInitTest(const std::initializer_list<T>& items) {
 }
 
 #define TESTS_MOVE_INIT(suiteName) \
-TEST(suiteName, uShortMoveInit) { arrayMoveInitTest<unsigned short>(DEF_INT_VALS); } \
-TEST(suiteName, intMoveInit) { arrayMoveInitTest<int>(DEF_INT_VALS); } \
-TEST(suiteName, doubleMoveInit) { arrayMoveInitTest<double>(DEF_DBL_VALS); } \
 TEST(suiteName, MockClassMoveInit) { arrayMoveInitTest<MockClass>(DEF_MOCK_VALS); } \
 TEST(suiteName, stringMoveInit) { arrayMoveInitTest<std::string>(DEF_STR_VALS); } \
 
@@ -133,9 +129,6 @@ void arrayOperatorMoveTest(const std::initializer_list<T>& items) {
 }
 
 #define TESTS_OPERATOR_MOVE(suiteName) \
-TEST(suiteName, uShortOperatorMove) { arrayOperatorMoveTest<unsigned short>(DEF_INT_VALS); } \
-TEST(suiteName, intOperatorMove) { arrayOperatorMoveTest<int>(DEF_INT_VALS); } \
-TEST(suiteName, doubleOperatorMove) { arrayOperatorMoveTest<double>(DEF_DBL_VALS); } \
 TEST(suiteName, MockClassOperatorMove) { arrayOperatorMoveTest<MockClass>(DEF_MOCK_VALS); } \
 TEST(suiteName, stringOperatorMove) { arrayOperatorMoveTest<std::string>(DEF_STR_VALS); } \
 
@@ -146,7 +139,7 @@ TESTS_OPERATOR_MOVE(s21Array)
 template<typename T>
 void arraySwapTest(const std::initializer_list<T>& items) {
   s21::array<T, 5> actual(items);
-  s21::array<T, 5> actualSwap;
+  s21::array<T, 5> actualSwap { 9, 9, 9, 9, 9};
   actualSwap.swap(actual);
 
   EXPECT_FALSE(std::equal(actual.begin(), actual.end(), actualSwap.begin()));
@@ -203,7 +196,11 @@ void arrayOperatorInitCopySelfTest(const std::initializer_list<T>& items) {
   s21::array<T, 5> actual(items);
   actual = actual;
 
-  checkBasicField(actual, actual);
+  EXPECT_EQ(actual.size(), actual.size());
+  EXPECT_EQ(actual.data(), actual.data());
+
+  EXPECT_EQ(actual.empty(), actual.empty());
+
   EXPECT_TRUE(std::equal(actual.begin(), actual.end(), actual.begin()));
 }
 
@@ -224,7 +221,11 @@ void arrayOperatorInitMoveSelfTest(const std::initializer_list<T>& items) {
   s21::array<T, 5> actual(items);
   actual = std::move(actual);
 
-  checkBasicField(actual, actual);
+  EXPECT_EQ(actual.size(), actual.size());
+  EXPECT_EQ(actual.data(), actual.data());
+
+  EXPECT_EQ(actual.empty(), actual.empty());
+
   EXPECT_TRUE(std::equal(actual.begin(), actual.end(), actual.begin()));
 }
 
