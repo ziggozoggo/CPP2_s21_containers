@@ -36,12 +36,10 @@ class list {
   using const_iterator = list<value_type>::ListConstIterator;
 
   list();
-  list(size_type count);
-  list(const std::initializer_list<value_type>& values);
-
+  list(size_type n);
+  list(const std::initializer_list<value_type>& items);
   list(const list& other);
   list(list&& other);
-
   ~list();
 
   void swap(list& other);
@@ -158,20 +156,20 @@ list<value_type>::list()
 }
 
 template <typename value_type>
-list<value_type>::list(size_type count) : list() {
-  if (count > this->max_size()) {
+list<value_type>::list(size_type n) : list() {
+  if (n > this->max_size()) {
     throw std::length_error("size more than max_size for that list!");
   }
 
-  for (size_type i = 0; i < count; ++i) {
+  for (size_type i = 0; i < n; ++i) {
     this->push_back(value_type());
   }
 }
 
 template <typename value_type>
-list<value_type>::list(const std::initializer_list<value_type>& values)
+list<value_type>::list(const std::initializer_list<value_type>& items)
     : list() {
-  for (const_reference e : values) {
+  for (const_reference e : items) {
     this->push_back(e);
   }
 }

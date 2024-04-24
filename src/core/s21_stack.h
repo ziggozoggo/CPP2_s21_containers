@@ -14,7 +14,7 @@ class stack {
   using const_reference = const T&;
 
   stack() noexcept {};
-  stack(const std::initializer_list<value_type>& values);
+  stack(const std::initializer_list<value_type>& items);
   stack(const stack& other);
   stack(stack&& other);
   ~stack(){};
@@ -37,8 +37,8 @@ class stack {
 };
 
 template <typename value_type>
-stack<value_type>::stack(const std::initializer_list<value_type>& values)
-    : data_{values} {}
+stack<value_type>::stack(const std::initializer_list<value_type>& items)
+    : data_{items} {}
 
 template <typename value_type>
 stack<value_type>::stack(const stack& other) : data_{other.data_} {}

@@ -18,8 +18,8 @@ class queue : public IContainer {
  public:
   queue() noexcept {};
   queue(std::initializer_list<value_type> const& items);
-  queue(const queue& v);
-  queue(queue&& v) noexcept;
+  queue(const queue& other);
+  queue(queue&& other) noexcept;
   ~queue(){};
 
   queue<value_type>& operator=(const queue<value_type>& other);

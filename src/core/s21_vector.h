@@ -27,8 +27,8 @@ class vector : public IContainer {
   vector() noexcept;
   vector(size_type n);
   vector(std::initializer_list<value_type> const& items);
-  vector(const vector& v);
-  vector(vector&& v) noexcept;
+  vector(const vector& other);
+  vector(vector&& other) noexcept;
   ~vector();
 
   vector<value_type>& operator=(const vector<value_type>& other);
