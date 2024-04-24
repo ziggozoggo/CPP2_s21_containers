@@ -1,8 +1,8 @@
 #ifndef SRC_CORE_S21_VECTOR_H_
 #define SRC_CORE_S21_VECTOR_H_
 
-#include <limits>
 #include <algorithm>
+#include <limits>
 
 #include "s21_container.h"
 
@@ -10,9 +10,8 @@ namespace s21 {
 
 template <typename T>
 class vector : public IContainer {
-
-// Types
-public:
+  // Types
+ public:
   class VectorIterator;
   class VectorConstIterator;
 
@@ -23,13 +22,13 @@ public:
   using iterator = vector<value_type>::VectorIterator;
   using const_iterator = vector<value_type>::VectorConstIterator;
 
-// Public Methods
-public:
+  // Public Methods
+ public:
   vector() noexcept;
   vector(size_type n);
-  vector(std::initializer_list<value_type> const &items);
-  vector(const vector &v);
-  vector(vector &&v) noexcept;
+  vector(std::initializer_list<value_type> const& items);
+  vector(const vector& v);
+  vector(vector&& v) noexcept;
   ~vector();
 
   vector<value_type>& operator=(const vector<value_type>& other);
@@ -68,23 +67,23 @@ public:
   void pop_back();
   void erase(iterator pos);
 
-  template<typename... Args>
+  template <typename... Args>
   void insert_many_back(Args&&... args);
 
-  template<typename... Args>
+  template <typename... Args>
   iterator insert_many(const_iterator pos, Args&&... args);
 
   bool operator==(const vector<value_type>& other) const;
   bool operator!=(const vector<value_type>& other) const;
 
-// Data
-private:
+  // Data
+ private:
   size_type size_;
   size_type capacity_;
   value_type* data_;
 
-// Private Methods
-private:
+  // Private Methods
+ private:
   void moveValData(size_type indx, value_type&& val);
   void freeValData(size_type indx);
 
@@ -101,9 +100,8 @@ private:
 
 template <typename T>
 class vector<T>::VectorIterator {
-
-// Types
-public:
+  // Types
+ public:
   using iterator_category = std::random_access_iterator_tag;
   using difference_type = std::ptrdiff_t;
   using value_type = T;
@@ -111,8 +109,8 @@ public:
   using reference = T&;
   using const_reference = const T&;
 
-// Public Methods
-public:
+  // Public Methods
+ public:
   VectorIterator(value_type* ptr) : ptr_(ptr) {}
   VectorIterator(VectorIterator& other) : ptr_(other.ptr_) {}
 
@@ -170,24 +168,22 @@ public:
     return !(*this == other);
   }
 
-  reference operator*() const {
-    return *ptr_;
-  }
+  reference operator*() const { return *ptr_; }
 
-  static difference_type distance(const VectorIterator& first, const VectorIterator& second) {
+  static difference_type distance(const VectorIterator& first,
+                                  const VectorIterator& second) {
     return std::distance(first.ptr_, second.ptr_);
   }
 
-// Data
-private:
+  // Data
+ private:
   value_type* ptr_;
 };
 
-template<typename T>
+template <typename T>
 class vector<T>::VectorConstIterator : public vector<T>::VectorIterator {
-
-// Types
-public:
+  // Types
+ public:
   using iterator_category = std::random_access_iterator_tag;
   using difference_type = std::ptrdiff_t;
   using value_type = T;
@@ -195,68 +191,56 @@ public:
   using reference = T&;
   using const_reference = const T&;
 
-public:
+ public:
   VectorConstIterator(VectorIterator other) : VectorIterator(other) {}
-  const_reference operator*() {
-    return VectorIterator::operator*();
-  }
+  const_reference operator*() { return VectorIterator::operator*(); }
 };
 
-
-template<typename value_type>
+template <typename value_type>
 vector<value_type>::vector() noexcept
-  : size_     { 0 }
-  , capacity_ { 0 }
-  , data_     { nullptr } {}
+    : size_{0}, capacity_{0}, data_{nullptr} {}
 
-template<typename value_type>
+template <typename value_type>
 vector<value_type>::vector(size_type n)
-  : size_     { n }
-  , capacity_ { n }
-  , data_     { nullptr } {
-  if (capacity_ > max_size()) throw std::length_error("Cannot create s21::vector larger than max_size()");
+    : size_{n}, capacity_{n}, data_{nullptr} {
+  if (capacity_ > max_size())
+    throw std::length_error("Cannot create s21::vector larger than max_size()");
 
   makeData();
 
   for (size_type i = 0; i < size_; i++) {
-    new(data_+i) value_type();
+    new (data_ + i) value_type();
   }
 }
 
-template<typename value_type>
-vector<value_type>::vector(std::initializer_list<value_type> const &items)
-  : size_     { items.size() }
-  , capacity_ { items.size() }
-  , data_     { nullptr } {
-  if (capacity_ > max_size()) throw std::length_error("Cannot create s21::vector larger than max_size()");
+template <typename value_type>
+vector<value_type>::vector(std::initializer_list<value_type> const& items)
+    : size_{items.size()}, capacity_{items.size()}, data_{nullptr} {
+  if (capacity_ > max_size())
+    throw std::length_error("Cannot create s21::vector larger than max_size()");
 
   makeData();
 
   size_type i = 0;
   for (auto item : items) {
-    new(data_+i) value_type(item);
+    new (data_ + i) value_type(item);
     i++;
   }
 }
 
-template<typename value_type>
+template <typename value_type>
 vector<value_type>::vector(const vector& other)
-  : size_     { other.size_ }
-  , capacity_ { other.capacity_ }
-  , data_     { nullptr } {
+    : size_{other.size_}, capacity_{other.capacity_}, data_{nullptr} {
   makeData();
 
   for (size_type i = 0; i < size_; i++) {
-    new(data_+i) value_type(other[i]);
+    new (data_ + i) value_type(other[i]);
   }
 }
 
-template<typename value_type>
+template <typename value_type>
 vector<value_type>::vector(vector&& other) noexcept
-  : size_     { other.size_ }
-  , capacity_ { other.capacity_ }
-  , data_     { other.data_ }
-{
+    : size_{other.size_}, capacity_{other.capacity_}, data_{other.data_} {
   if (this != &other) {
     other.size_ = 0;
     other.capacity_ = 0;
@@ -264,100 +248,107 @@ vector<value_type>::vector(vector&& other) noexcept
   }
 }
 
-template<typename value_type>
+template <typename value_type>
 vector<value_type>::~vector() {
   freeData();
 }
 
-template<typename value_type>
+template <typename value_type>
 typename vector<value_type>::iterator vector<value_type>::begin() {
   return iterator(&data_[0]);
 };
 
-template<typename value_type>
+template <typename value_type>
 typename vector<value_type>::const_iterator vector<value_type>::begin() const {
   return const_iterator(&data_[0]);
 };
 
-template<typename value_type>
+template <typename value_type>
 typename vector<value_type>::iterator vector<value_type>::end() {
   return iterator(&data_[size_]);
 };
 
-template<typename value_type>
+template <typename value_type>
 typename vector<value_type>::const_iterator vector<value_type>::end() const {
   return const_iterator(&data_[size_]);
 };
 
-template<typename value_type>
-typename vector<value_type>::size_type vector<value_type>::size() const noexcept {
+template <typename value_type>
+typename vector<value_type>::size_type vector<value_type>::size()
+    const noexcept {
   return size_;
 }
 
-template<typename value_type>
+template <typename value_type>
 typename vector<value_type>::size_type vector<value_type>::max_size() {
-  return ((std::numeric_limits<size_type>::max() / sizeof(value_type)) / 4294967296); // #NOTE: 4294967296 -> 2^32
+  return ((std::numeric_limits<size_type>::max() / sizeof(value_type)) /
+          4294967296);  // #NOTE: 4294967296 -> 2^32
 }
 
-template<typename value_type>
+template <typename value_type>
 bool vector<value_type>::empty() const noexcept {
   return (size_ == 0);
 }
 
-template<typename value_type>
-typename vector<value_type>::size_type vector<value_type>::capacity() const noexcept {
+template <typename value_type>
+typename vector<value_type>::size_type vector<value_type>::capacity()
+    const noexcept {
   return capacity_;
 }
 
-template<typename value_type>
+template <typename value_type>
 value_type* vector<value_type>::data() const noexcept {
   return data_;
 }
 
-template<typename value_type>
+template <typename value_type>
 typename vector<value_type>::reference vector<value_type>::at(size_type pos) {
   if (pos >= size_) throw std::out_of_range("Index out of vector boundary");
 
   return data_[pos];
 }
 
-template<typename value_type>
-typename vector<value_type>::const_reference vector<value_type>::at(size_type pos) const {
+template <typename value_type>
+typename vector<value_type>::const_reference vector<value_type>::at(
+    size_type pos) const {
   if (pos >= size_) throw std::out_of_range("Index out of vector boundary");
 
   return data_[pos];
 }
 
-template<typename value_type>
-typename vector<value_type>::reference vector<value_type>::operator[](size_type pos) {
+template <typename value_type>
+typename vector<value_type>::reference vector<value_type>::operator[](
+    size_type pos) {
   return data_[pos];
 }
 
-template<typename value_type>
-typename vector<value_type>::const_reference vector<value_type>::operator[](size_type pos) const {
+template <typename value_type>
+typename vector<value_type>::const_reference vector<value_type>::operator[](
+    size_type pos) const {
   return data_[pos];
 }
 
-template<typename value_type>
+template <typename value_type>
 void vector<value_type>::moveValData(size_type indx, value_type&& val) {
-  new(data_+indx) value_type(std::move(val));
+  new (data_ + indx) value_type(std::move(val));
 }
 
-template<typename value_type>
+template <typename value_type>
 void vector<value_type>::freeValData(size_type indx) {
-  if (data_ != nullptr) (data_+indx)->~value_type();
+  if (data_ != nullptr) (data_ + indx)->~value_type();
 }
 
-template<typename value_type>
+template <typename value_type>
 void vector<value_type>::makeData() {
-  value_type* newData = reinterpret_cast<value_type*>(new std::byte[capacity_ * sizeof(value_type)]);
+  value_type* newData = reinterpret_cast<value_type*>(
+      new std::byte[capacity_ * sizeof(value_type)]);
   if (data_ != nullptr) {
     for (size_type i = 0; i < size_; i++) {
       try {
-        new(newData+i) value_type(std::move(data_[i]));
+        new (newData + i) value_type(std::move(data_[i]));
       } catch (...) {
         for (size_type j = 0; j < i; j++) {
-          (newData+i)->~value_type();
+          (newData + i)->~value_type();
         }
         delete[] reinterpret_cast<std::byte*>(newData);
         throw;
@@ -370,7 +361,7 @@ void vector<value_type>::makeData() {
   data_ = newData;
 }
 
-template<typename value_type>
+template <typename value_type>
 void vector<value_type>::freeData() {
   if (data_ == nullptr) return;
 
@@ -381,15 +372,16 @@ void vector<value_type>::freeData() {
   delete[] reinterpret_cast<uint8_t*>(data_);
 }
 
-template<typename value_type>
+template <typename value_type>
 void vector<value_type>::setCapacity(size_type newCapacity) {
   capacity_ = newCapacity;
-  if (capacity_ > max_size()) throw std::length_error("Cannot expand s21::vector larger than max_size()");
+  if (capacity_ > max_size())
+    throw std::length_error("Cannot expand s21::vector larger than max_size()");
 
   makeData();
 }
 
-template<typename value_type>
+template <typename value_type>
 void vector<value_type>::growCapacity() {
   if (capacity_ == 0) {
     reserve(1);
@@ -398,35 +390,35 @@ void vector<value_type>::growCapacity() {
   }
 }
 
-template<typename value_type>
+template <typename value_type>
 void vector<value_type>::reserve(size_type newCapacity) {
   if (newCapacity <= capacity_) return;
   setCapacity(newCapacity);
 }
 
-template<typename value_type>
+template <typename value_type>
 void vector<value_type>::shrink_to_fit() {
   if (size_ == capacity_) return;
   setCapacity(size_);
 }
 
-template<typename value_type>
+template <typename value_type>
 void vector<value_type>::clear() {
   for (size_type i = 0; i < size_; i++) {
-    (data_+i)->~value_type();
+    (data_ + i)->~value_type();
   }
 
   size_ = 0;
 }
 
-template<typename value_type>
+template <typename value_type>
 void vector<value_type>::swap(vector<value_type>& other) noexcept {
   std::swap(size_, other.size_);
   std::swap(capacity_, other.capacity_);
   std::swap(data_, other.data_);
 }
 
-template<typename value_type>
+template <typename value_type>
 bool vector<value_type>::operator==(const vector<value_type>& other) const {
   if (this == &other) return true;
   if (size() != other.size()) return false;
@@ -434,56 +426,57 @@ bool vector<value_type>::operator==(const vector<value_type>& other) const {
   return (std::equal(begin(), end(), other.begin()));
 }
 
-template<typename value_type>
+template <typename value_type>
 bool vector<value_type>::operator!=(const vector<value_type>& other) const {
   return !(*this == other);
 }
 
-template<typename value_type>
-vector<value_type>& vector<value_type>::operator=(const vector<value_type>& other) {
+template <typename value_type>
+vector<value_type>& vector<value_type>::operator=(
+    const vector<value_type>& other) {
   if (this == &other) {
     return *this;
   }
 
-  vector<value_type> tmp { other };
+  vector<value_type> tmp{other};
   this->swap(tmp);
 
   return *this;
 }
 
-template<typename value_type>
+template <typename value_type>
 vector<value_type>& vector<value_type>::operator=(vector<value_type>&& other) {
   if (this == &other) {
     return *this;
   }
 
-  vector<value_type> tmp { std::move(other) };
+  vector<value_type> tmp{std::move(other)};
   this->swap(tmp);
 
   return *this;
 }
 
-template<typename value_type>
+template <typename value_type>
 typename vector<value_type>::const_reference vector<value_type>::front() const {
   return data_[0];
 }
 
-template<typename value_type>
+template <typename value_type>
 typename vector<value_type>::const_reference vector<value_type>::back() const {
   return data_[size_ - 1];
 }
 
-template<typename value_type>
+template <typename value_type>
 void vector<value_type>::push_back(const_reference value) {
   if (size_ >= capacity_) growCapacity();
 
-  value_type tmp { value };
+  value_type tmp{value};
   moveValData(size_, std::move(tmp));
 
   ++size_;
 }
 
-template<typename value_type>
+template <typename value_type>
 void vector<value_type>::pop_back() {
   if (empty()) throw std::out_of_range("Vector is empty");
   --size_;
@@ -491,7 +484,7 @@ void vector<value_type>::pop_back() {
   freeValData(size_);
 }
 
-template<typename value_type>
+template <typename value_type>
 void vector<value_type>::erase(iterator pos) {
   const auto index = (size_type)VectorIterator::distance(begin(), pos);
   if (index >= size_) return;
@@ -505,8 +498,9 @@ void vector<value_type>::erase(iterator pos) {
   --size_;
 }
 
-template<typename value_type>
-typename vector<value_type>::iterator vector<value_type>::insertImpl(iterator pos, const_reference value) {
+template <typename value_type>
+typename vector<value_type>::iterator vector<value_type>::insertImpl(
+    iterator pos, const_reference value) {
   const auto index = (size_type)VectorIterator::distance(begin(), pos);
   if (size_ >= capacity_) growCapacity();
 
@@ -515,37 +509,41 @@ typename vector<value_type>::iterator vector<value_type>::insertImpl(iterator po
   }
 
   // #DEFECT - how to correct move value to data without tmp?
-  value_type tmp { value };
+  value_type tmp{value};
   moveValData(index, std::move(tmp));
   ++size_;
 
   return begin() + index;
 }
 
-template<typename value_type>
-void vector<value_type>::checkRange(const_iterator begin, const_iterator pos) const {
+template <typename value_type>
+void vector<value_type>::checkRange(const_iterator begin,
+                                    const_iterator pos) const {
   const auto index = (size_type)VectorIterator::distance(begin, pos);
-  if ((index >= size_) && (index != 0)) throw std::out_of_range("Selected position is out of range of the vector");
+  if ((index >= size_) && (index != 0))
+    throw std::out_of_range("Selected position is out of range of the vector");
 }
 
-template<typename value_type>
-typename vector<value_type>::iterator vector<value_type>::insert(iterator pos, const_reference value) {
+template <typename value_type>
+typename vector<value_type>::iterator vector<value_type>::insert(
+    iterator pos, const_reference value) {
   checkRange(begin(), pos);
 
   return insertImpl(pos, value);
 }
 
-template<typename value_type>
-template<typename... Args>
+template <typename value_type>
+template <typename... Args>
 void vector<value_type>::insert_many_back(Args&&... args) {
   for (auto arg : {args...}) {
     push_back(arg);
   }
 }
 
-template<typename value_type>
-template<typename... Args>
-typename vector<value_type>::iterator vector<value_type>::insert_many(const_iterator pos, Args&&... args) {
+template <typename value_type>
+template <typename... Args>
+typename vector<value_type>::iterator vector<value_type>::insert_many(
+    const_iterator pos, Args&&... args) {
   checkRange(begin(), pos);
 
   for (auto arg : {args...}) {
@@ -555,6 +553,6 @@ typename vector<value_type>::iterator vector<value_type>::insert_many(const_iter
   return pos;
 }
 
-}
+}  // namespace s21
 
 #endif  // SRC_CORE_S21_VECTOR_H_

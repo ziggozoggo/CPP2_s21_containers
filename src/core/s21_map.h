@@ -4,8 +4,8 @@
 #include <limits>
 #include <type_traits>
 
-#include "s21_rbtree.h"
 #include "s21_container.h"
+#include "s21_rbtree.h"
 #include "s21_vector.h"
 
 namespace s21 {
@@ -136,7 +136,8 @@ class map<KeyT, ValT>::MapConstIterator : public map<KeyT, ValT>::MapIterator {
 };
 
 template <typename key_type, typename mapped_type>
-typename RBTree<key_type, mapped_type, false>::Node* map<key_type, mapped_type>::MapIterator::RBT_increment(
+typename RBTree<key_type, mapped_type, false>::Node*
+map<key_type, mapped_type>::MapIterator::RBT_increment(
     typename RBTree<key_type, mapped_type, false>::Node* ptr) {
   if (!it_btree_->isNil(ptr->right_)) {
     ptr = ptr->right_;
@@ -153,7 +154,8 @@ typename RBTree<key_type, mapped_type, false>::Node* map<key_type, mapped_type>:
 }
 
 template <typename key_type, typename mapped_type>
-typename RBTree<key_type, mapped_type, false>::Node* map<key_type, mapped_type>::MapIterator::RBT_decrement(
+typename RBTree<key_type, mapped_type, false>::Node*
+map<key_type, mapped_type>::MapIterator::RBT_decrement(
     typename RBTree<key_type, mapped_type, false>::Node* ptr) {
   if (!it_btree_->isNil(ptr->left_)) {
     ptr = ptr->left_;
@@ -188,7 +190,8 @@ template <typename key_type, typename mapped_type>
 typename map<key_type, mapped_type>::size_type
 map<key_type, mapped_type>::max_size() {
   return std::numeric_limits<size_type>::max() /
-         sizeof(typename RBTree<key_type, mapped_type, false>::Node) / 4294967296;
+         sizeof(typename RBTree<key_type, mapped_type, false>::Node) /
+         4294967296;
 }
 
 template <typename key_type, typename mapped_type>
@@ -240,7 +243,8 @@ map<key_type, mapped_type>& map<key_type, mapped_type>::operator=(map&& other) {
 
 template <typename key_type, typename mapped_type>
 mapped_type& map<key_type, mapped_type>::at(const key_type& key) {
-  typename RBTree<key_type, mapped_type, false>::Node* temp = btree_.search(key);
+  typename RBTree<key_type, mapped_type, false>::Node* temp =
+      btree_.search(key);
   if (temp == nullptr)
     throw std::out_of_range("Element with the current key was not found!");
   else
@@ -249,7 +253,8 @@ mapped_type& map<key_type, mapped_type>::at(const key_type& key) {
 
 template <typename key_type, typename mapped_type>
 mapped_type& map<key_type, mapped_type>::at(const key_type& key) const {
-  typename RBTree<key_type, mapped_type, false>::Node* temp = btree_.search(key);
+  typename RBTree<key_type, mapped_type, false>::Node* temp =
+      btree_.search(key);
   if (temp == nullptr)
     throw std::out_of_range("Element with the current key was not found!");
   else
@@ -274,8 +279,8 @@ map<key_type, mapped_type>::begin() {
 template <typename key_type, typename mapped_type>
 typename map<key_type, mapped_type>::const_iterator
 map<key_type, mapped_type>::begin() const {
-  MapIterator it(
-      btree_.getMin(), const_cast<RBTree<key_type, mapped_type, false>*>(&btree_));
+  MapIterator it(btree_.getMin(),
+                 const_cast<RBTree<key_type, mapped_type, false>*>(&btree_));
   return MapConstIterator(it);
 }
 
@@ -289,8 +294,8 @@ map<key_type, mapped_type>::end() {
 template <typename key_type, typename mapped_type>
 typename map<key_type, mapped_type>::const_iterator
 map<key_type, mapped_type>::end() const {
-  MapIterator it(
-      btree_.getMax(), const_cast<RBTree<key_type, mapped_type, false>*>(&btree_));
+  MapIterator it(btree_.getMax(),
+                 const_cast<RBTree<key_type, mapped_type, false>*>(&btree_));
   return MapConstIterator(it);
 }
 

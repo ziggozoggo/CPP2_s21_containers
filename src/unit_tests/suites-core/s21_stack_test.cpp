@@ -1,9 +1,11 @@
-#include "s21_core_tests.h"
-
-#include <stack>
 #include "core/s21_stack.h"
 
-#define DEF_STR_VALS {"hello", "world", "!"}
+#include <stack>
+
+#include "s21_core_tests.h"
+
+#define DEF_STR_VALS \
+  { "hello", "world", "!" }
 
 TEST(s21_stack_suite, init_empty_stack) {
   std::stack<NoConstructClass> std_stack;
@@ -17,7 +19,7 @@ TEST(s21_stack_suite, init_empty_stack) {
   ASSERT_EQ(std_stack_str.size(), s21_stack_str.size());
 }
 
-TEST(s21_stack_suite, empty_stack_pop){
+TEST(s21_stack_suite, empty_stack_pop) {
   s21::stack<int> s21_stack;
   EXPECT_THROW(s21_stack.pop(), std::out_of_range);
 }
@@ -26,7 +28,7 @@ TEST(s21_stack_suite, init_list_stack00) {
   s21::stack<int> s21_stack{21, 42, 84};
   int list_data[] = {21, 42, 84};
   int i = 2;
-  while(!s21_stack.empty()) {
+  while (!s21_stack.empty()) {
     ASSERT_EQ(list_data[i], s21_stack.top());
     s21_stack.pop();
     --i;
@@ -39,7 +41,7 @@ TEST(s21_stack_suite, init_list_stack01) {
   s21::stack<std::string> s21_stack{"hello", "world", "!"};
   std::string list_data[] = {"hello", "world", "!"};
   int i = 2;
-  while(!s21_stack.empty()) {
+  while (!s21_stack.empty()) {
     ASSERT_EQ(list_data[i], s21_stack.top());
     s21_stack.pop();
     --i;

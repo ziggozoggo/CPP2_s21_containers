@@ -77,26 +77,28 @@ class RBTree {
 };
 
 template <typename KeyT, typename ValT, bool multi_type>
-std::pair<typename RBTree<KeyT, ValT, multi_type>::Node*, bool> RBTree<KeyT, ValT, multi_type>::insert(
-    const KeyT& key, const ValT& obj) {
+std::pair<typename RBTree<KeyT, ValT, multi_type>::Node*, bool>
+RBTree<KeyT, ValT, multi_type>::insert(const KeyT& key, const ValT& obj) {
   return insertNode(key, obj);
 }
 
 template <typename KeyT, typename ValT, bool multi_type>
-std::pair<typename RBTree<KeyT, ValT, multi_type>::Node*, bool> RBTree<KeyT, ValT, multi_type>::insert(
-    const KeyT& key) {
+std::pair<typename RBTree<KeyT, ValT, multi_type>::Node*, bool>
+RBTree<KeyT, ValT, multi_type>::insert(const KeyT& key) {
   ValT defaultValue = ValT();
   return insertNode(key, defaultValue);
 }
 
 template <typename KeyT, typename ValT, bool multi_type>
-std::pair<typename RBTree<KeyT, ValT, multi_type>::Node*, bool> RBTree<KeyT, ValT, multi_type>::insert(
+std::pair<typename RBTree<KeyT, ValT, multi_type>::Node*, bool>
+RBTree<KeyT, ValT, multi_type>::insert(
     const std::pair<const KeyT, ValT>& pair) {
   return insertNode(pair.first, pair.second);
 }
 
 template <typename KeyT, typename ValT, bool multi_type>
-typename RBTree<KeyT, ValT, multi_type>::Node* RBTree<KeyT, ValT, multi_type>::getChildOrMock(
+typename RBTree<KeyT, ValT, multi_type>::Node*
+RBTree<KeyT, ValT, multi_type>::getChildOrMock(
     typename RBTree<KeyT, ValT, multi_type>::Node* node) {
   return isNil(node->left_) ? node->right_ : node->left_;
 }
@@ -108,7 +110,8 @@ void RBTree<KeyT, ValT, multi_type>::makeNullRoot() {
 }
 
 template <typename KeyT, typename ValT, bool multi_type>
-void RBTree<KeyT, ValT, multi_type>::swapOtherRoot(RBTree<KeyT, ValT, multi_type>& other) {
+void RBTree<KeyT, ValT, multi_type>::swapOtherRoot(
+    RBTree<KeyT, ValT, multi_type>& other) {
   std::swap(root_, other.root_);
   std::swap(nil_, other.nil_);
 }
@@ -123,7 +126,8 @@ template <typename KeyT, typename ValT, bool multi_type>
 std::pair<typename RBTree<KeyT, ValT, multi_type>::Node*, bool>
 RBTree<KeyT, ValT, multi_type>::insertNode(const KeyT& key, const ValT& value) {
   Node* checkNode = search(key);
-  if (checkNode != nullptr && (!multi_type)) return std::make_pair(checkNode, false);
+  if (checkNode != nullptr && (!multi_type))
+    return std::make_pair(checkNode, false);
 
   Node* currentNode = root_;
   Node* parent = nil_;
@@ -196,17 +200,17 @@ void RBTree<KeyT, ValT, multi_type>::balanceInsert(Node* newNode) {
 }
 
 template <typename KeyT, typename ValT, bool multi_type>
-typename RBTree<KeyT, ValT, multi_type>::Node* RBTree<KeyT, ValT, multi_type>::search(
-    Node* node, const KeyT& key) const {
+typename RBTree<KeyT, ValT, multi_type>::Node*
+RBTree<KeyT, ValT, multi_type>::search(Node* node, const KeyT& key) const {
   if (isNil(node)) return nullptr;
 
   if (node->val_.first == key) {
     if (!multi_type)
       return node;
-    else return (node->left_->val_.first == key) ? search(node->left_, key)
-                                                : node;
+    else
+      return (node->left_->val_.first == key) ? search(node->left_, key) : node;
   }
-  
+
   return (key < node->val_.first) ? search(node->left_, key)
                                   : search(node->right_, key);
 }
@@ -345,8 +349,8 @@ void RBTree<KeyT, ValT, multi_type>::balanceRemove(Node* node) {
 }
 
 template <typename KeyT, typename ValT, bool multi_type>
-typename RBTree<KeyT, ValT, multi_type>::Node* RBTree<KeyT, ValT, multi_type>::getMin(
-    Node* node) const {
+typename RBTree<KeyT, ValT, multi_type>::Node*
+RBTree<KeyT, ValT, multi_type>::getMin(Node* node) const {
   if (isNil(node)) return nullptr;
 
   if (isNil(node->left_)) return node;
@@ -354,7 +358,8 @@ typename RBTree<KeyT, ValT, multi_type>::Node* RBTree<KeyT, ValT, multi_type>::g
 }
 
 template <typename KeyT, typename ValT, bool multi_type>
-typename RBTree<KeyT, ValT, multi_type>::Node* RBTree<KeyT, ValT, multi_type>::getMin() const {
+typename RBTree<KeyT, ValT, multi_type>::Node*
+RBTree<KeyT, ValT, multi_type>::getMin() const {
   if (isNil(root_) || isNil(root_->left_)) return root_;
 
   Node* temp = root_->left_;
@@ -364,8 +369,8 @@ typename RBTree<KeyT, ValT, multi_type>::Node* RBTree<KeyT, ValT, multi_type>::g
 }
 
 template <typename KeyT, typename ValT, bool multi_type>
-typename RBTree<KeyT, ValT, multi_type>::Node* RBTree<KeyT, ValT, multi_type>::getMax(
-    Node* node) const {
+typename RBTree<KeyT, ValT, multi_type>::Node*
+RBTree<KeyT, ValT, multi_type>::getMax(Node* node) const {
   if (isNil(node)) return nullptr;
 
   if (isNil(node->right_)) return node;
@@ -373,7 +378,8 @@ typename RBTree<KeyT, ValT, multi_type>::Node* RBTree<KeyT, ValT, multi_type>::g
 }
 
 template <typename KeyT, typename ValT, bool multi_type>
-typename RBTree<KeyT, ValT, multi_type>::Node* RBTree<KeyT, ValT, multi_type>::getMax() const {
+typename RBTree<KeyT, ValT, multi_type>::Node*
+RBTree<KeyT, ValT, multi_type>::getMax() const {
   if (isNil(root_)) return nil_;
 
   Node* temp = root_;

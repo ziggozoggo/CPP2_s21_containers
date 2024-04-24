@@ -7,7 +7,8 @@ namespace s21 {
 
 /*
   The class IContainer serves as an interface for data containers.
-  It defines a set of methods that any subclass representing a container must implement.
+  It defines a set of methods that any subclass representing a container must
+  implement.
 
   Interface:
   - Interface in object-oriented programming defines a set
@@ -20,13 +21,15 @@ namespace s21 {
     and can be used for reading or modifying the values of elements.
 
   Virtual methods:
-  - Virtual methods are defined using the virtual keyword and can be overridden in subclass.
-    They enable polymorphism, allowing to call methods from the base class for objects of subclass.
+  - Virtual methods are defined using the virtual keyword and can be overridden
+  in subclass. They enable polymorphism, allowing to call methods from the base
+  class for objects of subclass.
 
   Method descriptions:
   - size(): returns the number of elements in the container.
 
-  - max_size(): returns the maximum possible number of elements in the container.
+  - max_size(): returns the maximum possible number of elements in the
+  container.
 
   - empty(): returns true if the container is empty, otherwise false.
 
@@ -44,13 +47,14 @@ namespace s21 {
     returns an iterator pointing to the first element of the container.
 
   - end():
-    returns an iterator pointing to the position past the last element of the container.
+    returns an iterator pointing to the position past the last element of the
+  container.
 
   - operator=(): assignment operators for copying and moving the container.
 */
 
 class IContainer {
-public:
+ public:
   using size_type = std::size_t;
 
   virtual ~IContainer() {}
@@ -59,7 +63,6 @@ public:
   virtual bool empty() const noexcept = 0;
 };
 
-}
-
+}  // namespace s21
 
 #endif  // SRC_S21_CONTAINER_H_

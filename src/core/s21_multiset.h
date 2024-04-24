@@ -4,8 +4,8 @@
 #include <limits>
 #include <type_traits>
 
-#include "s21_rbtree.h"
 #include "s21_container.h"
+#include "s21_rbtree.h"
 #include "s21_vector.h"
 
 namespace s21 {
@@ -58,7 +58,7 @@ class multiset : public IContainer {
   size_type count(const key_type& key);
   iterator lower_bound(const key_type& key);
   iterator upper_bound(const key_type& key);
-  std::pair<iterator,iterator> equal_range(const key_type& key);
+  std::pair<iterator, iterator> equal_range(const key_type& key);
 
   template <typename... Args>
   vector<std::pair<iterator, bool>> insert_many(Args&&... args);
@@ -72,12 +72,15 @@ class multiset : public IContainer {
 };
 
 template <typename key_type>
-std::pair<typename multiset<key_type>::iterator,typename multiset<key_type>::iterator> multiset<key_type>::equal_range(const key_type& key) {
+std::pair<typename multiset<key_type>::iterator,
+          typename multiset<key_type>::iterator>
+multiset<key_type>::equal_range(const key_type& key) {
   return std::make_pair(lower_bound(key), upper_bound(key));
 }
 
 template <typename key_type>
-typename multiset<key_type>::iterator multiset<key_type>::upper_bound(const key_type& key) {
+typename multiset<key_type>::iterator multiset<key_type>::upper_bound(
+    const key_type& key) {
   iterator res = end();
   for (iterator it = begin(); it != end(); ++it) {
     if (*it > key) {
@@ -89,7 +92,8 @@ typename multiset<key_type>::iterator multiset<key_type>::upper_bound(const key_
 }
 
 template <typename key_type>
-typename multiset<key_type>::iterator multiset<key_type>::lower_bound(const key_type& key) {
+typename multiset<key_type>::iterator multiset<key_type>::lower_bound(
+    const key_type& key) {
   iterator res = end();
   for (iterator it = begin(); it != end(); ++it) {
     if (*it >= key) {
@@ -101,10 +105,11 @@ typename multiset<key_type>::iterator multiset<key_type>::lower_bound(const key_
 }
 
 template <typename key_type>
-typename multiset<key_type>::size_type multiset<key_type>::count(const key_type& key) {
+typename multiset<key_type>::size_type multiset<key_type>::count(
+    const key_type& key) {
   size_type res = 0;
   if (iterator it = find(key); it != end()) {
-    while(*it == key) {
+    while (*it == key) {
       ++res;
       ++it;
     }
@@ -164,26 +169,27 @@ class multiset<KeyT>::MultisetIterator {
 };
 
 template <typename KeyT>
-class multiset<KeyT>::MultisetConstIterator : public multiset<KeyT>::MultisetIterator {
+class multiset<KeyT>::MultisetConstIterator
+    : public multiset<KeyT>::MultisetIterator {
  public:
   using value_type = KeyT;
   using const_reference = const value_type&;
 
  public:
-  MultisetConstIterator(MultisetIterator other)
-      : MultisetIterator(other) {}
+  MultisetConstIterator(MultisetIterator other) : MultisetIterator(other) {}
   const_reference operator*() { return MultisetIterator::operator*(); }
 };
 
-
 template <typename key_type>
-typename multiset<key_type>::iterator multiset<key_type>::find(const key_type& key) {
+typename multiset<key_type>::iterator multiset<key_type>::find(
+    const key_type& key) {
   typename RBTree<key_type, key_type, true>::Node* temp = btree_.search(key);
   return (!temp) ? end() : multiset<key_type>::iterator(temp, &btree_);
 }
 
 template <typename key_type>
-typename RBTree<key_type, key_type, true>::Node* multiset<key_type>::MultisetIterator::RBT_increment(
+typename RBTree<key_type, key_type, true>::Node*
+multiset<key_type>::MultisetIterator::RBT_increment(
     typename RBTree<key_type, key_type, true>::Node* ptr) {
   if (!it_btree_->isNil(ptr->right_)) {
     ptr = ptr->right_;
@@ -200,7 +206,8 @@ typename RBTree<key_type, key_type, true>::Node* multiset<key_type>::MultisetIte
 }
 
 template <typename key_type>
-typename RBTree<key_type, key_type, true>::Node* multiset<key_type>::MultisetIterator::RBT_decrement(
+typename RBTree<key_type, key_type, true>::Node*
+multiset<key_type>::MultisetIterator::RBT_decrement(
     typename RBTree<key_type, key_type, true>::Node* ptr) {
   if (!it_btree_->isNil(ptr->left_)) {
     ptr = ptr->left_;
@@ -217,8 +224,7 @@ typename RBTree<key_type, key_type, true>::Node* multiset<key_type>::MultisetIte
 }
 
 template <typename key_type>
-bool multiset<key_type>::operator==(
-    const multiset<key_type>& other) const {
+bool multiset<key_type>::operator==(const multiset<key_type>& other) const {
   if (this == &other) return true;
   if (size() != other.size()) return false;
 
@@ -226,14 +232,12 @@ bool multiset<key_type>::operator==(
 }
 
 template <typename key_type>
-bool multiset<key_type>::operator!=(
-    const multiset<key_type>& other) const {
+bool multiset<key_type>::operator!=(const multiset<key_type>& other) const {
   return !(*this == other);
 }
 
 template <typename key_type>
-typename multiset<key_type>::size_type
-multiset<key_type>::max_size() {
+typename multiset<key_type>::size_type multiset<key_type>::max_size() {
   return std::numeric_limits<size_type>::max() /
          sizeof(typename RBTree<key_type, key_type, true>::Node) / 4294967296;
 }
@@ -264,8 +268,7 @@ multiset<key_type>::multiset(multiset&& other) noexcept
 }
 
 template <typename key_type>
-multiset<key_type>& multiset<key_type>::operator=(
-    const multiset& other) {
+multiset<key_type>& multiset<key_type>::operator=(const multiset& other) {
   size_ = other.size_;
   for (auto it : other) this->btree_.insert(std::make_pair(it, it));
 
@@ -286,32 +289,28 @@ multiset<key_type>& multiset<key_type>::operator=(multiset&& other) {
 }
 
 template <typename key_type>
-typename multiset<key_type>::iterator
-multiset<key_type>::begin() {
+typename multiset<key_type>::iterator multiset<key_type>::begin() {
   multiset<key_type>::iterator it(btree_.getMin(), &btree_);
   return it;
 }
 
 template <typename key_type>
-typename multiset<key_type>::const_iterator
-multiset<key_type>::begin() const {
-  MultisetIterator it(
-      btree_.getMin(), const_cast<RBTree<key_type, key_type, true>*>(&btree_));
+typename multiset<key_type>::const_iterator multiset<key_type>::begin() const {
+  MultisetIterator it(btree_.getMin(),
+                      const_cast<RBTree<key_type, key_type, true>*>(&btree_));
   return MultisetConstIterator(it);
 }
 
 template <typename key_type>
-typename multiset<key_type>::iterator
-multiset<key_type>::end() {
+typename multiset<key_type>::iterator multiset<key_type>::end() {
   multiset<key_type>::iterator it(btree_.getMax(), &btree_);
   return it;
 }
 
 template <typename key_type>
-typename multiset<key_type>::const_iterator
-multiset<key_type>::end() const {
-  MultisetIterator it(
-      btree_.getMax(), const_cast<RBTree<key_type, key_type, true>*>(&btree_));
+typename multiset<key_type>::const_iterator multiset<key_type>::end() const {
+  MultisetIterator it(btree_.getMax(),
+                      const_cast<RBTree<key_type, key_type, true>*>(&btree_));
   return MultisetConstIterator(it);
 }
 
@@ -322,8 +321,8 @@ void multiset<key_type>::clear() {
 }
 
 template <typename key_type>
-typename multiset<key_type>::iterator
-multiset<key_type>::insert(const value_type& value) {
+typename multiset<key_type>::iterator multiset<key_type>::insert(
+    const value_type& value) {
   std::pair<typename RBTree<key_type, key_type, true>::Node*, bool> temp =
       btree_.insert(std::make_pair(value, value));
   if (temp.second) size_++;

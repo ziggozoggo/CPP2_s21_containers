@@ -9,7 +9,7 @@
 #define LOOP_TESTS_QUANTITY 50
 
 class MockClass {
-public:
+ public:
   MockClass() : data_(new int[size_]), subData_(42) {
     for (int i = 0; i < size_; i++) {
       data_[i] = i * 2;
@@ -22,13 +22,15 @@ public:
     }
   }
 
-  MockClass(const MockClass& other) : size_(other.size_), data_(new int[size_]), subData_(other.subData_) {
+  MockClass(const MockClass& other)
+      : size_(other.size_), data_(new int[size_]), subData_(other.subData_) {
     for (int i = 0; i < size_; i++) {
       data_[i] = other.data_[i];
     }
   }
 
-  MockClass(MockClass&& other) noexcept : size_(other.size_), data_(other.data_), subData_(other.subData_) {
+  MockClass(MockClass&& other) noexcept
+      : size_(other.size_), data_(other.data_), subData_(other.subData_) {
     other.data_ = nullptr;
     other.subData_ = 0;
   }
@@ -64,7 +66,7 @@ public:
   bool operator==(const MockClass& other) const noexcept {
     if (subData_ != other.subData_) return false;
     for (int i = 0; i < size_; i++) {
-        if (data_[i] != other.data_[i]) return false;
+      if (data_[i] != other.data_[i]) return false;
     }
     return true;
   }
@@ -76,7 +78,7 @@ public:
   bool operator<(const MockClass& other) const noexcept {
     if (subData_ != other.subData_) return subData_ < other.subData_;
     for (int i = 0; i < size_; i++) {
-        if (data_[i] != other.data_[i]) return data_[i] < other.data_[i];
+      if (data_[i] != other.data_[i]) return data_[i] < other.data_[i];
     }
     return false;
   }
@@ -84,7 +86,7 @@ public:
   bool operator>(const MockClass& other) const noexcept {
     if (subData_ != other.subData_) return subData_ > other.subData_;
     for (int i = 0; i < size_; i++) {
-        if (data_[i] != other.data_[i]) return data_[i] > other.data_[i];
+      if (data_[i] != other.data_[i]) return data_[i] > other.data_[i];
     }
     return false;
   }
@@ -108,7 +110,8 @@ public:
   }
 
   friend std::ostream& operator<<(std::ostream& os, const MockClass& obj) {
-    os << "Size: " << obj.size_ << ", " << "Subdata: " << obj.subData_ << std::endl;
+    os << "Size: " << obj.size_ << ", "
+       << "Subdata: " << obj.subData_ << std::endl;
     os << "Data: " << std::endl;
     for (int i = 0; i < obj.size_; i++) {
       os << "[" << i << "] = " << obj.data_[i] << std::endl;
@@ -117,15 +120,15 @@ public:
     return os;
   }
 
-private:
+ private:
   const int size_ = 10;
   int* data_;
   int subData_;
 };
 
 class NoConstructClass {
-public:
-  NoConstructClass(int val) : val_ { val } {};
+ public:
+  NoConstructClass(int val) : val_{val} {};
 
   bool operator==(const NoConstructClass& other) const noexcept {
     return val_ == other.val_;
@@ -140,12 +143,13 @@ public:
     return *this;
   }
 
-  friend std::ostream& operator<<(std::ostream& os, const NoConstructClass& obj) {
+  friend std::ostream& operator<<(std::ostream& os,
+                                  const NoConstructClass& obj) {
     os << "Val: " << obj.val_ << std::endl;
     return os;
   }
 
-private:
+ private:
   NoConstructClass() = delete;
   int val_ = 5;
 };
