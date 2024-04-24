@@ -29,7 +29,7 @@
 #define STR_KEY_DUPLICATE "!"
 
 template<typename key_type>
-void checkFields(const s21::multiset<key_type>& s21_multiset
+void multiCheckFields(const s21::multiset<key_type>& s21_multiset
     , const std::multiset<key_type>& std_multiset) {
   auto std_it = std_multiset.begin();
   for (auto s21_it : s21_multiset) {
@@ -41,7 +41,7 @@ void checkFields(const s21::multiset<key_type>& s21_multiset
 }
 
 template<typename key_type>
-void checkFieldsEmpty(const s21::multiset<key_type>& s21_multiset
+void multiCheckFieldsEmpty(const s21::multiset<key_type>& s21_multiset
     , const std::multiset<key_type>& std_multiset) {
   auto std_it = std_multiset.begin();
   for (auto s21_it : s21_multiset) {
@@ -58,7 +58,7 @@ void checkFieldsEmpty(const s21::multiset<key_type>& s21_multiset
 // -------------------------------------------------
 
 template<typename key_type>
-void constructorDefaultAsCont() {
+void multiConstructorDefaultAsCont() {
   s21::IContainer* ct = new s21::multiset<key_type>();
 
   EXPECT_EQ(ct->size(), 0);
@@ -68,221 +68,221 @@ void constructorDefaultAsCont() {
 }
 
 #define TESTS_CONSTRUCTOR_INIT_AS_CONT(suiteName) \
-TEST(suiteName, intInitAsCont) { constructorDefaultAsCont<int>(); } \
-TEST(suiteName, doubleInitAsCont) { constructorDefaultAsCont<double>(); } \
-TEST(suiteName, mockClassInitAsCont) { constructorDefaultAsCont<MockClass>(); } \
-TEST(suiteName, stringInitAsCont) { constructorDefaultAsCont<std::string>(); } \
+TEST(suiteName, intInitAsCont) { multiConstructorDefaultAsCont<int>(); } \
+TEST(suiteName, doubleInitAsCont) { multiConstructorDefaultAsCont<double>(); } \
+TEST(suiteName, mockClassInitAsCont) { multiConstructorDefaultAsCont<MockClass>(); } \
+TEST(suiteName, stringInitAsCont) { multiConstructorDefaultAsCont<std::string>(); } \
 
 TESTS_CONSTRUCTOR_INIT_AS_CONT(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
-void constructorDefault() {
+void multiConstructorDefault() {
   s21::multiset<key_type> s21_multiset;
   std::multiset<key_type> std_multiset;
 
-  checkFieldsEmpty(s21_multiset, std_multiset);
+  multiCheckFieldsEmpty(s21_multiset, std_multiset);
 }
 
 #define TESTS_DEFAULT_CONSTRUCTOR_INIT(suiteName) \
-TEST(suiteName, intDefInit) { constructorDefault<int>(); } \
-TEST(suiteName, doubleDefInit) { constructorDefault<double>(); } \
-TEST(suiteName, mockClassDefInit) { constructorDefault<MockClass>(); } \
-TEST(suiteName, stringDefInit) { constructorDefault<std::string>(); } \
+TEST(suiteName, intDefInit) { multiConstructorDefault<int>(); } \
+TEST(suiteName, doubleDefInit) { multiConstructorDefault<double>(); } \
+TEST(suiteName, mockClassDefInit) { multiConstructorDefault<MockClass>(); } \
+TEST(suiteName, stringDefInit) { multiConstructorDefault<std::string>(); } \
 
 TESTS_DEFAULT_CONSTRUCTOR_INIT(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
-void constructorInitList(const std::initializer_list<key_type>& items) {
+void multiConstructorInitList(const std::initializer_list<key_type>& items) {
   s21::multiset<key_type> s21_multiset(items);
   std::multiset<key_type> std_multiset(items);
 
-  checkFields(s21_multiset, std_multiset);
+  multiCheckFields(s21_multiset, std_multiset);
 }
 
 #define TESTS_CONSTRUCTOR_INIT_LIST(suiteName) \
-TEST(suiteName, intInitList) { constructorInitList<int>(DEF_INT_KEYS); } \
-TEST(suiteName, doubleInitList) { constructorInitList<double>(DEF_DBL_KEYS); } \
-TEST(suiteName, mockClassInitList) { constructorInitList<MockClass>(DEF_MOCK_KEYS); } \
-TEST(suiteName, stringInitList) { constructorInitList<std::string>(DEF_STR_KEYS); } \
+TEST(suiteName, intInitList) { multiConstructorInitList<int>(DEF_INT_KEYS); } \
+TEST(suiteName, doubleInitList) { multiConstructorInitList<double>(DEF_DBL_KEYS); } \
+TEST(suiteName, mockClassInitList) { multiConstructorInitList<MockClass>(DEF_MOCK_KEYS); } \
+TEST(suiteName, stringInitList) { multiConstructorInitList<std::string>(DEF_STR_KEYS); } \
 
 TESTS_CONSTRUCTOR_INIT_LIST(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
-void constructorCopyEmpty() {
+void multiConstructorCopyEmpty() {
   s21::multiset<key_type> s21_multiset;
   std::multiset<key_type> std_multiset;
 
   s21::multiset<key_type> s21_map_copy(s21_multiset);
   std::multiset<key_type> std_map_copy(std_multiset);
 
-  checkFields(s21_map_copy, std_map_copy);
+  multiCheckFields(s21_map_copy, std_map_copy);
 }
 
 #define TESTS_CONSTRUCTOR_COPY_EMPTY(suiteName) \
-TEST(suiteName, intCopyEmpty) { constructorCopyEmpty<int>(); } \
-TEST(suiteName, doubleCopyEmpty) { constructorCopyEmpty<double>(); } \
-TEST(suiteName, mockClassCopyEmpty) { constructorCopyEmpty<MockClass>(); } \
-TEST(suiteName, stringCopyEmpty) { constructorCopyEmpty<std::string>(); } \
+TEST(suiteName, intCopyEmpty) { multiConstructorCopyEmpty<int>(); } \
+TEST(suiteName, doubleCopyEmpty) { multiConstructorCopyEmpty<double>(); } \
+TEST(suiteName, mockClassCopyEmpty) { multiConstructorCopyEmpty<MockClass>(); } \
+TEST(suiteName, stringCopyEmpty) { multiConstructorCopyEmpty<std::string>(); } \
 
 TESTS_CONSTRUCTOR_COPY_EMPTY(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
-void constructorCopy(const std::initializer_list<key_type>& items) {
+void multiConstructorCopy(const std::initializer_list<key_type>& items) {
   s21::multiset<key_type> s21_multiset(items);
   std::multiset<key_type> std_multiset(items);
 
   s21::multiset<key_type> s21_map_copy(s21_multiset);
   std::multiset<key_type> std_map_copy(std_multiset);
 
-  checkFields(s21_map_copy, std_map_copy);
+  multiCheckFields(s21_map_copy, std_map_copy);
 }
 
 #define TESTS_CONSTRUCTOR_COPY(suiteName) \
-TEST(suiteName, intCopy) { constructorCopy<int>(DEF_INT_KEYS); } \
-TEST(suiteName, doubleCopy) { constructorCopy<double>(DEF_DBL_KEYS); } \
-TEST(suiteName, mockClassCopy) { constructorCopy<MockClass>(DEF_MOCK_KEYS); } \
-TEST(suiteName, stringCopy) { constructorCopy<std::string>(DEF_STR_KEYS); } \
+TEST(suiteName, intCopy) { multiConstructorCopy<int>(DEF_INT_KEYS); } \
+TEST(suiteName, doubleCopy) { multiConstructorCopy<double>(DEF_DBL_KEYS); } \
+TEST(suiteName, mockClassCopy) { multiConstructorCopy<MockClass>(DEF_MOCK_KEYS); } \
+TEST(suiteName, stringCopy) { multiConstructorCopy<std::string>(DEF_STR_KEYS); } \
 
 TESTS_CONSTRUCTOR_COPY(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
-void constructorMoveEmpty() {
+void multiConstructorMoveEmpty() {
   s21::multiset<key_type> s21_multiset;
   std::multiset<key_type> std_multiset;
 
   s21::multiset<key_type> s21_map_move(std::move(s21_multiset));
   std::multiset<key_type> std_map_move(std::move(std_multiset));
 
-  checkFields(s21_map_move, std_map_move);
+  multiCheckFields(s21_map_move, std_map_move);
 }
 
 #define TESTS_CONSTRUCTOR_MOVE_EMPTY(suiteName) \
-TEST(suiteName, intMoveEmpty) { constructorMoveEmpty<int>(); } \
-TEST(suiteName, doubleMoveEmpty) { constructorMoveEmpty<double>(); } \
-TEST(suiteName, mockClassMoveEmpty) { constructorMoveEmpty<MockClass>(); } \
-TEST(suiteName, stringMoveEmpty) { constructorMoveEmpty<std::string>(); } \
+TEST(suiteName, intMoveEmpty) { multiConstructorMoveEmpty<int>(); } \
+TEST(suiteName, doubleMoveEmpty) { multiConstructorMoveEmpty<double>(); } \
+TEST(suiteName, mockClassMoveEmpty) { multiConstructorMoveEmpty<MockClass>(); } \
+TEST(suiteName, stringMoveEmpty) { multiConstructorMoveEmpty<std::string>(); } \
 
 TESTS_CONSTRUCTOR_MOVE_EMPTY(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
-void constructorMove(const std::initializer_list<key_type>& items) {
+void multiConstructorMove(const std::initializer_list<key_type>& items) {
   s21::multiset<key_type> s21_multiset(items);
   std::multiset<key_type> std_multiset(items);
 
   s21::multiset<key_type> s21_map_move(std::move(s21_multiset));
   std::multiset<key_type> std_map_move(std::move(std_multiset));
 
-  checkFields(s21_map_move, std_map_move);
+  multiCheckFields(s21_map_move, std_map_move);
 }
 
 #define TESTS_CONSTRUCTOR_MOVE(suiteName) \
-TEST(suiteName, intMove) { constructorMove<int>(DEF_INT_KEYS); } \
-TEST(suiteName, doubleMove) { constructorMove<double>(DEF_DBL_KEYS); } \
-TEST(suiteName, mockClassMove) { constructorMove<MockClass>(DEF_MOCK_KEYS); } \
-TEST(suiteName, stringMove) { constructorMove<std::string>(DEF_STR_KEYS); } \
+TEST(suiteName, intMove) { multiConstructorMove<int>(DEF_INT_KEYS); } \
+TEST(suiteName, doubleMove) { multiConstructorMove<double>(DEF_DBL_KEYS); } \
+TEST(suiteName, mockClassMove) { multiConstructorMove<MockClass>(DEF_MOCK_KEYS); } \
+TEST(suiteName, stringMove) { multiConstructorMove<std::string>(DEF_STR_KEYS); } \
 
 TESTS_CONSTRUCTOR_MOVE(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
-void operatorCopyEmpty() {
+void multiOperatorCopyEmpty() {
   s21::multiset<key_type> s21_multiset;
   std::multiset<key_type> std_multiset;
 
   s21::multiset<key_type> s21_map_copy = s21_multiset;
   std::multiset<key_type> std_map_copy = std_multiset;
 
-  checkFields(s21_map_copy, std_map_copy);
+  multiCheckFields(s21_map_copy, std_map_copy);
 }
 
 #define TESTS_OPERATOR_COPY_EMPTY(suiteName) \
-TEST(suiteName, intOperatorCopyEmpty) { operatorCopyEmpty<int>(); } \
-TEST(suiteName, doubleOperatorCopyEmpty) { operatorCopyEmpty<double>(); } \
-TEST(suiteName, mockClassOperatorCopyEmpty) { operatorCopyEmpty<MockClass>(); } \
-TEST(suiteName, stringOperatorCopyEmpty) { operatorCopyEmpty<std::string>(); } \
+TEST(suiteName, intOperatorCopyEmpty) { multiOperatorCopyEmpty<int>(); } \
+TEST(suiteName, doubleOperatorCopyEmpty) { multiOperatorCopyEmpty<double>(); } \
+TEST(suiteName, mockClassOperatorCopyEmpty) { multiOperatorCopyEmpty<MockClass>(); } \
+TEST(suiteName, stringOperatorCopyEmpty) { multiOperatorCopyEmpty<std::string>(); } \
 
 TESTS_OPERATOR_COPY_EMPTY(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
-void operatorCopy(const std::initializer_list<key_type>& items) {
+void multiOperatorCopy(const std::initializer_list<key_type>& items) {
   s21::multiset<key_type> s21_multiset(items);
   std::multiset<key_type> std_multiset(items);
 
   s21::multiset<key_type> s21_map_copy = s21_multiset;
   std::multiset<key_type> std_map_copy = std_multiset;
 
-  checkFields(s21_map_copy, std_map_copy);
+  multiCheckFields(s21_map_copy, std_map_copy);
 }
 
 #define TESTS_OPERATOR_COPY(suiteName) \
-TEST(suiteName, intOperatorCopy) { operatorCopy<int>(DEF_INT_KEYS); } \
-TEST(suiteName, doubleOperatorCopy) { operatorCopy<double>(DEF_DBL_KEYS); } \
-TEST(suiteName, mockClassOperatorCopy) { operatorCopy<MockClass>(DEF_MOCK_KEYS); } \
-TEST(suiteName, stringOperatorCopy) { operatorCopy<std::string>(DEF_STR_KEYS); } \
+TEST(suiteName, intOperatorCopy) { multiOperatorCopy<int>(DEF_INT_KEYS); } \
+TEST(suiteName, doubleOperatorCopy) { multiOperatorCopy<double>(DEF_DBL_KEYS); } \
+TEST(suiteName, mockClassOperatorCopy) { multiOperatorCopy<MockClass>(DEF_MOCK_KEYS); } \
+TEST(suiteName, stringOperatorCopy) { multiOperatorCopy<std::string>(DEF_STR_KEYS); } \
 
 TESTS_OPERATOR_COPY(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
-void operatorMoveEmpty() {
+void multiOperatorMoveEmpty() {
   s21::multiset<key_type> s21_multiset;
   std::multiset<key_type> std_multiset;
 
   s21::multiset<key_type> s21_map_move = std::move(s21_multiset);
   std::multiset<key_type> std_map_move = std::move(std_multiset);
 
-  checkFields(s21_map_move, std_map_move);
+  multiCheckFields(s21_map_move, std_map_move);
 }
 
 #define TESTS_OPERATOR_MOVE_EMPTY(suiteName) \
-TEST(suiteName, intOperatorMoveEmpty) { operatorMoveEmpty<int>(); } \
-TEST(suiteName, doubleOperatorMoveEmpty) { operatorMoveEmpty<double>(); } \
-TEST(suiteName, mockClassOperatorMoveEmpty) { operatorMoveEmpty<MockClass>(); } \
-TEST(suiteName, stringOperatorMoveEmptye) { operatorMoveEmpty<std::string>(); } \
+TEST(suiteName, intOperatorMoveEmpty) { multiOperatorMoveEmpty<int>(); } \
+TEST(suiteName, doubleOperatorMoveEmpty) { multiOperatorMoveEmpty<double>(); } \
+TEST(suiteName, mockClassOperatorMoveEmpty) { multiOperatorMoveEmpty<MockClass>(); } \
+TEST(suiteName, stringOperatorMoveEmptye) { multiOperatorMoveEmpty<std::string>(); } \
 
 TESTS_OPERATOR_MOVE_EMPTY(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
-void operatorMove(const std::initializer_list<key_type>& items) {
+void multiOperatorMove(const std::initializer_list<key_type>& items) {
   s21::multiset<key_type> s21_multiset(items);
   std::multiset<key_type> std_multiset(items);
 
   s21::multiset<key_type> s21_map_move = std::move(s21_multiset);
   std::multiset<key_type> std_map_move = std::move(std_multiset);
 
-  checkFields(s21_map_move, std_map_move);
+  multiCheckFields(s21_map_move, std_map_move);
 }
 
 #define TESTS_OPERATOR_MOVE(suiteName) \
-TEST(suiteName, intOperatorMove) { operatorMove<int>(DEF_INT_KEYS); } \
-TEST(suiteName, doubleOperatorMove) { operatorMove<double>(DEF_DBL_KEYS); } \
-TEST(suiteName, mockClassOperatorMove) { operatorMove<MockClass>(DEF_MOCK_KEYS); } \
-TEST(suiteName, stringOperatorMove) { operatorMove<std::string>(DEF_STR_KEYS); } \
+TEST(suiteName, intOperatorMove) { multiOperatorMove<int>(DEF_INT_KEYS); } \
+TEST(suiteName, doubleOperatorMove) { multiOperatorMove<double>(DEF_DBL_KEYS); } \
+TEST(suiteName, mockClassOperatorMove) { multiOperatorMove<MockClass>(DEF_MOCK_KEYS); } \
+TEST(suiteName, stringOperatorMove) { multiOperatorMove<std::string>(DEF_STR_KEYS); } \
 
 TESTS_OPERATOR_MOVE(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
-void methodEmpty(const std::initializer_list<key_type>& items) {
+void multiMethodEmpty(const std::initializer_list<key_type>& items) {
   s21::multiset<key_type> s21_multiset(items);
   std::multiset<key_type> std_multiset(items);
 
@@ -294,17 +294,17 @@ void methodEmpty(const std::initializer_list<key_type>& items) {
 }
 
 #define TESTS_EMPTY(suiteName) \
-TEST(suiteName, intEmpty) { methodEmpty<int>(DEF_INT_KEYS); } \
-TEST(suiteName, doubleEmpty) { methodEmpty<double>(DEF_DBL_KEYS); } \
-TEST(suiteName, mockClassEmpty) { methodEmpty<MockClass>(DEF_MOCK_KEYS); } \
-TEST(suiteName, stringEmpty) { methodEmpty<std::string>(DEF_STR_KEYS); } \
+TEST(suiteName, intEmpty) { multiMethodEmpty<int>(DEF_INT_KEYS); } \
+TEST(suiteName, doubleEmpty) { multiMethodEmpty<double>(DEF_DBL_KEYS); } \
+TEST(suiteName, mockClassEmpty) { multiMethodEmpty<MockClass>(DEF_MOCK_KEYS); } \
+TEST(suiteName, stringEmpty) { multiMethodEmpty<std::string>(DEF_STR_KEYS); } \
 
 TESTS_EMPTY(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
-void methodSize(const std::initializer_list<key_type>& items) {
+void multiMethodSize(const std::initializer_list<key_type>& items) {
   s21::multiset<key_type> s21_multiset(items);
   std::multiset<key_type> std_multiset(items);
 
@@ -316,39 +316,39 @@ void methodSize(const std::initializer_list<key_type>& items) {
 }
 
 #define TESTS_SIZE(suiteName) \
-TEST(suiteName, intSize) { methodEmpty<int>(DEF_INT_KEYS); } \
-TEST(suiteName, doubleSize) { methodEmpty<double>(DEF_DBL_KEYS); } \
-TEST(suiteName, mockClassSize) { methodEmpty<MockClass>(DEF_MOCK_KEYS); } \
-TEST(suiteName, stringSize) { methodEmpty<std::string>(DEF_STR_KEYS); } \
+TEST(suiteName, intSize) { multiMethodSize<int>(DEF_INT_KEYS); } \
+TEST(suiteName, doubleSize) { multiMethodSize<double>(DEF_DBL_KEYS); } \
+TEST(suiteName, mockClassSize) { multiMethodSize<MockClass>(DEF_MOCK_KEYS); } \
+TEST(suiteName, stringSize) { multiMethodSize<std::string>(DEF_STR_KEYS); } \
 
 TESTS_SIZE(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
-void methodSwap(const std::initializer_list<key_type>& items) {
+void multiMethodSwap(const std::initializer_list<key_type>& items) {
   s21::multiset<key_type> s21_multiset(items);
   s21::multiset<key_type> s21_map_empty;
 
   std::multiset<key_type> std_multiset(items);
 
-  checkFields(s21_multiset, std_multiset);
+  multiCheckFields(s21_multiset, std_multiset);
   s21_map_empty.swap(s21_multiset);
-  checkFields(s21_map_empty, std_multiset);
+  multiCheckFields(s21_map_empty, std_multiset);
 }
 
 #define TESTS_SWAP(suiteName) \
-TEST(suiteName, intSwap) { methodSwap<int>(DEF_INT_KEYS); } \
-TEST(suiteName, doubleSwap) { methodSwap<double>(DEF_DBL_KEYS); } \
-TEST(suiteName, mockClassSwap) { methodSwap<MockClass>(DEF_MOCK_KEYS); } \
-TEST(suiteName, stringSwap) { methodSwap<std::string>(DEF_STR_KEYS); } \
+TEST(suiteName, intSwap) { multiMethodSwap<int>(DEF_INT_KEYS); } \
+TEST(suiteName, doubleSwap) { multiMethodSwap<double>(DEF_DBL_KEYS); } \
+TEST(suiteName, mockClassSwap) { multiMethodSwap<MockClass>(DEF_MOCK_KEYS); } \
+TEST(suiteName, stringSwap) { multiMethodSwap<std::string>(DEF_STR_KEYS); } \
 
 TESTS_SWAP(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
-void methodMergeWithDublicates(const std::initializer_list<key_type>& items
+void multiMethodMergeWithDublicates(const std::initializer_list<key_type>& items
     , const std::initializer_list<key_type>& itemsDublicates) {
   s21::multiset<key_type> s21_multiset(items);
   std::multiset<key_type> std_multiset(items);
@@ -356,27 +356,27 @@ void methodMergeWithDublicates(const std::initializer_list<key_type>& items
   s21::multiset<key_type> s21_map_dublicate(itemsDublicates);
   std::multiset<key_type> std_map_dublicate(itemsDublicates);
 
-  checkFields(s21_multiset, std_multiset);
-  checkFields(s21_map_dublicate, std_map_dublicate);
+  multiCheckFields(s21_multiset, std_multiset);
+  multiCheckFields(s21_map_dublicate, std_map_dublicate);
 
   s21_multiset.merge(s21_map_dublicate);
   std_multiset.merge(std_map_dublicate);
 
-  checkFields(s21_multiset, std_multiset);
+  multiCheckFields(s21_multiset, std_multiset);
 }
 
 #define TESTS_MERGE_WITH_DUBLICATES(suiteName) \
-TEST(suiteName, intMergeWithDublicates) { methodMergeWithDublicates<int>(DEF_INT_KEYS, DEF_INT_KEYS_DUBLICATE); } \
-TEST(suiteName, doubleMergeWithDublicates) { methodMergeWithDublicates<double>(DEF_DBL_KEYS, DEF_DBL_KEYS_DUBLICATE); } \
-TEST(suiteName, mockClassMergeWithDublicates) { methodMergeWithDublicates<MockClass>(DEF_MOCK_KEYS, DEF_MOCK_KEYS_DUBLICATE); } \
-TEST(suiteName, stringMergeWithDublicates) { methodMergeWithDublicates<std::string>(DEF_STR_KEYS, DEF_STR_KEYS_DUBLICATE); } \
+TEST(suiteName, intMergeWithDublicates) { multiMethodMergeWithDublicates<int>(DEF_INT_KEYS, DEF_INT_KEYS_DUBLICATE); } \
+TEST(suiteName, doubleMergeWithDublicates) { multiMethodMergeWithDublicates<double>(DEF_DBL_KEYS, DEF_DBL_KEYS_DUBLICATE); } \
+TEST(suiteName, mockClassMergeWithDublicates) { multiMethodMergeWithDublicates<MockClass>(DEF_MOCK_KEYS, DEF_MOCK_KEYS_DUBLICATE); } \
+TEST(suiteName, stringMergeWithDublicates) { multiMethodMergeWithDublicates<std::string>(DEF_STR_KEYS, DEF_STR_KEYS_DUBLICATE); } \
 
 TESTS_MERGE_WITH_DUBLICATES(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
-void methodMergeWithNoDublicates(const std::initializer_list<key_type>& items
+void multiMethodMergeWithNoDublicates(const std::initializer_list<key_type>& items
     , const std::initializer_list<key_type>& itemsNoDublicates) {
   s21::multiset<key_type> s21_multiset(items);
   std::multiset<key_type> std_multiset(items);
@@ -384,27 +384,27 @@ void methodMergeWithNoDublicates(const std::initializer_list<key_type>& items
   s21::multiset<key_type> s21_map_no_dublicate(itemsNoDublicates);
   std::multiset<key_type> std_map_no_dublicate(itemsNoDublicates);
 
-  checkFields(s21_multiset, std_multiset);
-  checkFields(s21_map_no_dublicate, std_map_no_dublicate);
+  multiCheckFields(s21_multiset, std_multiset);
+  multiCheckFields(s21_map_no_dublicate, std_map_no_dublicate);
 
   s21_multiset.merge(s21_map_no_dublicate);
   std_multiset.merge(std_map_no_dublicate);
 
-  checkFields(s21_multiset, std_multiset);
+  multiCheckFields(s21_multiset, std_multiset);
 }
 
 #define TESTS_MERGE_WITH_NO_DUBLICATES(suiteName) \
-TEST(suiteName, intMergeWithNoDublicates) { methodMergeWithNoDublicates<int>(DEF_INT_KEYS, DEF_INT_KEYS_NO_DUBLICATE); } \
-TEST(suiteName, doubleMergeWithNoDublicates) { methodMergeWithNoDublicates<double>(DEF_DBL_KEYS, DEF_DBL_KEYS_NO_DUBLICATE); } \
-TEST(suiteName, mockClassMergeWithNoDublicates) { methodMergeWithNoDublicates<MockClass>(DEF_MOCK_KEYS, DEF_MOCK_KEYS_NO_DUBLICATE); } \
-TEST(suiteName, stringMergeWithNoDublicates) { methodMergeWithNoDublicates<std::string>(DEF_STR_KEYS, DEF_STR_KEYS_NO_DUBLICATE); } \
+TEST(suiteName, intMergeWithNoDublicates) { multiMethodMergeWithNoDublicates<int>(DEF_INT_KEYS, DEF_INT_KEYS_NO_DUBLICATE); } \
+TEST(suiteName, doubleMergeWithNoDublicates) { multiMethodMergeWithNoDublicates<double>(DEF_DBL_KEYS, DEF_DBL_KEYS_NO_DUBLICATE); } \
+TEST(suiteName, mockClassMergeWithNoDublicates) { multiMethodMergeWithNoDublicates<MockClass>(DEF_MOCK_KEYS, DEF_MOCK_KEYS_NO_DUBLICATE); } \
+TEST(suiteName, stringMergeWithNoDublicates) { multiMethodMergeWithNoDublicates<std::string>(DEF_STR_KEYS, DEF_STR_KEYS_NO_DUBLICATE); } \
 
 TESTS_MERGE_WITH_NO_DUBLICATES(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
-void methodClear(const std::initializer_list<key_type>& items) {
+void multiMethodClear(const std::initializer_list<key_type>& items) {
   s21::multiset<key_type> s21_multiset(items);
   std::multiset<key_type> std_multiset(items);
 
@@ -417,22 +417,22 @@ void methodClear(const std::initializer_list<key_type>& items) {
   s21_map_empty.clear();
   std_map_empty.clear();
 
-  checkFields(s21_multiset, std_multiset);
-  checkFields(s21_map_empty, std_map_empty);
+  multiCheckFields(s21_multiset, std_multiset);
+  multiCheckFields(s21_map_empty, std_map_empty);
 }
 
 #define TESTS_CLEAR(suiteName) \
-TEST(suiteName, intClear) { methodClear<int>(DEF_INT_KEYS); } \
-TEST(suiteName, doubleClear) { methodClear<double>(DEF_DBL_KEYS); } \
-TEST(suiteName, mockClassClear) { methodClear<MockClass>(DEF_MOCK_KEYS); } \
-TEST(suiteName, stringClear) { methodClear<std::string>(DEF_STR_KEYS); } \
+TEST(suiteName, intClear) { multiMethodClear<int>(DEF_INT_KEYS); } \
+TEST(suiteName, doubleClear) { multiMethodClear<double>(DEF_DBL_KEYS); } \
+TEST(suiteName, mockClassClear) { multiMethodClear<MockClass>(DEF_MOCK_KEYS); } \
+TEST(suiteName, stringClear) { multiMethodClear<std::string>(DEF_STR_KEYS); } \
 
 TESTS_CLEAR(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
-void methodBegin(const std::initializer_list<key_type>& items) {
+void multiMethodBegin(const std::initializer_list<key_type>& items) {
   s21::multiset<key_type> s21_multiset(items);
   std::multiset<key_type> std_multiset(items);
 
@@ -454,17 +454,17 @@ void methodBegin(const std::initializer_list<key_type>& items) {
 }
 
 #define TESTS_BEGIN(suiteName) \
-TEST(suiteName, intBegin) { methodBegin<int>(DEF_INT_KEYS); } \
-TEST(suiteName, doubleBegin) { methodBegin<double>(DEF_DBL_KEYS); } \
-TEST(suiteName, mockClassBegin) { methodBegin<MockClass>(DEF_MOCK_KEYS); } \
-TEST(suiteName, stringBegin) { methodBegin<std::string>(DEF_STR_KEYS); } \
+TEST(suiteName, intBegin) { multiMethodBegin<int>(DEF_INT_KEYS); } \
+TEST(suiteName, doubleBegin) { multiMethodBegin<double>(DEF_DBL_KEYS); } \
+TEST(suiteName, mockClassBegin) { multiMethodBegin<MockClass>(DEF_MOCK_KEYS); } \
+TEST(suiteName, stringBegin) { multiMethodBegin<std::string>(DEF_STR_KEYS); } \
 
 TESTS_BEGIN(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
-void methodBeginConst(const std::initializer_list<key_type>& items) {
+void multiMethodBeginConst(const std::initializer_list<key_type>& items) {
   s21::multiset<key_type> s21_multiset(items);
   std::multiset<key_type> std_multiset(items);
 
@@ -486,17 +486,17 @@ void methodBeginConst(const std::initializer_list<key_type>& items) {
 }
 
 #define TESTS_BEGIN_CONST(suiteName) \
-TEST(suiteName, intBeginConst) { methodBeginConst<int>(DEF_INT_KEYS); } \
-TEST(suiteName, doubleBeginConst) { methodBeginConst<double>(DEF_DBL_KEYS); } \
-TEST(suiteName, mockClassBeginConst) { methodBeginConst<MockClass>(DEF_MOCK_KEYS); } \
-TEST(suiteName, stringBeginConst) { methodBeginConst<std::string>(DEF_STR_KEYS); } \
+TEST(suiteName, intBeginConst) { multiMethodBeginConst<int>(DEF_INT_KEYS); } \
+TEST(suiteName, doubleBeginConst) { multiMethodBeginConst<double>(DEF_DBL_KEYS); } \
+TEST(suiteName, mockClassBeginConst) { multiMethodBeginConst<MockClass>(DEF_MOCK_KEYS); } \
+TEST(suiteName, stringBeginConst) { multiMethodBeginConst<std::string>(DEF_STR_KEYS); } \
 
 TESTS_BEGIN_CONST(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
-void methodIteratorPlus(const std::initializer_list<key_type>& items) {
+void multiMethodIteratorPlus(const std::initializer_list<key_type>& items) {
   s21::multiset<key_type> s21_multiset(items);
   std::multiset<key_type> std_multiset(items);
 
@@ -515,17 +515,17 @@ void methodIteratorPlus(const std::initializer_list<key_type>& items) {
 }
 
 #define TESTS_ITERATOR_PLUS(suiteName) \
-TEST(suiteName, intIteratorPlus) { methodIteratorPlus<int>(DEF_INT_KEYS); } \
-TEST(suiteName, doubleIteratorPlus) { methodIteratorPlus<double>(DEF_DBL_KEYS); } \
-TEST(suiteName, mockClassIteratorPlus) { methodIteratorPlus<MockClass>(DEF_MOCK_KEYS); } \
-TEST(suiteName, stringIteratorPlus) { methodIteratorPlus<std::string>(DEF_STR_KEYS); } \
+TEST(suiteName, intIteratorPlus) { multiMethodIteratorPlus<int>(DEF_INT_KEYS); } \
+TEST(suiteName, doubleIteratorPlus) { multiMethodIteratorPlus<double>(DEF_DBL_KEYS); } \
+TEST(suiteName, mockClassIteratorPlus) { multiMethodIteratorPlus<MockClass>(DEF_MOCK_KEYS); } \
+TEST(suiteName, stringIteratorPlus) { multiMethodIteratorPlus<std::string>(DEF_STR_KEYS); } \
 
 TESTS_ITERATOR_PLUS(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
-void methodIteratorMinus(const std::initializer_list<key_type>& items) {
+void multiMethodIteratorMinus(const std::initializer_list<key_type>& items) {
   s21::multiset<key_type> s21_multiset(items);
   std::multiset<key_type> std_multiset(items);
 
@@ -544,17 +544,17 @@ void methodIteratorMinus(const std::initializer_list<key_type>& items) {
 }
 
 #define TESTS_ITERATOR_MINUS(suiteName) \
-TEST(suiteName, intIteratorMinus) { methodIteratorMinus<int>(DEF_INT_KEYS); } \
-TEST(suiteName, doubleIteratorMinus) { methodIteratorMinus<double>(DEF_DBL_KEYS); } \
-TEST(suiteName, mockClassIteratorMinus) { methodIteratorMinus<MockClass>(DEF_MOCK_KEYS); } \
-TEST(suiteName, stringIteratorMinus) { methodIteratorMinus<std::string>(DEF_STR_KEYS); } \
+TEST(suiteName, intIteratorMinus) { multiMethodIteratorMinus<int>(DEF_INT_KEYS); } \
+TEST(suiteName, doubleIteratorMinus) { multiMethodIteratorMinus<double>(DEF_DBL_KEYS); } \
+TEST(suiteName, mockClassIteratorMinus) { multiMethodIteratorMinus<MockClass>(DEF_MOCK_KEYS); } \
+TEST(suiteName, stringIteratorMinus) { multiMethodIteratorMinus<std::string>(DEF_STR_KEYS); } \
 
 TESTS_ITERATOR_MINUS(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
-void methodIteratorAssignment(const std::initializer_list<key_type>& items) {
+void multiMethodIteratorAssignment(const std::initializer_list<key_type>& items) {
   s21::multiset<key_type> s21_multiset(items);
   std::multiset<key_type> std_multiset(items);
 
@@ -569,17 +569,17 @@ void methodIteratorAssignment(const std::initializer_list<key_type>& items) {
 }
 
 #define TESTS_ITERATOR_ASSIGNMENT(suiteName) \
-TEST(suiteName, intIteratorAssignment) { methodIteratorAssignment<int>(DEF_INT_KEYS); } \
-TEST(suiteName, doubleIteratorAssignment) { methodIteratorAssignment<double>(DEF_DBL_KEYS); } \
-TEST(suiteName, mockClassIteratorAssignment) { methodIteratorAssignment<MockClass>(DEF_MOCK_KEYS); } \
-TEST(suiteName, stringIteratorAssignment) { methodIteratorAssignment<std::string>(DEF_STR_KEYS); } \
+TEST(suiteName, intIteratorAssignment) { multiMethodIteratorAssignment<int>(DEF_INT_KEYS); } \
+TEST(suiteName, doubleIteratorAssignment) { multiMethodIteratorAssignment<double>(DEF_DBL_KEYS); } \
+TEST(suiteName, mockClassIteratorAssignment) { multiMethodIteratorAssignment<MockClass>(DEF_MOCK_KEYS); } \
+TEST(suiteName, stringIteratorAssignment) { multiMethodIteratorAssignment<std::string>(DEF_STR_KEYS); } \
 
 TESTS_ITERATOR_ASSIGNMENT(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
-void methodIteratorEqual(const std::initializer_list<key_type>& items) {
+void multiMethodIteratorEqual(const std::initializer_list<key_type>& items) {
   s21::multiset<key_type> s21_multiset(items);
   std::multiset<key_type> std_multiset(items);
 
@@ -593,17 +593,17 @@ void methodIteratorEqual(const std::initializer_list<key_type>& items) {
 }
 
 #define TESTS_ITERATOR_EQUAL(suiteName) \
-TEST(suiteName, intIteratorEqual) { methodIteratorEqual<int>(DEF_INT_KEYS); } \
-TEST(suiteName, doubleIteratorEqual) { methodIteratorEqual<double>(DEF_DBL_KEYS); } \
-TEST(suiteName, mockClassIteratorEqual) { methodIteratorEqual<MockClass>(DEF_MOCK_KEYS); } \
-TEST(suiteName, stringIteratorEqual) { methodIteratorEqual<std::string>(DEF_STR_KEYS); } \
+TEST(suiteName, intIteratorEqual) { multiMethodIteratorEqual<int>(DEF_INT_KEYS); } \
+TEST(suiteName, doubleIteratorEqual) { multiMethodIteratorEqual<double>(DEF_DBL_KEYS); } \
+TEST(suiteName, mockClassIteratorEqual) { multiMethodIteratorEqual<MockClass>(DEF_MOCK_KEYS); } \
+TEST(suiteName, stringIteratorEqual) { multiMethodIteratorEqual<std::string>(DEF_STR_KEYS); } \
 
 TESTS_ITERATOR_EQUAL(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
-void methodIteratorNotEqual(const std::initializer_list<key_type>& items) {
+void multiMethodIteratorNotEqual(const std::initializer_list<key_type>& items) {
   s21::multiset<key_type> s21_multiset(items);
   std::multiset<key_type> std_multiset(items);
 
@@ -614,17 +614,17 @@ void methodIteratorNotEqual(const std::initializer_list<key_type>& items) {
 }
 
 #define TESTS_ITERATOR_NOT_EQUAL(suiteName) \
-TEST(suiteName, intIteratorNotEqual) { methodIteratorNotEqual<int>(DEF_INT_KEYS); } \
-TEST(suiteName, doubleIteratorNotEqual) { methodIteratorNotEqual<double>(DEF_DBL_KEYS); } \
-TEST(suiteName, mockClassIteratorNotEqual) { methodIteratorNotEqual<MockClass>(DEF_MOCK_KEYS); } \
-TEST(suiteName, stringIteratorNotEqual) { methodIteratorNotEqual<std::string>(DEF_STR_KEYS); } \
+TEST(suiteName, intIteratorNotEqual) { multiMethodIteratorNotEqual<int>(DEF_INT_KEYS); } \
+TEST(suiteName, doubleIteratorNotEqual) { multiMethodIteratorNotEqual<double>(DEF_DBL_KEYS); } \
+TEST(suiteName, mockClassIteratorNotEqual) { multiMethodIteratorNotEqual<MockClass>(DEF_MOCK_KEYS); } \
+TEST(suiteName, stringIteratorNotEqual) { multiMethodIteratorNotEqual<std::string>(DEF_STR_KEYS); } \
 
 TESTS_ITERATOR_NOT_EQUAL(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
-void methodIteratorPlusConst(const std::initializer_list<key_type>& items) {
+void multiMethodIteratorPlusConst(const std::initializer_list<key_type>& items) {
   s21::multiset<key_type> s21_multiset(items);
   std::multiset<key_type> std_multiset(items);
 
@@ -643,17 +643,17 @@ void methodIteratorPlusConst(const std::initializer_list<key_type>& items) {
 }
 
 #define TESTS_ITERATOR_PLUS_CONST(suiteName) \
-TEST(suiteName, intIteratorPlusConst) { methodIteratorPlusConst<int>(DEF_INT_KEYS); } \
-TEST(suiteName, doubleIteratorPlusConst) { methodIteratorPlusConst<double>(DEF_DBL_KEYS); } \
-TEST(suiteName, mockClassIteratorPlusConst) { methodIteratorPlusConst<MockClass>(DEF_MOCK_KEYS); } \
-TEST(suiteName, stringIteratorPlusConst) { methodIteratorPlusConst<std::string>(DEF_STR_KEYS); } \
+TEST(suiteName, intIteratorPlusConst) { multiMethodIteratorPlusConst<int>(DEF_INT_KEYS); } \
+TEST(suiteName, doubleIteratorPlusConst) { multiMethodIteratorPlusConst<double>(DEF_DBL_KEYS); } \
+TEST(suiteName, mockClassIteratorPlusConst) { multiMethodIteratorPlusConst<MockClass>(DEF_MOCK_KEYS); } \
+TEST(suiteName, stringIteratorPlusConst) { multiMethodIteratorPlusConst<std::string>(DEF_STR_KEYS); } \
 
 TESTS_ITERATOR_PLUS_CONST(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
-void methodIteratorMinusConst(const std::initializer_list<key_type>& items) {
+void multiMethodIteratorMinusConst(const std::initializer_list<key_type>& items) {
   s21::multiset<key_type> s21_multiset(items);
   std::multiset<key_type> std_multiset(items);
 
@@ -672,17 +672,17 @@ void methodIteratorMinusConst(const std::initializer_list<key_type>& items) {
 }
 
 #define TESTS_ITERATOR_MINUS_CONST(suiteName) \
-TEST(suiteName, intIteratorMinusConst) { methodIteratorMinusConst<int>(DEF_INT_KEYS); } \
-TEST(suiteName, doubleIteratorMinusConst) { methodIteratorMinusConst<double>(DEF_DBL_KEYS); } \
-TEST(suiteName, mockClassIteratorMinusConst) { methodIteratorMinusConst<MockClass>(DEF_MOCK_KEYS); } \
-TEST(suiteName, stringIteratorMinusConst) { methodIteratorMinusConst<std::string>(DEF_STR_KEYS); } \
+TEST(suiteName, intIteratorMinusConst) { multiMethodIteratorMinusConst<int>(DEF_INT_KEYS); } \
+TEST(suiteName, doubleIteratorMinusConst) { multiMethodIteratorMinusConst<double>(DEF_DBL_KEYS); } \
+TEST(suiteName, mockClassIteratorMinusConst) { multiMethodIteratorMinusConst<MockClass>(DEF_MOCK_KEYS); } \
+TEST(suiteName, stringIteratorMinusConst) { multiMethodIteratorMinusConst<std::string>(DEF_STR_KEYS); } \
 
 TESTS_ITERATOR_MINUS_CONST(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
-void methodIteratorAssignmentConst(const std::initializer_list<key_type>& items) {
+void multiMethodIteratorAssignmentConst(const std::initializer_list<key_type>& items) {
   s21::multiset<key_type> s21_multiset(items);
   std::multiset<key_type> std_multiset(items);
 
@@ -697,17 +697,17 @@ void methodIteratorAssignmentConst(const std::initializer_list<key_type>& items)
 }
 
 #define TESTS_ITERATOR_ASSIGNMENT_CONST(suiteName) \
-TEST(suiteName, intIteratorAssignmentConst) { methodIteratorAssignmentConst<int>(DEF_INT_KEYS); } \
-TEST(suiteName, doubleIteratorAssignmentConst) { methodIteratorAssignmentConst<double>(DEF_DBL_KEYS); } \
-TEST(suiteName, mockClassIteratorAssignmentConst) { methodIteratorAssignmentConst<MockClass>(DEF_MOCK_KEYS); } \
-TEST(suiteName, stringIteratorAssignmentConst) { methodIteratorAssignmentConst<std::string>(DEF_STR_KEYS); } \
+TEST(suiteName, intIteratorAssignmentConst) { multiMethodIteratorAssignmentConst<int>(DEF_INT_KEYS); } \
+TEST(suiteName, doubleIteratorAssignmentConst) { multiMethodIteratorAssignmentConst<double>(DEF_DBL_KEYS); } \
+TEST(suiteName, mockClassIteratorAssignmentConst) { multiMethodIteratorAssignmentConst<MockClass>(DEF_MOCK_KEYS); } \
+TEST(suiteName, stringIteratorAssignmentConst) { multiMethodIteratorAssignmentConst<std::string>(DEF_STR_KEYS); } \
 
 TESTS_ITERATOR_ASSIGNMENT_CONST(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
-void methodIteratorEqualConst(const std::initializer_list<key_type>& items) {
+void multiMethodIteratorEqualConst(const std::initializer_list<key_type>& items) {
   s21::multiset<key_type> s21_multiset(items);
   std::multiset<key_type> std_multiset(items);
 
@@ -721,17 +721,17 @@ void methodIteratorEqualConst(const std::initializer_list<key_type>& items) {
 }
 
 #define TESTS_ITERATOR_EQUAL_CONST(suiteName) \
-TEST(suiteName, intIteratorEqualConst) { methodIteratorEqualConst<int>(DEF_INT_KEYS); } \
-TEST(suiteName, doubleIteratorEqualConst) { methodIteratorEqualConst<double>(DEF_DBL_KEYS); } \
-TEST(suiteName, mockClassIteratorEqualConst) { methodIteratorEqualConst<MockClass>(DEF_MOCK_KEYS); } \
-TEST(suiteName, stringIteratorEqualConst) { methodIteratorEqualConst<std::string>(DEF_STR_KEYS); } \
+TEST(suiteName, intIteratorEqualConst) { multiMethodIteratorEqualConst<int>(DEF_INT_KEYS); } \
+TEST(suiteName, doubleIteratorEqualConst) { multiMethodIteratorEqualConst<double>(DEF_DBL_KEYS); } \
+TEST(suiteName, mockClassIteratorEqualConst) { multiMethodIteratorEqualConst<MockClass>(DEF_MOCK_KEYS); } \
+TEST(suiteName, stringIteratorEqualConst) { multiMethodIteratorEqualConst<std::string>(DEF_STR_KEYS); } \
 
 TESTS_ITERATOR_EQUAL_CONST(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
-void methodIteratorNotEqualConst(const std::initializer_list<key_type>& items) {
+void multiMethodIteratorNotEqualConst(const std::initializer_list<key_type>& items) {
   s21::multiset<key_type> s21_multiset(items);
   std::multiset<key_type> std_multiset(items);
 
@@ -742,17 +742,17 @@ void methodIteratorNotEqualConst(const std::initializer_list<key_type>& items) {
 }
 
 #define TESTS_ITERATOR_NOT_EQUAL_CONST(suiteName) \
-TEST(suiteName, intIteratorNotEqualConst) { methodIteratorNotEqualConst<int>(DEF_INT_KEYS); } \
-TEST(suiteName, doubleIteratorNotEqualConst) { methodIteratorNotEqualConst<double>(DEF_DBL_KEYS); } \
-TEST(suiteName, mockClassIteratorNotEqualConst) { methodIteratorNotEqualConst<MockClass>(DEF_MOCK_KEYS); } \
-TEST(suiteName, stringIteratorNotEqualConst) { methodIteratorNotEqualConst<std::string>(DEF_STR_KEYS); } \
+TEST(suiteName, intIteratorNotEqualConst) { multiMethodIteratorNotEqualConst<int>(DEF_INT_KEYS); } \
+TEST(suiteName, doubleIteratorNotEqualConst) { multiMethodIteratorNotEqualConst<double>(DEF_DBL_KEYS); } \
+TEST(suiteName, mockClassIteratorNotEqualConst) { multiMethodIteratorNotEqualConst<MockClass>(DEF_MOCK_KEYS); } \
+TEST(suiteName, stringIteratorNotEqualConst) { multiMethodIteratorNotEqualConst<std::string>(DEF_STR_KEYS); } \
 
 TESTS_ITERATOR_NOT_EQUAL_CONST(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
-void methodInsertNoDuplicate(const std::initializer_list<key_type>& items
+void multiMethodInsertNoDuplicate(const std::initializer_list<key_type>& items
     , const key_type& key) {
   s21::multiset<key_type> s21_multiset(items);
   std::multiset<key_type> std_multiset(items);
@@ -760,23 +760,23 @@ void methodInsertNoDuplicate(const std::initializer_list<key_type>& items
   typename s21::multiset<key_type>::iterator it1 = s21_multiset.insert(key);
   typename std::multiset<key_type>::iterator it2 = std_multiset.insert(key);
 
-  checkFields(s21_multiset, std_multiset);
+  multiCheckFields(s21_multiset, std_multiset);
 
   EXPECT_EQ(*it1, *it2);
 }
 
 #define TESTS_INSERT_NO_DUPLICATE(suiteName) \
-TEST(suiteName, intInsertNoDuplicate) { methodInsertNoDuplicate<int>(DEF_INT_KEYS, INT_KEY); } \
-TEST(suiteName, doubleInsertNoDuplicate) { methodInsertNoDuplicate<double>(DEF_DBL_KEYS, DBL_KEY); } \
-TEST(suiteName, mockClassInsertNoDuplicate) { methodInsertNoDuplicate<MockClass>(DEF_MOCK_KEYS, MOCK_KEY); } \
-TEST(suiteName, stringInsertNoDuplicate) { methodInsertNoDuplicate<std::string>(DEF_STR_KEYS, STR_KEY); } \
+TEST(suiteName, intInsertNoDuplicate) { multiMethodInsertNoDuplicate<int>(DEF_INT_KEYS, INT_KEY); } \
+TEST(suiteName, doubleInsertNoDuplicate) { multiMethodInsertNoDuplicate<double>(DEF_DBL_KEYS, DBL_KEY); } \
+TEST(suiteName, mockClassInsertNoDuplicate) { multiMethodInsertNoDuplicate<MockClass>(DEF_MOCK_KEYS, MOCK_KEY); } \
+TEST(suiteName, stringInsertNoDuplicate) { multiMethodInsertNoDuplicate<std::string>(DEF_STR_KEYS, STR_KEY); } \
 
 TESTS_INSERT_NO_DUPLICATE(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
-void methodInsertDuplicate(const std::initializer_list<key_type>& items
+void multiMethodInsertDuplicate(const std::initializer_list<key_type>& items
     , const key_type& key) {
   s21::multiset<key_type> s21_multiset(items);
   std::multiset<key_type> std_multiset(items);
@@ -784,49 +784,49 @@ void methodInsertDuplicate(const std::initializer_list<key_type>& items
   typename s21::multiset<key_type>::iterator it1 = s21_multiset.insert(key);
   typename std::multiset<key_type>::iterator it2 = std_multiset.insert(key);
 
-  checkFields(s21_multiset, std_multiset);
+  multiCheckFields(s21_multiset, std_multiset);
 
   EXPECT_EQ(*it1, *it2);
 }
 
 #define TESTS_INSERT_DUPLICATE(suiteName) \
-TEST(suiteName, intInsertDuplicate) { methodInsertDuplicate<int>(DEF_INT_KEYS, INT_KEY_DUPLICATE); } \
-TEST(suiteName, doubleInsertDuplicate) { methodInsertDuplicate<double>(DEF_DBL_KEYS, DBL_KEY_DUPLICATE); } \
-TEST(suiteName, mockClassInsertDuplicate) { methodInsertDuplicate<MockClass>(DEF_MOCK_KEYS, MOCK_KEY_DUPLICATE); } \
-TEST(suiteName, stringInsertDuplicate) { methodInsertDuplicate<std::string>(DEF_STR_KEYS, STR_KEY_DUPLICATE); } \
+TEST(suiteName, intInsertDuplicate) { multiMethodInsertDuplicate<int>(DEF_INT_KEYS, INT_KEY_DUPLICATE); } \
+TEST(suiteName, doubleInsertDuplicate) { multiMethodInsertDuplicate<double>(DEF_DBL_KEYS, DBL_KEY_DUPLICATE); } \
+TEST(suiteName, mockClassInsertDuplicate) { multiMethodInsertDuplicate<MockClass>(DEF_MOCK_KEYS, MOCK_KEY_DUPLICATE); } \
+TEST(suiteName, stringInsertDuplicate) { multiMethodInsertDuplicate<std::string>(DEF_STR_KEYS, STR_KEY_DUPLICATE); } \
 
 TESTS_INSERT_DUPLICATE(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
-void methodErase(const std::initializer_list<key_type>& items) {
+void multiMethodErase(const std::initializer_list<key_type>& items) {
   s21::multiset<key_type> s21_multiset(items);
   std::multiset<key_type> std_multiset(items);
 
   s21_multiset.erase(s21_multiset.begin());
   std_multiset.erase(std_multiset.begin());
 
-  checkFields(s21_multiset, std_multiset);
+  multiCheckFields(s21_multiset, std_multiset);
 
   s21_multiset.erase(s21_multiset.begin());
   std_multiset.erase(std_multiset.begin());
 
-  checkFields(s21_multiset, std_multiset);
+  multiCheckFields(s21_multiset, std_multiset);
 }
 
 #define TESTS_ERASE(suiteName) \
-TEST(suiteName, intMethodErase) { methodErase<int>(DEF_INT_KEYS); } \
-TEST(suiteName, doubleMethodErase) { methodErase<double>(DEF_DBL_KEYS); } \
-TEST(suiteName, mockClassMethodErase) { methodErase<MockClass>(DEF_MOCK_KEYS); } \
-TEST(suiteName, stringMethodErase) { methodErase<std::string>(DEF_STR_KEYS); } \
+TEST(suiteName, intMethodErase) { multiMethodErase<int>(DEF_INT_KEYS); } \
+TEST(suiteName, doubleMethodErase) { multiMethodErase<double>(DEF_DBL_KEYS); } \
+TEST(suiteName, mockClassMethodErase) { multiMethodErase<MockClass>(DEF_MOCK_KEYS); } \
+TEST(suiteName, stringMethodErase) { multiMethodErase<std::string>(DEF_STR_KEYS); } \
 
 TESTS_ERASE(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
-void methodContains(const std::initializer_list<key_type>& items
+void multiMethodContains(const std::initializer_list<key_type>& items
     , const key_type& key, const key_type& key_duplicate) {
   s21::multiset<key_type> s21_multiset(items);
 
@@ -835,17 +835,17 @@ void methodContains(const std::initializer_list<key_type>& items
 }
 
 #define TESTS_CONTAINS(suiteName) \
-TEST(suiteName, intMethodContains) { methodContains<int>(DEF_INT_KEYS, INT_KEY, INT_KEY_DUPLICATE); } \
-TEST(suiteName, doubleMethodContains) { methodContains<double>(DEF_DBL_KEYS, DBL_KEY, DBL_KEY_DUPLICATE); } \
-TEST(suiteName, mockClassMethodContains) { methodContains<MockClass>(DEF_MOCK_KEYS, MOCK_KEY, MOCK_KEY_DUPLICATE); } \
-TEST(suiteName, stringMethodContains) { methodContains<std::string>(DEF_STR_KEYS, STR_KEY, STR_KEY_DUPLICATE); } \
+TEST(suiteName, intMethodContains) { multiMethodContains<int>(DEF_INT_KEYS, INT_KEY, INT_KEY_DUPLICATE); } \
+TEST(suiteName, doubleMethodContains) { multiMethodContains<double>(DEF_DBL_KEYS, DBL_KEY, DBL_KEY_DUPLICATE); } \
+TEST(suiteName, mockClassMethodContains) { multiMethodContains<MockClass>(DEF_MOCK_KEYS, MOCK_KEY, MOCK_KEY_DUPLICATE); } \
+TEST(suiteName, stringMethodContains) { multiMethodContains<std::string>(DEF_STR_KEYS, STR_KEY, STR_KEY_DUPLICATE); } \
 
 TESTS_CONTAINS(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
-void methodInsertMany(const std::initializer_list<key_type>& items
+void multiMethodInsertMany(const std::initializer_list<key_type>& items
     , const std::initializer_list<key_type>& insert_items) {
   s21::multiset<key_type> s21_multiset(items);
   std::multiset<key_type> std_multiset(items);
@@ -855,21 +855,21 @@ void methodInsertMany(const std::initializer_list<key_type>& items
   std_multiset.insert(*(insert_items.begin() + 1));
   std_multiset.insert(*(insert_items.begin() + 2));
 
-  checkFields(s21_multiset, std_multiset);
+  multiCheckFields(s21_multiset, std_multiset);
 }
 
 #define TESTS_INSERT_MANY(suiteName) \
-TEST(suiteName, intMethodInsertMany) { methodInsertMany<int>(DEF_INT_KEYS, DEF_INT_KEYS_NO_DUBLICATE); } \
-TEST(suiteName, doubleMethodInsertMany) { methodInsertMany<double>(DEF_DBL_KEYS, DEF_DBL_KEYS_NO_DUBLICATE); } \
-TEST(suiteName, mockClassMethodInsertMany) { methodInsertMany<MockClass>(DEF_MOCK_KEYS, DEF_MOCK_KEYS_NO_DUBLICATE); } \
-TEST(suiteName, stringMethodInsertMany) { methodInsertMany<std::string>(DEF_STR_KEYS, DEF_STR_KEYS_NO_DUBLICATE); } \
+TEST(suiteName, intMethodInsertMany) { multiMethodInsertMany<int>(DEF_INT_KEYS, DEF_INT_KEYS_NO_DUBLICATE); } \
+TEST(suiteName, doubleMethodInsertMany) { multiMethodInsertMany<double>(DEF_DBL_KEYS, DEF_DBL_KEYS_NO_DUBLICATE); } \
+TEST(suiteName, mockClassMethodInsertMany) { multiMethodInsertMany<MockClass>(DEF_MOCK_KEYS, DEF_MOCK_KEYS_NO_DUBLICATE); } \
+TEST(suiteName, stringMethodInsertMany) { multiMethodInsertMany<std::string>(DEF_STR_KEYS, DEF_STR_KEYS_NO_DUBLICATE); } \
 
 TESTS_INSERT_MANY(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
-void methodFind(const std::initializer_list<key_type>& items
+void multiMethodFind(const std::initializer_list<key_type>& items
     , const key_type& key, const key_type& key_duplicate) {
   s21::multiset<key_type> s21_multiset(items);
   std::multiset<key_type> std_multiset(items);
@@ -880,17 +880,17 @@ void methodFind(const std::initializer_list<key_type>& items
 }
 
 #define TESTS_FIND(suiteName) \
-TEST(suiteName, intMethodFind) { methodFind<int>(DEF_INT_KEYS, INT_KEY, INT_KEY_DUPLICATE); } \
-TEST(suiteName, doubleMethodFind) { methodFind<double>(DEF_DBL_KEYS, DBL_KEY, DBL_KEY_DUPLICATE); } \
-TEST(suiteName, mockClassMethodFind) { methodFind<MockClass>(DEF_MOCK_KEYS, MOCK_KEY, MOCK_KEY_DUPLICATE); } \
-TEST(suiteName, stringMethodFind) { methodFind<std::string>(DEF_STR_KEYS, STR_KEY, STR_KEY_DUPLICATE); } \
+TEST(suiteName, intMethodFind) { multiMethodFind<int>(DEF_INT_KEYS, INT_KEY, INT_KEY_DUPLICATE); } \
+TEST(suiteName, doubleMethodFind) { multiMethodFind<double>(DEF_DBL_KEYS, DBL_KEY, DBL_KEY_DUPLICATE); } \
+TEST(suiteName, mockClassMethodFind) { multiMethodFind<MockClass>(DEF_MOCK_KEYS, MOCK_KEY, MOCK_KEY_DUPLICATE); } \
+TEST(suiteName, stringMethodFind) { multiMethodFind<std::string>(DEF_STR_KEYS, STR_KEY, STR_KEY_DUPLICATE); } \
 
 TESTS_FIND(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
-void methodCount(const std::initializer_list<key_type>& items
+void multiMethodCount(const std::initializer_list<key_type>& items
     , const key_type& key, const key_type& key_duplicate) {
   s21::multiset<key_type> s21_multiset(items);
   std::multiset<key_type> std_multiset(items);
@@ -901,17 +901,17 @@ void methodCount(const std::initializer_list<key_type>& items
 }
 
 #define TESTS_COUNT(suiteName) \
-TEST(suiteName, intMethodCount) { methodCount<int>(DEF_INT_KEYS, INT_KEY, INT_KEY_DUPLICATE); } \
-TEST(suiteName, doubleMethodCount) { methodCount<double>(DEF_DBL_KEYS, DBL_KEY, DBL_KEY_DUPLICATE); } \
-TEST(suiteName, mockClassMethodCount) { methodCount<MockClass>(DEF_MOCK_KEYS, MOCK_KEY, MOCK_KEY_DUPLICATE); } \
-TEST(suiteName, stringMethodCount) { methodCount<std::string>(DEF_STR_KEYS, STR_KEY, STR_KEY_DUPLICATE); } \
+TEST(suiteName, intMethodCount) { multiMethodCount<int>(DEF_INT_KEYS, INT_KEY, INT_KEY_DUPLICATE); } \
+TEST(suiteName, doubleMethodCount) { multiMethodCount<double>(DEF_DBL_KEYS, DBL_KEY, DBL_KEY_DUPLICATE); } \
+TEST(suiteName, mockClassMethodCount) { multiMethodCount<MockClass>(DEF_MOCK_KEYS, MOCK_KEY, MOCK_KEY_DUPLICATE); } \
+TEST(suiteName, stringMethodCount) { multiMethodCount<std::string>(DEF_STR_KEYS, STR_KEY, STR_KEY_DUPLICATE); } \
 
 TESTS_COUNT(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
-void methodLowerBound(const std::initializer_list<key_type>& items
+void multiMethodLowerBound(const std::initializer_list<key_type>& items
     , const key_type& key, const key_type& key_duplicate) {
   s21::multiset<key_type> s21_multiset(items);
   std::multiset<key_type> std_multiset(items);
@@ -922,17 +922,17 @@ void methodLowerBound(const std::initializer_list<key_type>& items
 }
 
 #define TESTS_LOWER_BOUND(suiteName) \
-TEST(suiteName, intMethodLowerBound) { methodLowerBound<int>(DEF_INT_KEYS, INT_KEY, INT_KEY_DUPLICATE); } \
-TEST(suiteName, doubleMethodLowerBound) { methodLowerBound<double>(DEF_DBL_KEYS, DBL_KEY, DBL_KEY_DUPLICATE); } \
-TEST(suiteName, mockClassMethodLowerBound) { methodLowerBound<MockClass>(DEF_MOCK_KEYS, MOCK_KEY, MOCK_KEY_DUPLICATE); } \
-TEST(suiteName, stringMethodLowerBound) { methodLowerBound<std::string>(DEF_STR_KEYS, STR_KEY, STR_KEY_DUPLICATE); } \
+TEST(suiteName, intMethodLowerBound) { multiMethodLowerBound<int>(DEF_INT_KEYS, INT_KEY, INT_KEY_DUPLICATE); } \
+TEST(suiteName, doubleMethodLowerBound) { multiMethodLowerBound<double>(DEF_DBL_KEYS, DBL_KEY, DBL_KEY_DUPLICATE); } \
+TEST(suiteName, mockClassMethodLowerBound) { multiMethodLowerBound<MockClass>(DEF_MOCK_KEYS, MOCK_KEY, MOCK_KEY_DUPLICATE); } \
+TEST(suiteName, stringMethodLowerBound) { multiMethodLowerBound<std::string>(DEF_STR_KEYS, STR_KEY, STR_KEY_DUPLICATE); } \
 
 TESTS_LOWER_BOUND(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
-void methodUpperBound(const std::initializer_list<key_type>& items
+void multiMethodUpperBound(const std::initializer_list<key_type>& items
     , const key_type& key, const key_type& key_duplicate) {
   s21::multiset<key_type> s21_multiset(items);
   std::multiset<key_type> std_multiset(items);
@@ -943,17 +943,17 @@ void methodUpperBound(const std::initializer_list<key_type>& items
 }
 
 #define TESTS_UPPER_BOUND(suiteName) \
-TEST(suiteName, intMethodUpperBound) { methodUpperBound<int>(DEF_INT_KEYS, INT_KEY, INT_KEY_DUPLICATE); } \
-TEST(suiteName, doubleMethodUpperBound) { methodUpperBound<double>(DEF_DBL_KEYS, DBL_KEY, DBL_KEY_DUPLICATE); } \
-TEST(suiteName, mockClassMethodUpperBound) { methodUpperBound<MockClass>(DEF_MOCK_KEYS, MOCK_KEY, MOCK_KEY_DUPLICATE); } \
-TEST(suiteName, stringMethodUpperBound) { methodUpperBound<std::string>(DEF_STR_KEYS, STR_KEY, STR_KEY_DUPLICATE); } \
+TEST(suiteName, intMethodUpperBound) { multiMethodUpperBound<int>(DEF_INT_KEYS, INT_KEY, INT_KEY_DUPLICATE); } \
+TEST(suiteName, doubleMethodUpperBound) { multiMethodUpperBound<double>(DEF_DBL_KEYS, DBL_KEY, DBL_KEY_DUPLICATE); } \
+TEST(suiteName, mockClassMethodUpperBound) { multiMethodUpperBound<MockClass>(DEF_MOCK_KEYS, MOCK_KEY, MOCK_KEY_DUPLICATE); } \
+TEST(suiteName, stringMethodUpperBound) { multiMethodUpperBound<std::string>(DEF_STR_KEYS, STR_KEY, STR_KEY_DUPLICATE); } \
 
 TESTS_UPPER_BOUND(s21Multiset)
 
 // -------------------------------------------------
 
 template<typename key_type>
-void methodEqualRange(const std::initializer_list<key_type>& items
+void multiMethodEqualRange(const std::initializer_list<key_type>& items
     , const key_type& key, const key_type& key_duplicate) {
   s21::multiset<key_type> s21_multiset(items);
 
@@ -965,10 +965,10 @@ void methodEqualRange(const std::initializer_list<key_type>& items
 }
 
 #define TESTS_EQUAL_RANGE(suiteName) \
-TEST(suiteName, intMethodEqualRange) { methodEqualRange<int>(DEF_INT_KEYS, INT_KEY, INT_KEY_DUPLICATE); } \
-TEST(suiteName, doubleMethodEqualRange) { methodEqualRange<double>(DEF_DBL_KEYS, DBL_KEY, DBL_KEY_DUPLICATE); } \
-TEST(suiteName, mockClassMethodEqualRange) { methodEqualRange<MockClass>(DEF_MOCK_KEYS, MOCK_KEY, MOCK_KEY_DUPLICATE); } \
-TEST(suiteName, stringMethodEqualRange) { methodEqualRange<std::string>(DEF_STR_KEYS, STR_KEY, STR_KEY_DUPLICATE); } \
+TEST(suiteName, intMethodEqualRange) { multiMethodEqualRange<int>(DEF_INT_KEYS, INT_KEY, INT_KEY_DUPLICATE); } \
+TEST(suiteName, doubleMethodEqualRange) { multiMethodEqualRange<double>(DEF_DBL_KEYS, DBL_KEY, DBL_KEY_DUPLICATE); } \
+TEST(suiteName, mockClassMethodEqualRange) { multiMethodEqualRange<MockClass>(DEF_MOCK_KEYS, MOCK_KEY, MOCK_KEY_DUPLICATE); } \
+TEST(suiteName, stringMethodEqualRange) { multiMethodEqualRange<std::string>(DEF_STR_KEYS, STR_KEY, STR_KEY_DUPLICATE); } \
 
 TESTS_EQUAL_RANGE(s21Multiset)
 
@@ -977,7 +977,7 @@ TESTS_EQUAL_RANGE(s21Multiset)
 #define TEST_ROUNDS 3000
 
 template<typename key_type>
-void bigLineTree(int rounds) {
+void multiBigLineTree(int rounds) {
   s21::multiset<key_type> actual;
   std::multiset<key_type> expected;
 
@@ -988,35 +988,35 @@ void bigLineTree(int rounds) {
     expected.insert(i);
   }
 
-  checkFields(actual, expected);
+  multiCheckFields(actual, expected);
 }
 
 #define TESTS_BIG_LINE_TREE(suiteName) \
-TEST(suiteName, intBigLineTree) { bigLineTree<int>(TEST_ROUNDS); } \
+TEST(suiteName, intBigLineTree) { multiBigLineTree<int>(TEST_ROUNDS); } \
 
 TESTS_BIG_LINE_TREE(s21Multiset)
 
 // -------------------------------------------------
 
-double GetRandMultiset(double min, double max) {
+double multiGetRandMultiset(double min, double max) {
   double val = (double)rand() / RAND_MAX;
   return min + val * (max - min);
 }
 
 template<typename key_type>
-void bigRandomTree(int rMin, int rMax, int rounds) {
+void multiBigRandomTree(int rMin, int rMax, int rounds) {
   s21::multiset<key_type> actual;
   std::multiset<key_type> expected;
 
   srand(static_cast<int>((std::size_t)&actual));
 
   for (int i = 0; i < rounds; i++) {
-    auto val = GetRandMultiset(rMin, rMax);
+    auto val = multiGetRandMultiset(rMin, rMax);
     actual.insert(val);
     expected.insert(val);
   }
 
-  checkFields(actual, expected);
+  multiCheckFields(actual, expected);
 }
 
 #define TEST_RAND_MIN -10000
@@ -1024,7 +1024,7 @@ void bigRandomTree(int rMin, int rMax, int rounds) {
 #define TEST_RAND_ROUNDS 1000
 
 #define TESTS_BIG_RANDOM_TREE(suiteName) \
-TEST(suiteName, intBigRandomTree) { bigRandomTree<int>(TEST_RAND_MIN, TEST_RAND_MAX, TEST_RAND_ROUNDS); } \
-TEST(suiteName, doubleBigRandomTree) { bigRandomTree<double>(TEST_RAND_MIN, TEST_RAND_MAX, TEST_RAND_ROUNDS); } \
+TEST(suiteName, intBigRandomTree) { multiBigRandomTree<int>(TEST_RAND_MIN, TEST_RAND_MAX, TEST_RAND_ROUNDS); } \
+TEST(suiteName, doubleBigRandomTree) { multiBigRandomTree<double>(TEST_RAND_MIN, TEST_RAND_MAX, TEST_RAND_ROUNDS); } \
 
 TESTS_BIG_RANDOM_TREE(s21Multiset)
