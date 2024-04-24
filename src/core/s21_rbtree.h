@@ -5,7 +5,7 @@
 #include <iostream>
 
 namespace s21 {
-template <typename KeyT, typename ValT>
+template <typename KeyT, typename ValT, bool multi_type>
 class RBTree {
  private:
   enum class NodeColor { BLACK, RED };
@@ -76,54 +76,54 @@ class RBTree {
   void deleteTree(Node* node);
 };
 
-template <typename KeyT, typename ValT>
-std::pair<typename RBTree<KeyT, ValT>::Node*, bool> RBTree<KeyT, ValT>::insert(
+template <typename KeyT, typename ValT, bool multi_type>
+std::pair<typename RBTree<KeyT, ValT, multi_type>::Node*, bool> RBTree<KeyT, ValT, multi_type>::insert(
     const KeyT& key, const ValT& obj) {
   return insertNode(key, obj);
 }
 
-template <typename KeyT, typename ValT>
-std::pair<typename RBTree<KeyT, ValT>::Node*, bool> RBTree<KeyT, ValT>::insert(
+template <typename KeyT, typename ValT, bool multi_type>
+std::pair<typename RBTree<KeyT, ValT, multi_type>::Node*, bool> RBTree<KeyT, ValT, multi_type>::insert(
     const KeyT& key) {
   ValT defaultValue = ValT();
   return insertNode(key, defaultValue);
 }
 
-template <typename KeyT, typename ValT>
-std::pair<typename RBTree<KeyT, ValT>::Node*, bool> RBTree<KeyT, ValT>::insert(
+template <typename KeyT, typename ValT, bool multi_type>
+std::pair<typename RBTree<KeyT, ValT, multi_type>::Node*, bool> RBTree<KeyT, ValT, multi_type>::insert(
     const std::pair<const KeyT, ValT>& pair) {
   return insertNode(pair.first, pair.second);
 }
 
-template <typename KeyT, typename ValT>
-typename RBTree<KeyT, ValT>::Node* RBTree<KeyT, ValT>::getChildOrMock(
-    typename RBTree<KeyT, ValT>::Node* node) {
+template <typename KeyT, typename ValT, bool multi_type>
+typename RBTree<KeyT, ValT, multi_type>::Node* RBTree<KeyT, ValT, multi_type>::getChildOrMock(
+    typename RBTree<KeyT, ValT, multi_type>::Node* node) {
   return isNil(node->left_) ? node->right_ : node->left_;
 }
 
-template <typename KeyT, typename ValT>
-void RBTree<KeyT, ValT>::makeNullRoot() {
+template <typename KeyT, typename ValT, bool multi_type>
+void RBTree<KeyT, ValT, multi_type>::makeNullRoot() {
   root_ = nullptr;
   nil_ = nullptr;
 }
 
-template <typename KeyT, typename ValT>
-void RBTree<KeyT, ValT>::swapOtherRoot(RBTree<KeyT, ValT>& other) {
+template <typename KeyT, typename ValT, bool multi_type>
+void RBTree<KeyT, ValT, multi_type>::swapOtherRoot(RBTree<KeyT, ValT, multi_type>& other) {
   std::swap(root_, other.root_);
   std::swap(nil_, other.nil_);
 }
 
-template <typename KeyT, typename ValT>
-RBTree<KeyT, ValT>::~RBTree() {
+template <typename KeyT, typename ValT, bool multi_type>
+RBTree<KeyT, ValT, multi_type>::~RBTree() {
   deleteTree(root_);
   delete nil_;
 }
 
-template <typename KeyT, typename ValT>
-std::pair<typename RBTree<KeyT, ValT>::Node*, bool>
-RBTree<KeyT, ValT>::insertNode(const KeyT& key, const ValT& value) {
+template <typename KeyT, typename ValT, bool multi_type>
+std::pair<typename RBTree<KeyT, ValT, multi_type>::Node*, bool>
+RBTree<KeyT, ValT, multi_type>::insertNode(const KeyT& key, const ValT& value) {
   Node* checkNode = search(key);
-  if (checkNode != nullptr) return std::make_pair(checkNode, false);
+  if (checkNode != nullptr && (!multi_type)) return std::make_pair(checkNode, false);
 
   Node* currentNode = root_;
   Node* parent = nil_;
@@ -144,8 +144,8 @@ RBTree<KeyT, ValT>::insertNode(const KeyT& key, const ValT& value) {
   return std::make_pair(newNode, true);
 }
 
-template <typename KeyT, typename ValT>
-void RBTree<KeyT, ValT>::balanceInsert(Node* newNode) {
+template <typename KeyT, typename ValT, bool multi_type>
+void RBTree<KeyT, ValT, multi_type>::balanceInsert(Node* newNode) {
   Node* uncle;
   while (newNode->parent_->color_ == NodeColor::RED) {
     if (newNode->parent_ == newNode->parent_->parent_->left_) {
@@ -195,18 +195,24 @@ void RBTree<KeyT, ValT>::balanceInsert(Node* newNode) {
   root_->color_ = NodeColor::BLACK;
 }
 
-template <typename KeyT, typename ValT>
-typename RBTree<KeyT, ValT>::Node* RBTree<KeyT, ValT>::search(
+template <typename KeyT, typename ValT, bool multi_type>
+typename RBTree<KeyT, ValT, multi_type>::Node* RBTree<KeyT, ValT, multi_type>::search(
     Node* node, const KeyT& key) const {
   if (isNil(node)) return nullptr;
 
-  if (node->val_.first == key) return node;
+  if (node->val_.first == key) {
+    if (!multi_type)
+      return node;
+    else return (node->left_->val_.first == key) ? search(node->left_, key)
+                                                : node;
+  }
+  
   return (key < node->val_.first) ? search(node->left_, key)
                                   : search(node->right_, key);
 }
 
-template <typename KeyT, typename ValT>
-void RBTree<KeyT, ValT>::printTree(Node* node) {
+template <typename KeyT, typename ValT, bool multi_type>
+void RBTree<KeyT, ValT, multi_type>::printTree(Node* node) {
   if (isNil(node)) return;
 
   printTree(node->left_);
@@ -214,16 +220,16 @@ void RBTree<KeyT, ValT>::printTree(Node* node) {
   printTree(node->right_);
 }
 
-template <typename KeyT, typename ValT>
-int RBTree<KeyT, ValT>::getChildrenCount(Node* node) {
+template <typename KeyT, typename ValT, bool multi_type>
+int RBTree<KeyT, ValT, multi_type>::getChildrenCount(Node* node) {
   int count = 0;
   if (!isNil(node->left_)) count++;
   if (!isNil(node->right_)) count++;
   return count;
 }
 
-template <typename KeyT, typename ValT>
-void RBTree<KeyT, ValT>::transplateNode(Node* dest, Node* src) {
+template <typename KeyT, typename ValT, bool multi_type>
+void RBTree<KeyT, ValT, multi_type>::transplateNode(Node* dest, Node* src) {
   if (dest == root_)
     root_ = src;
   else if (dest == dest->parent_->left_)
@@ -234,8 +240,8 @@ void RBTree<KeyT, ValT>::transplateNode(Node* dest, Node* src) {
   delete dest;
 }
 
-template <typename KeyT, typename ValT>
-void RBTree<KeyT, ValT>::swapValue(Node* dest, Node* src) {
+template <typename KeyT, typename ValT, bool multi_type>
+void RBTree<KeyT, ValT, multi_type>::swapValue(Node* dest, Node* src) {
   Node* temp = new Node(src->val_, nil_);
   temp->color_ = dest->color_;
 
@@ -256,8 +262,8 @@ void RBTree<KeyT, ValT>::swapValue(Node* dest, Node* src) {
   delete dest;
 }
 
-template <typename KeyT, typename ValT>
-void RBTree<KeyT, ValT>::removeNode(const KeyT& key) {
+template <typename KeyT, typename ValT, bool multi_type>
+void RBTree<KeyT, ValT, multi_type>::removeNode(const KeyT& key) {
   Node* nodeToDelete = search(key);
   if (nodeToDelete == nullptr) return;
 
@@ -277,8 +283,8 @@ void RBTree<KeyT, ValT>::removeNode(const KeyT& key) {
   if (removedNodeColor == NodeColor::BLACK) balanceRemove(child);
 }
 
-template <typename KeyT, typename ValT>
-void RBTree<KeyT, ValT>::balanceRemove(Node* node) {
+template <typename KeyT, typename ValT, bool multi_type>
+void RBTree<KeyT, ValT, multi_type>::balanceRemove(Node* node) {
   while (node != root_ && node->color_ == NodeColor::BLACK) {
     Node* brother;
     if (node == node->parent_->left_) {
@@ -338,8 +344,8 @@ void RBTree<KeyT, ValT>::balanceRemove(Node* node) {
   node->color_ = NodeColor::BLACK;
 }
 
-template <typename KeyT, typename ValT>
-typename RBTree<KeyT, ValT>::Node* RBTree<KeyT, ValT>::getMin(
+template <typename KeyT, typename ValT, bool multi_type>
+typename RBTree<KeyT, ValT, multi_type>::Node* RBTree<KeyT, ValT, multi_type>::getMin(
     Node* node) const {
   if (isNil(node)) return nullptr;
 
@@ -347,8 +353,8 @@ typename RBTree<KeyT, ValT>::Node* RBTree<KeyT, ValT>::getMin(
   return getMin(node->left_);
 }
 
-template <typename KeyT, typename ValT>
-typename RBTree<KeyT, ValT>::Node* RBTree<KeyT, ValT>::getMin() const {
+template <typename KeyT, typename ValT, bool multi_type>
+typename RBTree<KeyT, ValT, multi_type>::Node* RBTree<KeyT, ValT, multi_type>::getMin() const {
   if (isNil(root_) || isNil(root_->left_)) return root_;
 
   Node* temp = root_->left_;
@@ -357,8 +363,8 @@ typename RBTree<KeyT, ValT>::Node* RBTree<KeyT, ValT>::getMin() const {
   return temp;
 }
 
-template <typename KeyT, typename ValT>
-typename RBTree<KeyT, ValT>::Node* RBTree<KeyT, ValT>::getMax(
+template <typename KeyT, typename ValT, bool multi_type>
+typename RBTree<KeyT, ValT, multi_type>::Node* RBTree<KeyT, ValT, multi_type>::getMax(
     Node* node) const {
   if (isNil(node)) return nullptr;
 
@@ -366,8 +372,8 @@ typename RBTree<KeyT, ValT>::Node* RBTree<KeyT, ValT>::getMax(
   return getMax(node->right_);
 }
 
-template <typename KeyT, typename ValT>
-typename RBTree<KeyT, ValT>::Node* RBTree<KeyT, ValT>::getMax() const {
+template <typename KeyT, typename ValT, bool multi_type>
+typename RBTree<KeyT, ValT, multi_type>::Node* RBTree<KeyT, ValT, multi_type>::getMax() const {
   if (isNil(root_)) return nil_;
 
   Node* temp = root_;
@@ -376,8 +382,8 @@ typename RBTree<KeyT, ValT>::Node* RBTree<KeyT, ValT>::getMax() const {
   return temp->right_;
 }
 
-template <typename KeyT, typename ValT>
-void RBTree<KeyT, ValT>::deleteTree(Node* node) {
+template <typename KeyT, typename ValT, bool multi_type>
+void RBTree<KeyT, ValT, multi_type>::deleteTree(Node* node) {
   if (isNil(node)) return;
 
   deleteTree(node->left_);
@@ -385,8 +391,8 @@ void RBTree<KeyT, ValT>::deleteTree(Node* node) {
   delete node;
 }
 
-template <typename KeyT, typename ValT>
-void RBTree<KeyT, ValT>::swap(Node* a, Node* b) {
+template <typename KeyT, typename ValT, bool multi_type>
+void RBTree<KeyT, ValT, multi_type>::swap(Node* a, Node* b) {
   if (b == a->left_) {
     Node* aRight = a->right_;
     Node* bLeft = b->left_;
@@ -440,8 +446,8 @@ void RBTree<KeyT, ValT>::swap(Node* a, Node* b) {
   if (a == root_) root_ = b;
 }
 
-template <typename KeyT, typename ValT>
-void RBTree<KeyT, ValT>::rightRotate(Node* node) {
+template <typename KeyT, typename ValT, bool multi_type>
+void RBTree<KeyT, ValT, multi_type>::rightRotate(Node* node) {
   swap(node, node->left_);
   Node* temp = node->parent_->right_;
   node->parent_->right_ = node->parent_->left_;
@@ -454,8 +460,8 @@ void RBTree<KeyT, ValT>::rightRotate(Node* node) {
     node->parent_->right_->right_->parent_ = node->parent_->right_;
 }
 
-template <typename KeyT, typename ValT>
-void RBTree<KeyT, ValT>::leftRotate(Node* node) {
+template <typename KeyT, typename ValT, bool multi_type>
+void RBTree<KeyT, ValT, multi_type>::leftRotate(Node* node) {
   swap(node, node->right_);
   Node* temp = node->parent_->left_;
   node->parent_->left_ = node->parent_->right_;
@@ -468,8 +474,8 @@ void RBTree<KeyT, ValT>::leftRotate(Node* node) {
     node->parent_->left_->left_->parent_ = node->parent_->left_;
 }
 
-template <typename KeyT, typename ValT>
-void RBTree<KeyT, ValT>::clear() {
+template <typename KeyT, typename ValT, bool multi_type>
+void RBTree<KeyT, ValT, multi_type>::clear() {
   deleteTree(root_);
   root_ = nil_;
 }

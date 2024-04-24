@@ -1,7 +1,7 @@
 #include "s21_core_tests.h"
 #include "core/s21_set.h"
 
-#include <map>
+#include <set>
 
 #define DEF_INT_KEYS {1, 2, 3, 4, 8}
 #define DEF_DBL_KEYS {4.35, 2.977, 873.23, 6.875, 9.6534}
@@ -27,11 +27,6 @@
 #define DBL_KEY_DUPLICATE 6.875
 #define MOCK_KEY_DUPLICATE 44
 #define STR_KEY_DUPLICATE "!"
-
-#define INT_OBJ 69
-#define DBL_OBJ 69
-#define MOCK_OBJ 69
-#define STR_OBJ 69
 
 template<typename key_type>
 void checkFields(const s21::set<key_type>& s21_set
@@ -916,7 +911,7 @@ TEST(suiteName, intBigLineTree) { bigLineTree<int>(TEST_ROUNDS); } \
 
 TESTS_BIG_LINE_TREE(s21Set)
 
-double GetRand(double min, double max) {
+double GetRandSet(double min, double max) {
   double val = (double)rand() / RAND_MAX;
   return min + val * (max - min);
 }
@@ -929,7 +924,7 @@ void bigRandomTree(int rMin, int rMax, int rounds) {
   srand(static_cast<int>((std::size_t)&actual));
 
   for (int i = 0; i < rounds; i++) {
-    auto val = GetRand(rMin, rMax);
+    auto val = GetRandSet(rMin, rMax);
     actual.insert(val);
     expected.insert(val);
   }

@@ -59,7 +59,7 @@ class set : public IContainer {
   vector<std::pair<iterator, bool>> insert_many(Args&&... args);
 
  private:
-  RBTree<KeyT, KeyT> btree_;
+  RBTree<KeyT, KeyT, false> btree_;
   size_type size_;
 
  private:
@@ -75,11 +75,11 @@ class set<KeyT>::SetIterator {
   using pointer = value_type*;
   using reference = value_type&;
 
-  using Node = typename RBTree<KeyT, KeyT>::Node;
+  using Node = typename RBTree<KeyT, KeyT, false>::Node;
 
  public:
   SetIterator() = default;
-  SetIterator(Node* ptr, RBTree<KeyT, KeyT>* it_btree)
+  SetIterator(Node* ptr, RBTree<KeyT, KeyT, false>* it_btree)
       : ptr_(ptr), it_btree_(it_btree) {}
 
   bool operator==(const SetIterator& other) { return ptr_ == other.ptr_; }
@@ -111,7 +111,7 @@ class set<KeyT>::SetIterator {
 
  private:
   Node* ptr_ = nullptr;
-  RBTree<KeyT, KeyT>* it_btree_ = nullptr;
+  RBTree<KeyT, KeyT, false>* it_btree_ = nullptr;
 
   Node* RBT_increment(Node* ptr);
   Node* RBT_decrement(Node* ptr);
@@ -132,18 +132,18 @@ class set<KeyT>::SetConstIterator : public set<KeyT>::SetIterator {
 
 template <typename key_type>
 typename set<key_type>::iterator set<key_type>::find(const key_type& key) {
-  typename RBTree<key_type, key_type>::Node* temp = btree_.search(key);
+  typename RBTree<key_type, key_type, false>::Node* temp = btree_.search(key);
   return (!temp) ? end() : set<key_type>::iterator(temp, &btree_);
 }
 
 template <typename key_type>
-typename RBTree<key_type, key_type>::Node* set<key_type>::SetIterator::RBT_increment(
-    typename RBTree<key_type, key_type>::Node* ptr) {
+typename RBTree<key_type, key_type, false>::Node* set<key_type>::SetIterator::RBT_increment(
+    typename RBTree<key_type, key_type, false>::Node* ptr) {
   if (!it_btree_->isNil(ptr->right_)) {
     ptr = ptr->right_;
     while (!it_btree_->isNil(ptr->left_)) ptr = ptr->left_;
   } else {
-    typename RBTree<key_type, key_type>::Node* parent = ptr->parent_;
+    typename RBTree<key_type, key_type, false>::Node* parent = ptr->parent_;
     while (ptr == parent->right_) {
       ptr = parent;
       parent = parent->parent_;
@@ -154,13 +154,13 @@ typename RBTree<key_type, key_type>::Node* set<key_type>::SetIterator::RBT_incre
 }
 
 template <typename key_type>
-typename RBTree<key_type, key_type>::Node* set<key_type>::SetIterator::RBT_decrement(
-    typename RBTree<key_type, key_type>::Node* ptr) {
+typename RBTree<key_type, key_type, false>::Node* set<key_type>::SetIterator::RBT_decrement(
+    typename RBTree<key_type, key_type, false>::Node* ptr) {
   if (!it_btree_->isNil(ptr->left_)) {
     ptr = ptr->left_;
     while (!it_btree_->isNil(ptr->right_)) ptr = ptr->right_;
   } else {
-    typename RBTree<key_type, key_type>::Node* parent = ptr->parent_;
+    typename RBTree<key_type, key_type, false>::Node* parent = ptr->parent_;
     while (ptr == parent->left_) {
       ptr = parent;
       parent = parent->parent_;
@@ -189,7 +189,7 @@ template <typename key_type>
 typename set<key_type>::size_type
 set<key_type>::max_size() {
   return std::numeric_limits<size_type>::max() /
-         sizeof(typename RBTree<key_type, key_type>::Node) / 4294967296;
+         sizeof(typename RBTree<key_type, key_type, false>::Node) / 4294967296;
 }
 
 template <typename key_type>
@@ -250,7 +250,7 @@ template <typename key_type>
 typename set<key_type>::const_iterator
 set<key_type>::begin() const {
   SetIterator it(
-      btree_.getMin(), const_cast<RBTree<key_type, key_type>*>(&btree_));
+      btree_.getMin(), const_cast<RBTree<key_type, key_type, false>*>(&btree_));
   return SetConstIterator(it);
 }
 
@@ -265,7 +265,7 @@ template <typename key_type>
 typename set<key_type>::const_iterator
 set<key_type>::end() const {
   SetIterator it(
-      btree_.getMax(), const_cast<RBTree<key_type, key_type>*>(&btree_));
+      btree_.getMax(), const_cast<RBTree<key_type, key_type, false>*>(&btree_));
   return SetConstIterator(it);
 }
 
@@ -278,7 +278,7 @@ void set<key_type>::clear() {
 template <typename key_type>
 std::pair<typename set<key_type>::iterator, bool>
 set<key_type>::insert(const value_type& value) {
-  std::pair<typename RBTree<key_type, key_type>::Node*, bool> temp =
+  std::pair<typename RBTree<key_type, key_type, false>::Node*, bool> temp =
       btree_.insert(std::make_pair(value, value));
   if (temp.second) size_++;
   return std::make_pair(
